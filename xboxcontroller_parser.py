@@ -1,6 +1,12 @@
 ########## XBox Controller Parser ##########
 
-### NOTE: LEAVE MODE 'OFF' ###
+# Original Author: John Zeller
+
+### NOTES #######################################################
+# 1) LEAVE MODE 'OFF'    					#
+# 2) This parser was built using this tutorial as a reference:	#
+#	http://hackshark.com/?p=147#axzz2BHTVXCFz		#
+#################################################################
 
 #### Buttons/Joys Represented: ##########################
 # A, B, X, Y, RB, LB, LJButton, RJButton, Back, Start	#
