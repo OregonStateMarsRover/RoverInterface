@@ -23,6 +23,8 @@ class Listener(threading.Thread):
                 self.queue = queue
 
         def run(self):
+		# If the address is 2-7, then make a bogie packet
+		
                 list = []
                 while 1:
                         if self.bus.base.inWaiting() > 0:

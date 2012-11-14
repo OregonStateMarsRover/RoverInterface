@@ -7,13 +7,14 @@
 # BeagleBone and adds them to the queue for the Receptionist to then execute.
 
 import sys
-sys.path.append('/home/ubuntu/RoverBeagleBone/Serial')
+sys.path.append('/home/rover/RoverInterface/Serial')
 import serial, time
 import Queue
 import threading
 from roverpacket import *
 from bus import *
 from listener import *
+#from joy import *
 
 # Initialization of interrupts
 
