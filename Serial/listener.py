@@ -13,6 +13,7 @@ import Queue
 import threading
 from roverpacket import *
 from bus import *
+from joy import *
 
 class Listener(threading.Thread):
         def __init__(self, bus, queue):
@@ -21,6 +22,9 @@ class Listener(threading.Thread):
                 # Stores the bus and queue objects
                 self.bus = bus
                 self.queue = queue
+		self.joy_queue = Queue.Queue()
+		self.joythread = JoyParser(self.bus, self.joy_queue)
+                self.joythread.start()
 
         def run(self):
 		# If the address is 2-7, then make a bogie packet

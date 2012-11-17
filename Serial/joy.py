@@ -21,7 +21,7 @@
 ### Soon-to-come Abilities ##############################################
 # D-Pad - Tripod Controls						#
 # Middle - Emergency Stop All Systems					#
-# Y - Actuate motor to create 0-point turn form				#
+# Y - Software Mode Change						#
 #########################################################################
 
 ### NOTES #######################################################
@@ -40,11 +40,6 @@
 #    a speed value other than 0								#
 # 2) In case of artifacts in serial communication, initialize communication with all 0	#
 #    values for speeds, just in case the rover is given a GO command, when it shouldn't	#
-
-
-# Y - Software Change ( Skid / Vector )
-# LJ - Left wheels
-# RJ - Right Wheels
 
 import sys
 import threading
@@ -183,7 +178,6 @@ class JoyParser(object):
 			info_list = None
 			
 		return info_list
-		#			info_list.append(data_tuple)
 		
 	def translate_joy(self, joy_data):
 		# Returns list of 6 lists, each holding <addr 2-7> <speed> <angle>
