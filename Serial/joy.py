@@ -39,6 +39,14 @@
 # RT, LT, LeftJoy, RightJoy					#
 #################################################################
 
+#### Note on LJ/RJ values: ######################################
+# Naturally the gamepad sends the following values:		#
+# LJ/RJ - Down: 0-127						#
+# LJ/RJ - Up: 255-128						#
+# LJ/RJ - Left: 255-128						#
+# LJ/RJ - Right: 0-127						#
+#################################################################
+
 #### Possible Additions: ################################################################
 # 1) When the Joy hits back to 0, then send a 0 speed command... sometimes it ends with	#
 #    a speed value other than 0								#
@@ -52,6 +60,9 @@
 # 	Have another algorithm reading the info from these variables and assembling tuples from there
 # ************Check the values of the Trigger and Joy released packets and have that send a stop command...
 #			currently not robust to never receiving a 0 command from joy
+
+
+# 	Change Left and Right speeds to be mirrors of each other. This is because the wheels are mirrors
 
 
 # Variables for RT, LT, RJ, LJ

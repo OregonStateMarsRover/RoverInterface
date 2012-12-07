@@ -47,19 +47,22 @@ class Listener(threading.Thread):
                 #                self.queue.put(list)
                 #                list = []
                 while 1:
-			# Check to see if joy has a packet ready
+			# Check to see if joy has a packet ready - 0 is an escape byte
                         if self.joy_queue.empty() is False:
 				# Grab data
 				data = self.joy_queue.get()
-				self.queue.put(data)
-				## Iterate through each wheel in this packet
-				#for wheel in data:
-				#	# Break data into individual variables
-				#	addr, speed, angle = wheel	# Tuple
-				#	# Translate data into packets ready to be sent to receptionist
-				#	packet = BogiePacket(addr, speed, angle)
-				#	# Send packet to receptionist's queue
-				#	self.queue.put(packet)
+				#self.queue.put(data)
+				# Iterate through each wheel in this packet
+				for wheel in data:
+					# Break data into individual variables
+					addr, speed, angle = wheel	# Tuple
+					if speed < 0:
+						speed = -(speed) 	# WARNING THIS CAUSES ONLY FORWARD VALUES
+					# Translate data into packets ready to be sent to receptionist
+					packet = BogiePacket(addr, speed, angle)
+					# Send packet to receptionist's queue
+					print packet
+					self.queue.put(packet.msg())	# packet.msg() serializes the packet
 			#if self.some_other_queue.empty() is False:
 				# Do some other thing
 				
