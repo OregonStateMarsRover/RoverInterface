@@ -9,19 +9,23 @@
 ### Left to Implement ###################################################
 # RJ - Vector Steer Mode - translate_joy				#
 
-### Abilities ###########################################################
+### Abilities - Skid Steering ###########################################
 # LJ - Controls all left wheels forward/reverse (no left/right) 	#
 # RJ - Controls all right wheels forward/reverse (no left/right)	#
 # LT - Throttles a 0-point skid steer to the left			#
 # RT - Throttles a 0-point skid steer to the right			#
-# LB - Rotates actuator motors clockwise (when looking from top)	#
-# RB - Rotates actuator motors counterclockwise (when looking from top) #
+# Y - Software Mode Change (Skid to Vector Steering)			#
+#########################################################################
+
+### Abilities - Vector Steering #########################################
+# LJ - Controls all left wheels forward/reverse (no left/right) 	#
+# RJ - Controls the set angle for actuation. (no down)			#
+# Y - Software Mode Change (Skid to Vector Steering)			#
 #########################################################################
 
 ### Soon-to-come Abilities ##############################################
 # D-Pad - Tripod Controls						#
 # Middle - Emergency Stop All Systems					#
-# Y - Software Mode Change						#
 #########################################################################
 
 ### NOTES #######################################################
@@ -41,18 +45,21 @@
 # 2) In case of artifacts in serial communication, initialize communication with all 0	#
 #    values for speeds, just in case the rover is given a GO command, when it shouldn't	#
 
+# Variables for RT, LT, RJ, LJ
+
+
 import sys
 import threading
 from roverpacket import *
 from bus import *
 
-class JoyParser(object):
+class JoyParser(threading.Thread):
 	def __init__(self, bus, joy_queue):
 		# Initializes threading
 		threading.Thread.__init__(self)
 		# Stores the bus object
 		self.bus = bus
-		self.joy_queue = queue
+		self.joy_queue = joy_queue
 		# Creates lists and dictionaries
 		self.templist = []
 		self.left_wheel_ids = [2, 3, 4] # Front to Back
@@ -73,6 +80,11 @@ class JoyParser(object):
 		# Initializes templist
 		for x in range(8):
 		        self.templist.append(0)
+		# Joy - States
+		self.right_trigger = 0
+		self.left_trigger = 0
+		self.right_joy = 0
+		self.left_trigger = 0
 
 	def run(self):
 		# Figures out the info for 6 packets each
@@ -110,7 +122,7 @@ class JoyParser(object):
 						# Control Scheme for Skid
 						self.control_change = 0
 					else:
-						info_list = translate_button(pressed_button)
+						info_list = self.translate_button(pressed_button)
 				# If else, do nothing
 				
 			# JOYSTICK is PRESSED
@@ -118,14 +130,14 @@ class JoyParser(object):
 				pressed_joy = self.parse_pressed_joy() # Grab the return
 				if pressed_joy is not None:
 					found = 1
-					info_list = translate_joy(pressed_joy)
+					info_list = self.translate_joy(pressed_joy)
 				# If else, do nothing
 
 			# BUTTON is RELEASED
 			elif self.templist[4]=='\x00' and found==0:
 				released_button = self.parse_released() # Grab the return here
 				if released_button is not None:
-					info_list = translate_button(released_button)
+					info_list = self.translate_button(released_button)
 				
 			# Return list if there is a list to return
 			if info_list is None:
@@ -186,7 +198,8 @@ class JoyParser(object):
 		data = joy_data[1]
 		info_list = []
 		
-		if self.control_change==0: # Skid Steer Mode
+		# Skid Steer Mode
+		if self.control_change==0:
 			# LT and RT just skid steer in place - Example: <addr 2-7> <speed> <0>
 			if name=='LT':
 				# Left wheels Reverse, Right wheels Forward
@@ -195,7 +208,7 @@ class JoyParser(object):
 						data_tuple = wheel_id, 0, 0
 						info_list.append(data_tuple)
 					else:	# Reverse (0-127)
-						data = int(data / 2) # Round down
+						data = int(data) / 2 # Round down
 						data_tuple = wheel_id, data, 0
 						info_list.append(data_tuple)
 				for wheel_id in self.right_wheel_ids:
@@ -203,7 +216,7 @@ class JoyParser(object):
 						data_tuple = wheel_id, 0, 0
 						info_list.append(data_tuple)
 					else:	# Forward (255-128)
-						data = int(data / 2) + 128 # Round down
+						data = int(data) / 2 + 128 # Round down
 						data_tuple = wheel_id, data, 0
 						info_list.append(data_tuple)
 			elif name=='RT':
@@ -213,7 +226,7 @@ class JoyParser(object):
 						data_tuple = wheel_id, 0, 0
 						info_list.append(data_tuple)
 					else:	# Reverse (0-127)
-						data = int(data / 2) + 128 # Round down
+						data = int(data) / 2 + 128 # Round down
 						data_tuple = wheel_id, data, 0
 						info_list.append(data_tuple)
 				for wheel_id in self.right_wheel_ids:
@@ -221,7 +234,7 @@ class JoyParser(object):
 						data_tuple = wheel_id, 0, 0
 						info_list.append(data_tuple)
 					else:	# Forward (255-128)
-						data = int(data / 2) # Round down
+						data = int(data) / 2 # Round down
 						data_tuple = wheel_id, data, 0
 						info_list.append(data_tuple)
 						
@@ -232,21 +245,18 @@ class JoyParser(object):
 				for wheel_id in self.left_wheel_ids:
 					data_tuple = wheel_id, data, 0
 					info_list.append(data_tuple)
-				for wheel_id in self.right_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
 				
 			# RJ for Right wheels - Example: <addr 2-7> <speed>
 			elif name=='RJ/Right' or name=='RJ/Left':
 				info_list = None
 			elif name=='RJ/Up' or name=='RJ/Down':
-				for wheel_id in self.left_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
 				for wheel_id in self.right_wheel_ids:
 					data_tuple = wheel_id, data, 0
 					info_list.append(data_tuple)
-		elif self.control_change==1: # Vector Steer Mode
+					
+					
+		# Vector Steer Mode
+		elif self.control_change==1:
 			if name=='LT':
 				info_list = None
 			elif name=='RT':

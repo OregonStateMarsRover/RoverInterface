@@ -36,6 +36,8 @@ class Receptionist(object):
                 while 1:
                         if self.queue.empty() is False:
                                 print self.queue.get()
+                                # Convert with RoverPacket
+                                # Send to rover with this -> self.bus.rover.write(self.queue.get())
 
 
 if __name__ == '__main__':

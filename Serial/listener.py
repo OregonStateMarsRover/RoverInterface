@@ -30,9 +30,14 @@ class Listener(threading.Thread):
 		# If the address is 2-7, then make a bogie packet
 		
                 list = []
+                #while 1:
+                #        if self.bus.base.inWaiting() > 0:
+                #                list.append(self.bus.base.read(1))
+                #        elif (self.bus.base.inWaiting() == 0) and (list != []):
+                #                self.queue.put(list)
+                #                list = []
                 while 1:
-                        if self.bus.base.inWaiting() > 0:
-                                list.append(self.bus.base.read(1))
-                        elif (self.bus.base.inWaiting() == 0) and (list != []):
-                                self.queue.put(list)
-                                list = []
+                        if self.joy_queue.empty() is False:
+				packet = self.joy_queue.get()
+                                self.queue.put(packet)
+				
