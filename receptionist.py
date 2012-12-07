@@ -6,6 +6,9 @@
 # The Listener is launched in a separate thread to bring in messages from outside the
 # BeagleBone and adds them to the queue for the Receptionist to then execute.
 
+# Ideas
+# 	Maybe create a second Listener JUST for joy
+
 import sys
 sys.path.append('/home/rover/RoverInterface/Serial')
 import serial, time

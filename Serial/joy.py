@@ -45,6 +45,15 @@
 # 2) In case of artifacts in serial communication, initialize communication with all 0	#
 #    values for speeds, just in case the rover is given a GO command, when it shouldn't	#
 
+
+# Need to implement
+# 	Create variables for RT, LT, RJ and LJ
+# 	Have a translate_joy set the values of these gloval variables
+# 	Have another algorithm reading the info from these variables and assembling tuples from there
+# ************Check the values of the Trigger and Joy released packets and have that send a stop command...
+#			currently not robust to never receiving a 0 command from joy
+
+
 # Variables for RT, LT, RJ, LJ
 
 
@@ -68,6 +77,7 @@ class JoyParser(threading.Thread):
 		self.arm_id = 9
 		# Tracks the press of 'Y' which changes control from Skid to Vector
 		self.control_change = 0
+		# All button raw packet values of data coming from gamepad
 		self.buttons = {'\x00':'A', '\x01':'B', '\x02':'X', '\x03':'Y', \
                                 '\x04':'LB', '\x05':'RB', '\x06':'Back', '\x07':'Start', \
                                 '\x08':'Middle', '\t':'LJ/Button', '\n':'RJ/Button'}
@@ -80,11 +90,17 @@ class JoyParser(threading.Thread):
 		# Initializes templist
 		for x in range(8):
 		        self.templist.append(0)
-		# Joy - States
-		self.right_trigger = 0
-		self.left_trigger = 0
-		self.right_joy = 0
-		self.left_trigger = 0
+		# Joy - States (Joys only have up/down values, Triggers only have forward values)
+			# These are always integer values
+		self.skid_right_trigger = 0
+		self.skid_left_trigger = 0
+		self.skid_right_joy = 0
+		self.skid_left_joy = 0
+		self.vector_right_trigger = 0
+		self.vector_left_trigger = 0
+		self.vector_right_joy_RightLeft = 0
+		self.vector_right_joy_Up = 0
+		self.vector_left_joy = 0
 
 	def run(self):
 		# Figures out the info for 6 packets each
@@ -126,11 +142,16 @@ class JoyParser(threading.Thread):
 				# If else, do nothing
 				
 			# JOYSTICK is PRESSED
+				# Explanation: 	parse_pressed_joy parses the raw data coming from joystick
+				#		translate_joy figures out what that data means and sets global variables
+				#		design_commands_joy looks at the global variables that have been set and
+				#			returns a list of 6 tuples for use by listener
 			elif found==0:
 				pressed_joy = self.parse_pressed_joy() # Grab the return
 				if pressed_joy is not None:
 					found = 1
-					info_list = self.translate_joy(pressed_joy)
+					self.translate_joy(pressed_joy)
+					info_list = self.design_commands_joy()
 				# If else, do nothing
 
 			# BUTTON is RELEASED
@@ -139,11 +160,133 @@ class JoyParser(threading.Thread):
 				if released_button is not None:
 					info_list = self.translate_button(released_button)
 				
-			# Return list if there is a list to return
+			# Return list if there is a list to return, otherwise do nothing
 			if info_list is None:
 				info_list = None # Do nothing
 			else:
 				self.joy_queue.put(info_list)
+	
+	# Within design_commands_joy
+	#
+	# Working: RT, LT, RJ/LJ
+	#
+	# Needs work: Vector RJ for angles
+	def design_commands_joy(self):
+		info_list = []
+		# Look at each of the values for variables skid_right_trigger, skid_left_trigger, skid_right_joy, skid_left_joy
+		# 	and figure out the appropriate commands to send for all 6 wheels
+		# Returns a list of 6 tuples with the format Example: <addr 2-7> <speed> <angle>
+		#	speed being for skid, and angle being for vector
+		# Be mindful of the self.control_change with 0 being skid, and 1 being vector
+		
+		# Right of Way - Skid Steer
+		# 	LJ/RJ (Both because they don't have overcrossing commands)
+		# 	RT - ONLY ALLOW if LJ/RJ are 0
+		# 	LT - ONLY ALLOW if LJ/RJ and RT are 0
+		# Right of Way - Vector Steer
+		# 	RJ - Allow the wheels to actuate before they drive
+		#		(otherwise you may get some drive packets and some angle packets intermingled with each other)
+		# 	LJ - ONLY ALLOW if RJ is at 0 OR IF THE ANGLE HAS BEEN HELD
+		# ORRRRRRRRR
+		# 	LJ/RJ (Both because they don't have overcrossing commands)
+		# Always allow zeros to be sent
+		
+		# Skid Steer Mode
+		if self.control_change == 0:
+			# LJ and RJ are setup using the tank drive concept - # Example: <addr 2-7> <speed> <0>
+			# LJ for Left Wheels (Forward/Reverse)
+			for wheel_id in self.left_wheel_ids:
+				data_tuple = wheel_id, self.skid_left_joy, 0
+				info_list.append(data_tuple)
+			# RJ for Right Wheels (Forward/Reverse)
+			for wheel_id in self.right_wheel_ids:
+				data_tuple = wheel_id, self.skid_right_joy, 0
+				info_list.append(data_tuple)
+			
+			# LT and RT just skid steer in place - Example: <addr 2-7> <speed> <0>
+			# For RT - Left wheels Forward, Right wheels Reverse
+			if self.skid_left_joy == 0 and self.skid_right_joy == 0:
+				info_list = []	# If LJ/RJ were already 0, then go ahead with RT commands
+				for wheel_id in self.left_wheel_ids:
+					if self.skid_right_trigger==0:
+						data_tuple = wheel_id, 0, 0
+						info_list.append(data_tuple)
+					else:	# Forward (255-128)
+						speed = self.skid_right_trigger / 2 - 1 # Down 1 to ensure a 0 value
+						if speed == 0:
+							self.skid_right_trigger = 0	# Ensures that right trigger is 0
+						if speed < 0:				# Checks to ensure no negatives
+							speed = 0
+							self.skid_right_trigger = 0	# Ensures that right trigger is 0
+						data_tuple = wheel_id, speed, 0
+						info_list.append(data_tuple)
+				for wheel_id in self.right_wheel_ids:
+					if self.skid_right_trigger==0:
+						data_tuple = wheel_id, 0, 0
+						info_list.append(data_tuple)
+					else:	# Reverse
+						speed = -(self.skid_right_trigger / 2 - 1) # Down 1 to ensure a 0 value
+						if speed == 0:
+							self.skid_right_trigger = 0	# Ensures that right trigger is 0
+						if speed > 0:				# Checks to ensure no positives
+							speed = 0
+							self.skid_right_trigger = 0	# Ensures that right trigger is 0
+						data_tuple = wheel_id, speed, 0
+						info_list.append(data_tuple)
+			# For LT - Left wheels Reverse, Right wheels Forward
+			if self.skid_left_joy == 0 and self.skid_right_joy == 0 and self.skid_right_trigger == 0:
+				info_list = []	# If LJ/RJ and RT were already 0, then go ahead with RT commands
+				for wheel_id in self.left_wheel_ids:
+					if self.skid_left_trigger==0:
+						data_tuple = wheel_id, 0, 0
+						info_list.append(data_tuple)
+					else:	# Reverse (0-127)
+						speed = -(self.skid_left_trigger / 2 - 1) # Down 1 to ensure a 0 value
+						if speed > 0:				# Checks to ensure no positives
+							speed = 0
+						data_tuple = wheel_id, speed, 0
+						info_list.append(data_tuple)
+				for wheel_id in self.right_wheel_ids:
+					if self.skid_left_trigger==0:
+						data_tuple = wheel_id, 0, 0
+						info_list.append(data_tuple)
+					else:	# Forward (255-128)
+						speed = self.skid_left_trigger / 2 - 1 # Down 1 to ensure a 0 value
+						if speed < 0:				# Checks to ensure no negatives
+							speed = 0
+						data_tuple = wheel_id, speed, 0
+						info_list.append(data_tuple)
+			# If everything is already 0, then LT will be allowed to run, but will reset values to 0
+						
+		
+		# Vector Steer Mode
+		elif self.control_change == 1:
+			# LJ for Left/Right Wheels (Forward/Reverse) - # Example: <addr 2-7> <speed> <0>
+			for wheel_id in self.left_wheel_ids:
+				data_tuple = wheel_id, self.vector_left_joy, 0
+				info_list.append(data_tuple)
+			for wheel_id in self.right_wheel_ids:
+				data_tuple = wheel_id, self.vector_left_joy, 0
+				info_list.append(data_tuple)
+				
+			# RJ for actuation, calculates an angle - # Example: <addr 2-7> <0> <angle>
+			# The value ranges are:
+			# 	RJ - Right: 0 to 127
+			# 	RJ - Left: 0 to -127
+			# 	RJ - Up: 0 to 127
+			for wheel_id in self.left_wheel_ids:
+				nothing = 0	# Do Nothing
+			for wheel_id in self.right_wheel_ids:
+				nothing = 0	# Do Nothing
+				
+				
+			# Append info_list with values of RJ-RightLeft and RJ-Up
+			info_list.append("RJ - RightLeft: ")
+			info_list.append(self.vector_right_joy_RightLeft)
+			info_list.append("RJ - Up")
+			info_list.append(self.vector_right_joy_Up)
+		
+		return info_list
 	
 	def translate_button(self, button_data):
 		# Returns list
@@ -192,67 +335,34 @@ class JoyParser(threading.Thread):
 		return info_list
 		
 	def translate_joy(self, joy_data):
-		# Returns list of 6 lists, each holding <addr 2-7> <speed> <angle>
-		# NOTE: Speed is for drive, angle is for actuation
+		# Instead of returning info, sets states of joy global variables
 		name = joy_data[0]
 		data = joy_data[1]
 		info_list = []
 		
 		# Skid Steer Mode
 		if self.control_change==0:
-			# LT and RT just skid steer in place - Example: <addr 2-7> <speed> <0>
+			# LT and RT just skid steer in place
 			if name=='LT':
 				# Left wheels Reverse, Right wheels Forward
-				for wheel_id in self.left_wheel_ids:
-					if data==0:
-						data_tuple = wheel_id, 0, 0
-						info_list.append(data_tuple)
-					else:	# Reverse (0-127)
-						data = int(data) / 2 # Round down
-						data_tuple = wheel_id, data, 0
-						info_list.append(data_tuple)
-				for wheel_id in self.right_wheel_ids:
-					if data==0:
-						data_tuple = wheel_id, 0, 0
-						info_list.append(data_tuple)
-					else:	# Forward (255-128)
-						data = int(data) / 2 + 128 # Round down
-						data_tuple = wheel_id, data, 0
-						info_list.append(data_tuple)
+				self.skid_left_trigger = int(data)
+				info_list = None
 			elif name=='RT':
 				# Left wheels Forward, Right wheels Reverse
-				for wheel_id in self.left_wheel_ids:
-					if data==0:
-						data_tuple = wheel_id, 0, 0
-						info_list.append(data_tuple)
-					else:	# Reverse (0-127)
-						data = int(data) / 2 + 128 # Round down
-						data_tuple = wheel_id, data, 0
-						info_list.append(data_tuple)
-				for wheel_id in self.right_wheel_ids:
-					if data==0:
-						data_tuple = wheel_id, 0, 0
-						info_list.append(data_tuple)
-					else:	# Forward (255-128)
-						data = int(data) / 2 # Round down
-						data_tuple = wheel_id, data, 0
-						info_list.append(data_tuple)
+				self.skid_right_trigger = int(data)
+				info_list = None
 						
-			# LJ for Left Wheels - # Example: <addr 2-7> <speed> <0>
+			# LJ for Left Wheels
 			elif name=='LJ/Right' or name=='LJ/Left':
 				info_list = None
 			elif name=='LJ/Up' or name=='LJ/Down':
-				for wheel_id in self.left_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
+				self.skid_left_joy = -(int(data))	# Flip the sign value, because it is backwards
 				
-			# RJ for Right wheels - Example: <addr 2-7> <speed>
+			# RJ for Right wheels
 			elif name=='RJ/Right' or name=='RJ/Left':
 				info_list = None
 			elif name=='RJ/Up' or name=='RJ/Down':
-				for wheel_id in self.right_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
+				self.skid_right_joy = -(int(data))	# Flip the sign value, because it is backwards
 					
 					
 		# Vector Steer Mode
@@ -262,22 +372,19 @@ class JoyParser(threading.Thread):
 			elif name=='RT':
 				info_list = None
 				
-			# LJ for Drive Forward/Reverse - # Example: <addr 2-7> <speed> <0> for ALL 6 wheels at once
+			# LJ for Drive Forward/Reverse
 			elif name=='LJ/Right' or name=='LJ/Left':
 				info_list = None
 			elif name=='LJ/Up' or name=='LJ/Down':
-				for wheel_id in self.left_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
-				for wheel_id in self.right_wheel_ids:
-					data_tuple = wheel_id, data, 0
-					info_list.append(data_tuple)
+				self.vector_left_joy = -(int(data))	# Flip the sign value, because it is backwards
 
 			# RJ for Angle from 0-180 (0 starts at -90) - Example: <addr 2-7> <0> <angle>
 			# Calculate the x and y-components of this to compute the angle
 			elif name=='RJ/Right' or name=='RJ/Left':
-				info_list = None
-			elif name=='RJ/Up' or name=='RJ/Down':
+				self.vector_right_joy_RightLeft = int(data)
+			elif name=='RJ/Up':
+				self.vector_right_joy_Up = -(int(data))	# Flip the sign value, because it is backwards
+			elif name=='RJ/Down':
 				info_list = None
 				
 		return info_list

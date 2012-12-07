@@ -6,6 +6,16 @@
 # for any incoming telemetry. When a packet comes the listener grabs it and stores
 # it into the queue for the receptionist
 
+# Needing to implement
+# 	Read 1 list at a time from the joy_queue. This list is going to have between
+# 	3 and 6 lists for 3-6 wheels. Listener needs to create a set of 6 packets
+# 	from these and then add them to the receptionists queue all at the same time
+# 	to ensure that they are all executed next to one another. ie no other packet
+# 	is put amongst a set of 3-6 wheel packets
+
+# Ideas
+# 	Maybe create a second Listener JUST for joy
+
 import sys
 sys.path.append('/home/rover/RoverInterface/Serial')
 import serial, time
@@ -37,7 +47,20 @@ class Listener(threading.Thread):
                 #                self.queue.put(list)
                 #                list = []
                 while 1:
+			# Check to see if joy has a packet ready
                         if self.joy_queue.empty() is False:
-				packet = self.joy_queue.get()
-                                self.queue.put(packet)
+				# Grab data
+				data = self.joy_queue.get()
+				self.queue.put(data)
+				## Iterate through each wheel in this packet
+				#for wheel in data:
+				#	# Break data into individual variables
+				#	addr, speed, angle = wheel	# Tuple
+				#	# Translate data into packets ready to be sent to receptionist
+				#	packet = BogiePacket(addr, speed, angle)
+				#	# Send packet to receptionist's queue
+				#	self.queue.put(packet)
+			#if self.some_other_queue.empty() is False:
+				# Do some other thing
+				
 				
