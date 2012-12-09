@@ -17,7 +17,6 @@ import threading
 from roverpacket import *
 from bus import *
 from listener import *
-#from joy import *
 
 # Initialization of interrupts
 
@@ -34,12 +33,15 @@ class Receptionist(object):
                 # This listener, listens to every port and adds messages to the queue
                 self.listenerthread = Listener(self.bus, self.queue)
                 self.listenerthread.start()
+                self.start_time = time.clock()
+                self.prev_time = 0
 
         def start(self):
                 while 1:
                         if self.queue.empty() is False:
-                                #print self.queue.get()
-                                self.bus.rover.write(self.queue.get())
+                                data = self.queue.get()
+                                self.bus.rover.write(data)
+                                
 
 
 if __name__ == '__main__':
