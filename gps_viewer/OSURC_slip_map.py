@@ -1,6 +1,6 @@
 import sys
 import os.path
-import gtk.gdk
+import gtk
 import gobject
 import osmgpsmap
 
