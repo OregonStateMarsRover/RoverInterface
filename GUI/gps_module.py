@@ -22,7 +22,7 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #creating the osmgpsmap module (changes the default sources from-1)
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile1.toposm.com/us/color-relief/#Z/#X/#Y.jpg")
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://b.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=True, show_zoom=True, show_gps_in_dpad=True))
 
         #Object initialization and Connections
@@ -40,14 +40,14 @@ class UI(gtk.Window):
         clear_track_button = gtk.Button('Clear Track')
         clear_track_button.connect('clicked', self.remove_track)
         
-        self.combobox = gtk.combo_box_new_text()
-        self.combobox.connect('changed', self.set_map_source)
-        self.combobox.insert_text(12, "test1")
-        self.combobox.insert_text(1, "test2")
-        self.combobox.insert_text(2, "test3")
-        self.combobox.insert_text(3, "test4")
-        self.combobox.insert_text(4, "test5")
-        self.combobox.set_active(0)
+        #self.combobox = gtk.combo_box_new_text()
+        #self.combobox.connect('changed', self.set_map_source)
+        #self.combobox.insert_text(12, "test1")
+        #self.combobox.insert_text(1, "test2")
+        #self.combobox.insert_text(2, "test3")
+        #self.combobox.insert_text(3, "test4")
+        #self.combobox.insert_text(4, "test5")
+        #self.combobox.set_active(0)
         
         self.latlon_entry = gtk.Entry()
         self.echo_entry = gtk.Entry()
@@ -66,7 +66,7 @@ class UI(gtk.Window):
         self.hbox.pack_start(home_button)
         self.hbox.pack_start(cache_button)
         self.hbox.pack_start(clear_track_button)
-        self.hbox.pack_start(self.combobox)
+        #self.hbox.pack_start(self.combobox)
 
         self.vbox.pack_start(self.echo_entry, expand=False, fill=True)
         
@@ -77,18 +77,18 @@ class UI(gtk.Window):
         #regullary timed callback function
         gobject.timeout_add(500, self.print_tiles)
 
-    def set_map_source(self, combobox):
-        active = self.combobox.get_active()
-        if self.osm:
+    #def set_map_source(self, combobox):
+     #   active = self.combobox.get_active()
+     #   if self.osm:
             #remove old map
-            self.vbox.remove(self.osm)
-        try:
-            self.osm = osmgpsmap.GpsMap(map_source=active)
-        except Exception, e:
-            print "ERROR:", e
-            self.osm = osmgpsmap.GpsMap()
-        self.vbox.pack_start(self.osm, True)
-        self.osm.show()
+      #      self.vbox.remove(self.osm)
+       # try:
+        #    self.osm = osmgpsmap.GpsMap(map_source=active)
+        #except Exception, e:
+         #   print "ERROR:", e
+        #    self.osm = osmgpsmap.GpsMap()
+        #self.vbox.pack_start(self.osm, True)
+        #self.osm.show()
 
 
     def print_tiles(self):
@@ -132,6 +132,8 @@ class UI(gtk.Window):
             zoom_end=self.osm.props.max_zoom
         )
 
+l = osmgpsmap.get_default_cache_directory()
+print l
    
 if __name__ == "__main__":
     u = UI()
