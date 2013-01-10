@@ -122,7 +122,7 @@ class UI(gtk.Window):
         self.osm.set_zoom(self.osm.props.zoom - 1)
 
     def home_clicked(self, button):
-        self.osm.set_center_and_zoom(44.5595092773, -123.281433105, 20)
+        self.osm.set_center_and_zoom(38.4064050, -110.7922800, 20)
 
     def cache_clicked(self, button):
         bbox = self.osm.get_bbox()
