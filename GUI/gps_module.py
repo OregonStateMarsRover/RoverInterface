@@ -22,7 +22,7 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #creating the osmgpsmap module (changes the default sources from-1)
-        self.osm = osmgpsmap.GpsMap(map_source = 12)
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://tile1.toposm.com/us/color-relief/#Z/#X/#Y.jpg")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=True, show_zoom=True, show_gps_in_dpad=True))
 
         #Object initialization and Connections
@@ -131,7 +131,6 @@ class UI(gtk.Window):
             zoom_start=self.osm.props.zoom,
             zoom_end=self.osm.props.max_zoom
         )
-
 
    
 if __name__ == "__main__":
