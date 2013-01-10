@@ -42,7 +42,7 @@ class UI(gtk.Window):
         
         self.combobox = gtk.combo_box_new_text()
         self.combobox.connect('changed', self.set_map_source)
-        self.combobox.insert_text(0, "test1")
+        self.combobox.insert_text(12, "test1")
         self.combobox.insert_text(1, "test2")
         self.combobox.insert_text(2, "test3")
         self.combobox.insert_text(3, "test4")
