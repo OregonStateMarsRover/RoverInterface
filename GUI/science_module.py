@@ -21,7 +21,7 @@ import wx
 class ProbeDisplay(wx.Panel):
 
 	def __init__(self,parent):
-		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(300,280))
+		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250))
 		
 		button = wx.Button(self, label='Get Probe Data', pos=(10,190), size=(100,30))
 		self.Bind(wx.EVT_BUTTON, self.pressbutton, button)
