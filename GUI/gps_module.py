@@ -22,7 +22,7 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #creating the osmgpsmap module (changes the default sources from-1)
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://b.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=True, show_zoom=True, show_gps_in_dpad=True))
 
         #Object initialization and Connections
@@ -107,7 +107,7 @@ class UI(gtk.Window):
         if event.button == 3:
             self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
         elif event.button == 2:
-            pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 24,24)
+            pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 50,100)
             self.osm.image_add(lat,lon,pb)
 
         #Mouse Click on Map Event
