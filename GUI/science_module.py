@@ -23,7 +23,7 @@ class ProbeDisplay(wx.Panel):
 	def __init__(self,parent):
 		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250))
 		
-		button = wx.Button(self, label='Get Probe Data', pos=(10,190), size=(100,30))
+		button = wx.Button(self, label='Get Probe Data', pos=(10,190), size=(180,30))
 		self.Bind(wx.EVT_BUTTON, self.pressbutton, button)
 		
 		#Degree symbol unicode
@@ -46,11 +46,11 @@ class ProbeDisplay(wx.Panel):
 		CtempLbl = wx.StaticText(self, -1, u"Temperature (%sC):" % dgsymbol_u, pos = (10, 130))
 		
 		#Empty textboxes to show the data from the probe
-		SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (130,10))
-		ConductivityOutput = wx.TextCtrl(self, -1, pos = (130,40))
-		SalinityOutput = wx.TextCtrl(self, -1, pos = (130, 70))
-		FtempOutput = wx.TextCtrl(self, -1, pos = (130, 100))
-		CtempOutput = wx.TextCtrl(self, -1, pos = (130, 130))
+		SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (160,10))
+		ConductivityOutput = wx.TextCtrl(self, -1, pos = (160,40))
+		SalinityOutput = wx.TextCtrl(self, -1, pos = (160, 70))
+		FtempOutput = wx.TextCtrl(self, -1, pos = (160, 100))
+		CtempOutput = wx.TextCtrl(self, -1, pos = (160, 130))
 		
 	def pressbutton(self,event):
 		#This is the command to retrieve the info from the soil probe
