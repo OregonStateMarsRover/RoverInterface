@@ -20,7 +20,7 @@ class AllTerrain(wx.Panel):
         gps.SetForegroundColour('white')
         driveSim = wx.StaticText(self, -1, "Drive Sim", size=(640, 443))
         driveSim.SetForegroundColour('white')
-        driveControls = DriveControls(self, -1)
+        driveControls = DriveControls(self)
         tripodControls = TripodControls(self)
         
         sizer = wx.GridBagSizer(3, 3)
@@ -43,7 +43,7 @@ class Science(wx.Panel):
         armSim = ArmSim(self, (320, 320))
         driveSim = wx.StaticText(self, -1, "Drive Sim", size=(320, 420))
         driveSim.SetForegroundColour('white')
-        driveControls = DriveControls(self, -1)
+        driveControls = DriveControls(self)
         armControls = ArmControls(self, armSim)
         tripodControls = TripodControls(self)
         probeDisplay = ProbeDisplay(self)
@@ -66,11 +66,11 @@ class AstroRescue(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
         
-        gps = wx.StaticText(self, -1, "GPS", size=(690, 443))
+        gps = wx.StaticText(self, -1, "GPS", size=(644, 443))
         gps.SetForegroundColour('white')
-        driveSim = wx.StaticText(self, -1, "Drive Sim", size=(640, 443))
+        driveSim = wx.StaticText(self, -1, "Drive Sim", size=(665, 443))
         driveSim.SetForegroundColour('white')
-        driveControls = DriveControls(self, -1)
+        driveControls = DriveControls(self)
         tripodControls = TripodControls(self)
         packageControls = wx.StaticText(self, -1, "Package Controls", size=(320, 250))
         packageControls.SetForegroundColour('white')
@@ -78,10 +78,10 @@ class AstroRescue(wx.Panel):
         sizer = wx.GridBagSizer(3, 3)
         
         sizer.Add(gps, (0, 0), span=(1, 2), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-        sizer.Add(driveSim, (0, 2), span=(1, 3), flag=wx.FIXED_MINSIZE)
+        sizer.Add(driveSim, (0, 2), span=(1, 2), flag=wx.FIXED_MINSIZE)
         sizer.Add(driveControls, (1, 0), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-        sizer.Add(tripodControls, (1, 1), span=(1, 3), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-        sizer.Add(packageControls, (1, 4), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
+        sizer.Add(tripodControls, (1, 1), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
+        sizer.Add(packageControls, (1, 2), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
         
         self.SetSizer(sizer)
 
@@ -97,15 +97,15 @@ class EquipService(wx.Panel):
         driveSim.SetForegroundColour('white')
         arm_controls = ArmControls(self, arm_sim)
         tripod_controls = TripodControls(self)
-        driveControls = DriveControls(self, -1)
+        driveControls = DriveControls(self)
         
         sizer = wx.GridBagSizer(3, 3)
         
         sizer.Add(arm_sim, (0, 0),span=(1, 2), flag=wx.FIXED_MINSIZE)
-        sizer.Add(driveSim, (0, 2),span=(1, 3), flag=wx.FIXED_MINSIZE)
-        sizer.Add(arm_controls, (1, 0), span=(1, 2), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-        sizer.Add(tripod_controls, (1, 2), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-        sizer.Add(driveControls, (1, 3), span=(1, 2), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
+        sizer.Add(driveSim, (0, 2),span=(1, 2), flag=wx.FIXED_MINSIZE)
+        sizer.Add(arm_controls, (1, 0), flag=wx.FIXED_MINSIZE)
+        sizer.Add(tripod_controls, (1, 1), span=(1, 2), flag=wx.FIXED_MINSIZE)
+        sizer.Add(driveControls, (1, 3), flag=wx.FIXED_MINSIZE)
         
         self.SetSizer(sizer)
 
