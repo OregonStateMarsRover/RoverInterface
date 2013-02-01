@@ -23,79 +23,81 @@ class UI(gtk.Window):
 
         #creating the osmgpsmap module (changes the default sources from-1)
         self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
-        self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=True, show_zoom=True, show_gps_in_dpad=True))
+        #self.osm = osmgpsmap.GpsMap(repo_uri = "http://c.tile.stamen.com/toposm-contours/#Z/#X/#Y.png")
+        self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
+        self.osm.props.has_tooltip = True
 
-        #Object initialization and Connections
+        # Main program VBox layout (adding widgets to window from top down approach)
+        self.vbox = gtk.VBox(False, 0)
+        self.add(self.vbox)
+        
+        # (first VBox widget) Adding Open street map widget to main window
+        self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
+
+        #self.latlon_entry = gtk.Entry()
+        #self.vbox.pack_start(self.latlon_entry, expand=False, fill=True, padding=0)
+
+        # (second Vbox widget) Hbox widget for map menu buttons (zoom in, zoom out, home, cache, and clear)
+        self.horz_button_menu = gtk.HBox(False, 0)
+        self.vbox.pack_start(self.horz_button_menu, expand=False, fill=False, padding=4)
+
         zoom_in_button = gtk.Button('Zoom In')
         zoom_in_button.connect('clicked', self.zoom_in_clicked)
+        self.horz_button_menu.pack_start(zoom_in_button)
         
         zoom_out_button = gtk.Button('Zoom Out')
         zoom_out_button.connect('clicked', self.zoom_out_clicked)
+        self.horz_button_menu.pack_start(zoom_out_button)
         
         home_button = gtk.Button('Home')
         home_button.connect('clicked', self.home_clicked)
+        self.horz_button_menu.pack_start(home_button)
+
         cache_button = gtk.Button('Cache')
         cache_button.connect('clicked', self.cache_clicked)
+        self.horz_button_menu.pack_start(cache_button)
         
         clear_track_button = gtk.Button('Clear Track')
         clear_track_button.connect('clicked', self.remove_track)
+        self.horz_button_menu.pack_start(clear_track_button)
+
+        # (Third Vbox Entry) Hbox widget menu for manually adding Lat and Lon cordinates to slip map  
+        self.horz_marker_menu = gtk.HBox(False, 0)
+
+        self.lat_text_entry = gtk.Entry()
+        self.lat_text_entry.set_text("LAT")
+        self.horz_marker_menu.pack_start(self.lat_text_entry)
+
+        self.lon_text_entry = gtk.Entry()
+        self.lon_text_entry.set_text("LON")
+        self.horz_marker_menu.pack_start(self.lon_text_entry)
+
+        self.clear_entry = gtk.Button('Clear Field')
+        self.horz_marker_menu.pack_start(self.clear_entry)
+
+        self.set_poi_marker = gtk.Button('Place Marker')
+        self.horz_marker_menu.pack_start(self.set_poi_marker)
+
+
+        self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
         
-        #self.combobox = gtk.combo_box_new_text()
-        #self.combobox.connect('changed', self.set_map_source)
-        #self.combobox.insert_text(12, "test1")
-        #self.combobox.insert_text(1, "test2")
-        #self.combobox.insert_text(2, "test3")
-        #self.combobox.insert_text(3, "test4")
-        #self.combobox.insert_text(4, "test5")
-        #self.combobox.set_active(0)
-        
-        self.latlon_entry = gtk.Entry()
+        # (Fourth Vbox Entry) Echo entry widget to display tile downloading status
         self.echo_entry = gtk.Entry()
-
-        #Program Layout
-        self.vbox = gtk.VBox(False, 0)
-        self.hbox = gtk.HBox(False, 0)
-        self.add(self.vbox)
-        
-        self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
-        self.vbox.pack_start(self.latlon_entry, expand=False, fill=True, padding=0)
-        self.vbox.pack_start(self.hbox, expand=False, fill=False, padding=4)
-        
-        self.hbox.pack_start(zoom_in_button)
-        self.hbox.pack_start(zoom_out_button)
-        self.hbox.pack_start(home_button)
-        self.hbox.pack_start(cache_button)
-        self.hbox.pack_start(clear_track_button)
-        #self.hbox.pack_start(self.combobox)
-
         self.vbox.pack_start(self.echo_entry, expand=False, fill=True)
-        
+
         #Event Monitoring       
-        self.osm.connect("motion_notify_event", self.mouse_hover)
+        #self.osm.connect("motion_notify_event", self.mouse_hover)
         self.osm.connect("button_release_event", self.poi)
+        self.osm.connect("query-tooltip", self.on_query_tooltip)
 
         #regullary timed callback function
         gobject.timeout_add(500, self.print_tiles)
 
-    #def set_map_source(self, combobox):
-     #   active = self.combobox.get_active()
-     #   if self.osm:
-            #remove old map
-      #      self.vbox.remove(self.osm)
-       # try:
-        #    self.osm = osmgpsmap.GpsMap(map_source=active)
-        #except Exception, e:
-         #   print "ERROR:", e
-        #    self.osm = osmgpsmap.GpsMap()
-        #self.vbox.pack_start(self.osm, True)
-        #self.osm.show()
-
-
     def print_tiles(self):
         if self.osm.props.tiles_queued != 0:
-            self.echo_entry.set_text("%s Tiles Queued" % self.osm.props.tiles_queued)
+            self.echo_entry.set_text("Downloading %s Tiles" % self.osm.props.tiles_queued)
         else:
-            self.echo_entry.set_text("0 Tiles Queued")
+            self.echo_entry.set_text("")
         return True
 
     def remove_track(self, osm):
@@ -104,16 +106,28 @@ class UI(gtk.Window):
 
     def poi(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
-        if event.button == 3:
+        if event.button == 2:
             self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
-        elif event.button == 2:
+        elif event.button == 3:
             pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 50,100)
             self.osm.image_add(lat,lon,pb)
+
+    def on_query_tooltip(self, widget, x, y, keyboard_tip, tooltip, data=None):
+        if keyboard_tip:
+            return False
+
+        p = osmgpsmap.point_new_degrees(0.0, 0.0)
+        self.osm.convert_screen_to_geographic(x, y, p)
+        lat,lon = p.get_degrees()
+        self.show_tooltips = True
+        tooltip.set_markup("%+.4f, %+.4f" % p.get_degrees())
+        tooltip.set_icon_from_stock(gtk.STOCK_HOME, gtk.ICON_SIZE_MENU)
+        return True
 
         #Mouse Click on Map Event
     def mouse_hover(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
-        self.latlon_entry.set_text('LAT [%s] LON [%s]' % (lat, lon))
+        #self.latlon_entry.set_text('LAT [%s] LON [%s]' % (lat, lon))
 
     def zoom_in_clicked(self, button):
         self.osm.set_zoom(self.osm.props.zoom + 1)
