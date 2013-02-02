@@ -64,20 +64,24 @@ class UI(gtk.Window):
         # (Third Vbox Entry) Hbox widget menu for manually adding Lat and Lon cordinates to slip map  
         self.horz_marker_menu = gtk.HBox(False, 0)
 
-        self.lat_text_entry = gtk.Entry()
-        self.lat_text_entry.set_text("LAT")
-        self.horz_marker_menu.pack_start(self.lat_text_entry)
+        adj1 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
+        self.lat_spin_button = gtk.SpinButton(adj1, 1.0, 4)
+        self.lat_spin_button.set_wrap(True)
+        #self.lat_spin_button.set_size_request(100, -1)
+        self.horz_marker_menu.pack_start(self.lat_spin_button, False, True, 0)
 
-        self.lon_text_entry = gtk.Entry()
-        self.lon_text_entry.set_text("LON")
-        self.horz_marker_menu.pack_start(self.lon_text_entry)
+        adj2 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
+        self.lon_spin_button = gtk.SpinButton(adj2, 1.0, 4)
+        self.lon_spin_button.set_wrap(True)
+        #self.lon_spin_button.set_size_request(100, -1)
+        self.horz_marker_menu.pack_start(self.lon_spin_button, False, True, 0)
 
         self.clear_entry = gtk.Button('Clear Field')
         self.horz_marker_menu.pack_start(self.clear_entry)
 
         self.set_poi_marker = gtk.Button('Place Marker')
         self.horz_marker_menu.pack_start(self.set_poi_marker)
-
+        self.set_poi_marker.connect('clicked', self.place_marker)
 
         self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
         
@@ -111,6 +115,13 @@ class UI(gtk.Window):
         elif event.button == 3:
             pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 50,100)
             self.osm.image_add(lat,lon,pb)
+
+    def place_marker(self, event):
+        lat = self.lat_spin_button.get_value()
+        lon = self.lon_spin_button.get_value()
+
+        pb = gtk.gdk.pixbuf_new_from_file_at_size("poi.png", 50, 100)
+        self.osm.image_add(lat, lon, pb)
 
     def on_query_tooltip(self, widget, x, y, keyboard_tip, tooltip, data=None):
         if keyboard_tip:
