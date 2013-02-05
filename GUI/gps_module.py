@@ -3,6 +3,7 @@ import os.path
 import gtk
 import gobject
 import osmgpsmap
+import pango
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -53,9 +54,7 @@ class UI(gtk.Window):
         home_button.connect('clicked', self.home_clicked)
         self.horz_button_menu.pack_start(home_button)
 
-        cache_button = gtk.Button('Cache')
-        cache_button.connect('clicked', self.cache_clicked)
-        self.horz_button_menu.pack_start(cache_button)
+        
         
         clear_track_button = gtk.Button('Remove POIs')
         clear_track_button.connect('clicked', self.remove_images)
@@ -128,21 +127,53 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         hb.pack_start(self.image_format_entry, True)
         repo_vb.pack_start(hb, False)
 
-        gobtn = gtk.Button("Load Map URI")
-        #gobtn.connect("clicked", self.load_map_clicked)
-        repo_vb.pack_start(gobtn, False)
-        
-        # (Fourth Vbox Entry) Echo entry widget to display tile downloading status
+        # Echo entry widget to display tile downloading status
+        hb = gtk.HBox()
+        hb.pack_start(gtk.Label("Tile Monitor: "), False)
+
         self.echo_entry = gtk.Entry()
-        self.vbox.pack_start(self.echo_entry, expand=False, fill=True)
+        hb.pack_start(self.echo_entry, expand=True, fill=True)
+        hb.pack_start(self.echo_entry, True)
+        repo_vb.pack_start(hb, False)
+
+        cache_button = gtk.Button('Cache')
+        cache_button.connect('clicked', self.cache_clicked)
+        hb.pack_start(cache_button, False)
+        repo_vb.pack_start(hb, False)
+
+        gobtn = gtk.Button("Load Map URI")
+        gobtn.connect("clicked", self.load_map_clicked)
+        repo_vb.pack_start(gobtn, False)
 
         #Event Monitoring       
-        #self.osm.connect("motion_notify_event", self.mouse_hover)
         self.osm.connect("button_release_event", self.poi)
         self.osm.connect("query-tooltip", self.on_query_tooltip)
 
         #regullary timed callback function
         gobject.timeout_add(500, self.print_tiles)
+
+    def load_map_clicked(self, button):
+        uri = self.repouri_entry.get_text()
+        format = self.image_format_entry.get_text()
+        if uri and format:
+            if self.osm:
+                #remove old map
+                self.vbox.remove(self.osm)
+            try:
+                self.osm = osmgpsmap.GpsMap(
+                    repo_uri=uri,
+                    image_format=format
+                )
+            except Exception, e:
+                print "ERROR:", e
+                self.osm = osmgpsmap.GpsMap()
+
+            self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
+            self.vbox.reorder_child(self.osm, 0)
+            self.osm.props.has_tooltip = True
+            self.osm.connect('button_release_event', self.poi)
+            self.osm.connect("query-tooltip", self.on_query_tooltip)
+            self.osm.show()   
 
     def clear_field(self, osm):
         self.lat_spin_button.set_value(0)
