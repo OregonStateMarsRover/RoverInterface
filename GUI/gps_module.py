@@ -23,7 +23,8 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #creating the osmgpsmap module (changes the default sources from-1)
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
+        self.osm = osmgpsmap.GpsMap(map_source = 12)
+        #self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
         #self.osm = osmgpsmap.GpsMap(repo_uri = "http://c.tile.stamen.com/toposm-contours/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
         self.osm.props.has_tooltip = True
