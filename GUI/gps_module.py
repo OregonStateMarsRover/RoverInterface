@@ -57,33 +57,80 @@ class UI(gtk.Window):
         cache_button.connect('clicked', self.cache_clicked)
         self.horz_button_menu.pack_start(cache_button)
         
-        clear_track_button = gtk.Button('Clear Track')
-        clear_track_button.connect('clicked', self.remove_track)
+        clear_track_button = gtk.Button('Remove POIs')
+        clear_track_button.connect('clicked', self.remove_images)
         self.horz_button_menu.pack_start(clear_track_button)
 
         # (Third Vbox Entry) Hbox widget menu for manually adding Lat and Lon cordinates to slip map  
         self.horz_marker_menu = gtk.HBox(False, 0)
 
+        self.horz_marker_menu.pack_start(gtk.Label("LAT: "), False)
         adj1 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
         self.lat_spin_button = gtk.SpinButton(adj1, 1.0, 4)
         self.lat_spin_button.set_wrap(True)
-        #self.lat_spin_button.set_size_request(100, -1)
+        self.lat_spin_button.set_size_request(100, -1)
         self.horz_marker_menu.pack_start(self.lat_spin_button, False, True, 0)
 
+        self.horz_marker_menu.pack_start(gtk.Label("LON: "), False)
         adj2 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
         self.lon_spin_button = gtk.SpinButton(adj2, 1.0, 4)
         self.lon_spin_button.set_wrap(True)
-        #self.lon_spin_button.set_size_request(100, -1)
+        self.lon_spin_button.set_size_request(100, -1)
         self.horz_marker_menu.pack_start(self.lon_spin_button, False, True, 0)
 
         self.clear_entry = gtk.Button('Clear Field')
         self.horz_marker_menu.pack_start(self.clear_entry)
+        self.clear_entry.connect('clicked', self.clear_field)
 
         self.set_poi_marker = gtk.Button('Place Marker')
         self.horz_marker_menu.pack_start(self.set_poi_marker)
         self.set_poi_marker.connect('clicked', self.place_marker)
 
         self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
+
+        # Expander Menu for custom Map Repositories
+        self.ex = gtk.Expander("<b>Map Repository URI</b>")
+        self.vbox.pack_start(self.ex, expand=False, fill=False)
+        self.ex.props.use_markup = True
+        repo_vb = gtk.VBox()
+        self.repouri_entry = gtk.Entry()
+        self.repouri_entry.set_text(self.osm.props.repo_uri)
+        self.image_format_entry = gtk.Entry()
+        self.image_format_entry.set_text(self.osm.props.image_format)
+
+        lbl = gtk.Label(
+"""
+Enter an repository URL to fetch map tiles from in the box below. Special metacharacters may be included in this url
+
+<i>Metacharacters:</i>
+\t#X\tMax X location
+\t#Y\tMax Y location
+\t#Z\tMap zoom (0 = min zoom, fully zoomed out)
+\t#S\tInverse zoom (max-zoom - #Z)
+\t#Q\tQuadtree encoded tile (qrts)
+\t#W\tQuadtree encoded tile (1234)
+\t#U\tEncoding not implemeted
+\t#R\tRandom integer, 0-4""")
+        lbl.props.xalign = 0
+        lbl.props.use_markup = True
+        lbl.props.wrap = True
+
+        self.ex.add(repo_vb)
+        repo_vb.pack_start(lbl, False)
+
+        hb = gtk.HBox()
+        hb.pack_start(gtk.Label("URI: "), False)
+        hb.pack_start(self.repouri_entry, True)
+        repo_vb.pack_start(hb, False)
+
+        hb = gtk.HBox()
+        hb.pack_start(gtk.Label("Image Format: "), False)
+        hb.pack_start(self.image_format_entry, True)
+        repo_vb.pack_start(hb, False)
+
+        gobtn = gtk.Button("Load Map URI")
+        #gobtn.connect("clicked", self.load_map_clicked)
+        repo_vb.pack_start(gobtn, False)
         
         # (Fourth Vbox Entry) Echo entry widget to display tile downloading status
         self.echo_entry = gtk.Entry()
@@ -97,6 +144,10 @@ class UI(gtk.Window):
         #regullary timed callback function
         gobject.timeout_add(500, self.print_tiles)
 
+    def clear_field(self, osm):
+        self.lat_spin_button.set_value(0)
+        self.lon_spin_button.set_value(0)
+
     def print_tiles(self):
         if self.osm.props.tiles_queued != 0:
             self.echo_entry.set_text("Downloading %s Tiles" % self.osm.props.tiles_queued)
@@ -104,23 +155,22 @@ class UI(gtk.Window):
             self.echo_entry.set_text("")
         return True
 
-    def remove_track(self, osm):
-        self.osm.track_remove_all
-        self.osm.gps_clear
+    def remove_images(self, osm):
+        self.osm.image_remove_all()
 
     def poi(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
         if event.button == 2:
             self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
         elif event.button == 3:
-            pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 50,100)
+            pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 30,20)
             self.osm.image_add(lat,lon,pb)
 
     def place_marker(self, event):
         lat = self.lat_spin_button.get_value()
         lon = self.lon_spin_button.get_value()
 
-        pb = gtk.gdk.pixbuf_new_from_file_at_size("poi.png", 50, 100)
+        pb = gtk.gdk.pixbuf_new_from_file_at_size("poi.png", 30, 20)
         self.osm.image_add(lat, lon, pb)
 
     def on_query_tooltip(self, widget, x, y, keyboard_tip, tooltip, data=None):
