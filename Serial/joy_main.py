@@ -40,6 +40,14 @@
 # 4) Middle - Emergency Stop All Systems						#
 #########################################################################################
 
+### TODO IMMEDIATELY: ###################################################################
+# 1) Line 109: Answer my concerns written there						#
+# 2) Line 130: Fix design_commands_joy() to work with the polling implementation here	#
+# 3) Line 125: Create design_commands_button()						#
+# 4) Line 134: Figure out why the trigger states need changing this is something that	#
+#    	       only joy_core should be doing, but right now it seems wheel specific	#
+#########################################################################################
+
 import sys
 import threading
 from bus import *
