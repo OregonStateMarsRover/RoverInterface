@@ -120,35 +120,36 @@ class JoyPoller(threading.Thread):
 			# JOYSTICK is PRESSED
 			self.joy_queue.put(self.design_commands_joy()) # Design a joy command and put it in the joy_queue
 			
-			# BUTTON is RELEASED - Necessary?	
+			# BUTTON is RELEASED - Is this mecessary?	
 
-	# Description: Looks at the button states and returns an into_list for use by the Listener
 	# Needs Work: ALL Buttons
 	def design_commands_button(self):
+		# Description: Looks at the button states and returns an info_list for use by the Listener
 		nothing = 0 # Do Nothing for now
 		
-	# Description: Looks at the joy states and returns an info_list of 6 tuples for use by the Listener
 	# Currently Works: RT, LT, RJ/LJ
 	# Needs Work: Vector RJ for angles
 	def design_commands_joy(self):
-		info_list = []
-		# Look at each of the values for variables skid_right_trigger, skid_left_trigger, skid_right_joy, skid_left_joy
-		# 	and figure out the appropriate commands to send for all 6 wheels
-		# Returns a list of 6 tuples with the format Example: <addr 2-7> <speed> <angle>
-		#	speed being for skid, and angle being for vector
-		# Be mindful of the self.states['Control_Scheme'] with 0 being skid, and 1 being vector
+		# Description: Looks at the joy states and returns an info_list of 6 tuples, with the format
+		#	       <addr 2-7> <speed> <angle>, for use by the Listener. <speed> is for skid, and
+		#	       <angle> is for vector.
+		#	       Be mindful of the self.states['Control_Scheme'] with 0 being skid, and 1 being vector
+		#	       Joy states include: variables skid_right_trigger, skid_left_trigger, skid_right_joy,
+		#	       skid_left_joy
+		# Priority:
+		#	       Skid Steering
+		# 			LJ/RJ (Both because they don't have overcrossing commands)
+		# 			RT - ONLY ALLOW if LJ/RJ are 0
+		# 			LT - ONLY ALLOW if LJ/RJ and RT are 0
+		#	       Vector Steering
+		# 			RJ - Allow the wheels to actuate before they drive
+		#				(otherwise you may get some drive packets and some angle packets intermingled with each other)
+		# 			LJ - ONLY ALLOW if RJ is at 0 OR IF THE ANGLE HAS BEEN HELD
+		# 			ORRRRRRRRR
+		# 			LJ/RJ (Both because they don't have overcrossing commands)
+		# 		Always allow zeros to be sent
 		
-		# Right of Way - Skid Steer
-		# 	LJ/RJ (Both because they don't have overcrossing commands)
-		# 	RT - ONLY ALLOW if LJ/RJ are 0
-		# 	LT - ONLY ALLOW if LJ/RJ and RT are 0
-		# Right of Way - Vector Steer
-		# 	RJ - Allow the wheels to actuate before they drive
-		#		(otherwise you may get some drive packets and some angle packets intermingled with each other)
-		# 	LJ - ONLY ALLOW if RJ is at 0 OR IF THE ANGLE HAS BEEN HELD
-		# ORRRRRRRRR
-		# 	LJ/RJ (Both because they don't have overcrossing commands)
-		# Always allow zeros to be sent
+		info_list = []
 		
 		# Skid Steer Mode
 		if self.states['Control_Scheme'] == 0:
