@@ -21,36 +21,31 @@ import wx
 class ProbeDisplay(wx.Panel):
 
 	def __init__(self,parent):
-		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250))
+		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
 		
-		button = wx.Button(self, label='Get Probe Data', pos=(10,190), size=(180,30))
+		button = wx.Button(self, label='Get Probe Data', pos=(70,190), size=(180,30))
 		self.Bind(wx.EVT_BUTTON, self.pressbutton, button)
 		
+		titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
+        
 		#Degree symbol unicode
 		dgsymbol_u = u'\u00b0'
-		
-		#Create read only textboxes (these are merely acting as labels)
-		"""
-		SoilMoistureTXTBOX = wx.TextCtrl(panel, -1, "Soil Moisture (%):", pos = (10,10), style = wx.TE_READONLY)
-		ConductivityTXTBOX = wx.TextCtrl(panel, -1, "Conductivity (S/m):", pos = (10,40), style = wx.TE_READONLY)
-		SalinityTXTBOX = wx.TextCtrl(panel, -1, "Salinity (g NaCl/L):", pos = (10, 70), style = wx.TE_READONLY)
-		FtempTXTBOX = wx.TextCtrl(panel, -1, u"Temperature (%sF):" % dgsymbol_u, pos = (10, 100), style = wx.TE_READONLY)
-		CtempTXTBOX = wx.TextCtrl(panel, -1, u"Temperature (%sC):" % dgsymbol_u, pos = (10, 130), style = wx.TE_READONLY)
-		"""
-		
+
 		#Create Static Text for the labels
-		SoilMoistureLbl = wx.StaticText(self, -1, label = "Soil Moisture (%):", pos = (10,10))
-		ConductivityLbl = wx.StaticText(self, -1, label = "Conductivity (S/m):", pos = (10,40))
-		SalinityLbl = wx.StaticText(self, -1, label = "Salinity (g NaCl/L):", pos = (10, 70))
-		FtempLbl = wx.StaticText(self, -1, u"Temperature (%sF):" % dgsymbol_u, pos = (10, 100))
-		CtempLbl = wx.StaticText(self, -1, u"Temperature (%sC):" % dgsymbol_u, pos = (10, 130))
+		ProbeDisplayLbl = wx.StaticText(self, label="Probe Display", pos = (85, 0))
+		ProbeDisplayLbl.SetFont(titleFont)
+		SoilMoistureLbl = wx.StaticText(self, -1, label = "Soil Moisture (%):", pos = (45,43))
+		ConductivityLbl = wx.StaticText(self, -1, label = "Conductivity (S/m):", pos = (45,73))
+		SalinityLbl = wx.StaticText(self, -1, label = "Salinity (g NaCl/L):", pos = (45, 103))
+		FtempLbl = wx.StaticText(self, -1, u"Temperature (%sF):" % dgsymbol_u, pos = (45, 133))
+		CtempLbl = wx.StaticText(self, -1, u"Temperature (%sC):" % dgsymbol_u, pos = (45, 163))
 		
 		#Empty textboxes to show the data from the probe
-		SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (160,10))
-		ConductivityOutput = wx.TextCtrl(self, -1, pos = (160,40))
-		SalinityOutput = wx.TextCtrl(self, -1, pos = (160, 70))
-		FtempOutput = wx.TextCtrl(self, -1, pos = (160, 100))
-		CtempOutput = wx.TextCtrl(self, -1, pos = (160, 130))
+		SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (195,40))
+		ConductivityOutput = wx.TextCtrl(self, -1, pos = (195,70))
+		SalinityOutput = wx.TextCtrl(self, -1, pos = (195, 100))
+		FtempOutput = wx.TextCtrl(self, -1, pos = (195, 130))
+		CtempOutput = wx.TextCtrl(self, -1, pos = (195, 160))
 		
 	def pressbutton(self,event):
 		#This is the command to retrieve the info from the soil probe
