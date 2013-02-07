@@ -17,7 +17,7 @@ class Arm():
 	'''
 	This class calculates and stores arm angles and positions
 	'''
-	arget = [0,0]
+	target = [0,0]
 
 	seg = [{},{},{}]
 	#Arm segment lengths
@@ -33,7 +33,7 @@ class Arm():
 		self.seg[2]['angle'] = math.radians(angle3)
 		
 		self.findPos()
-		target = [self.seg[1]['pos'][0],self.seg[1]['pos'][1]]
+		self.target = [self.seg[1]['pos'][0],self.seg[1]['pos'][1]]
 		
 	def reach(self):
 		angle2 = self.seg[0]['angle']+self.seg[1]['angle']-math.pi
