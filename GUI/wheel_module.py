@@ -1,17 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""
-ZetCode wxPython tutorial 
-
-This program draws a line in 
-a paint event
-
-author: Jan Bodnar
-website: zetcode.com 
-last edited: November 2010
-"""
-
 import wx
 
 class wheels(wx.Frame):
