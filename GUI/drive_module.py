@@ -7,68 +7,76 @@ import wx
 class DriveControls(wx.Panel):
     def __init__(self, parent):
         
-        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250))
+        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
         
-        self.slider = wx.Slider(self, value=0, minValue=0, maxValue=360, size=(80, -1), style=wx.SL_HORIZONTAL)
+        titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         
-        self.slider.Bind(wx.EVT_SCROLL, self.DisplaySliderValue)
-        
-        self.txtCtrlSlider = wx.TextCtrl(self, value="0", size=(50, -1))
+        self.throttle = wx.Slider(self, value=100, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.angle = wx.Slider(self, value=0, minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
-        self.txtCtrlSlider.Bind(wx.EVT_TEXT, self.ChangeSliderValue)
+        self.throttle.Bind(wx.EVT_SCROLL, self.DisplayThrottleValue)
+        self.angle.Bind(wx.EVT_SCROLL, self.DisplayAngleValue)
 
-        self.rbLeft = wx.RadioBox(self, -1, "Left Movement",
-                                  choices=["Forward Left", "Left", "Back Left", "None"],
-                                  majorDimension=0, style=wx.RA_SPECIFY_ROWS)
+        self.spinCtrlThrottle = wx.SpinCtrl(self, value="100", size=(55, -1))
+        self.spinCtrlThrottle.SetRange(0, 100)
+        self.spinCtrlThrottle.Bind(wx.EVT_SPINCTRL, self.ChangeThrottleValue)
         
-        self.rbForward = wx.RadioBox(self, -1, "Forward Movement",
-                                     choices=["Forward", "Stop", "Backward"],
-                                     majorDimension=0, style=wx.RA_SPECIFY_ROWS)
+        self.spinCtrlAngle = wx.SpinCtrl(self, value="0", size=(55, -1))
+        self.spinCtrlAngle.SetRange(-90, 90)
+        self.spinCtrlAngle.Bind(wx.EVT_SPINCTRL, self.ChangeAngleValue)
         
-        self.rbRight = wx.RadioBox(self, -1, "Right Movement",
-                                   choices=["Forward Right", "Right", "Back Right", "None"],
-                                   majorDimension=0, style=wx.RA_SPECIFY_ROWS )
+        self.zeroPtTurn = wx.Button(self, label="Zero Point Turn")
+        self.zeroPtTurn.Bind(wx.EVT_BUTTON, self.ZeroPtTurn)
         
-        self.rbLeft.SetBackgroundColour("White")
-        self.rbForward.SetBackgroundColour("White")
-        self.rbRight.SetBackgroundColour("White")
-
-        self.stSlider = wx.StaticText(self, label="Slider")
+        self.stDriveControls = wx.StaticText(self, label="Drive Controls")
+        self.stDriveControls.SetFont(titleFont)
+        self.stThrottle = wx.StaticText(self, label="Throttle")
+        self.stAngle = wx.StaticText(self, label="Angle")
         
         self.Center()
-        self.__set_properties()
         self.__do_layout()
 
-    def DisplaySliderValue(self, event):
+    def DisplayThrottleValue(self, event):
         obj = event.GetEventObject()
         value = obj.GetValue()
 
-        self.txtCtrlSlider.ChangeValue(str(value))
+        self.spinCtrlThrottle.SetValue(value)
 
-    def ChangeSliderValue(self, event):
-        value = event.GetString()
+    def DisplayAngleValue(self, event):
+        obj = event.GetEventObject()
+        value = obj.GetValue()
 
-        self.slider.SetValue(int(value))
+        self.spinCtrlAngle.SetValue(value)
+    
+    def ChangeThrottleValue(self, event):
+        obj = event.GetEventObject()
+        value = obj.GetValue()
 
-    def __set_properties(self):
+        self.throttle.SetValue(value)
 
-        self.rbLeft.SetSelection(0)
-        self.rbForward.SetSelection(0)
-        self.rbRight.SetSelection(0)
+    def ChangeAngleValue(self, event):
+        obj = event.GetEventObject()
+        value = obj.GetValue()
+
+        self.angle.SetValue(value)
+    
+    def ZeroPtTurn(self, event):
+        print("Zero Point Turn")
 
     def __do_layout(self):
         sizer = wx.GridBagSizer(3, 3)
         
-        sizer.Add(self.slider, (2, 2))
+        sizer.Add(self.stDriveControls, (0, 0), span=(2, 3), flag=wx.ALIGN_CENTER)
+        
+        sizer.Add(self.throttle, (5, 1))
+        sizer.Add(self.spinCtrlThrottle, (5, 2))
+        sizer.Add(self.stThrottle, (4, 1), flag=wx.ALIGN_CENTER)
 
-        sizer.Add(self.txtCtrlSlider, (2, 3))
-
-        sizer.Add(self.stSlider, (1, 2), span=(1, 2), flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL)
-
-        sizer.Add(self.rbLeft, (4, 1))
-        sizer.Add(self.rbForward, (0, 1), span=(4, 1))
-        sizer.Add(self.rbRight, (4, 2), span=(1, 2))
+        sizer.Add(self.angle, (3, 1))
+        sizer.Add(self.spinCtrlAngle, (3, 2))
+        sizer.Add(self.stAngle, (2, 1), flag=wx.ALIGN_CENTER)
+        
+        sizer.Add(self.zeroPtTurn, (7, 1), flag=wx.EXPAND)
         
         self.SetSizer(sizer)
         self.Layout()
-

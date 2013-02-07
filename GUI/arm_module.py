@@ -95,7 +95,7 @@ class ArmSim(wx.Panel):
 
 class ArmControls(wx.Panel):
 	def __init__(self,parent,arm_sim):
-		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY,size=(320,250))
+		wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320, 270), style=wx.BORDER_SUNKEN)
 		
 		self.arm_sim = arm_sim
 		
@@ -138,6 +138,10 @@ class ArmControls(wx.Panel):
 		btnScoopC.Bind(wx.EVT_BUTTON, lambda evt, temp='scoop close': self.OnButton(evt, temp))
 		btnVoltUpdate.Bind(wx.EVT_BUTTON, lambda evt, temp='voltage update': self.OnButton(evt, temp))
 		
+		titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
+        
+		titleTxt = wx.StaticText(self, label="Arm Controls")
+		titleTxt.SetFont(titleFont)
 		armTxt = wx.StaticText(self,label='Arm')
 		wristTxt = wx.StaticText(self,label='Wrist')
 		scoopTxt = wx.StaticText(self,label='Scoop')
@@ -150,36 +154,37 @@ class ArmControls(wx.Panel):
 		
 		gridSizer = wx.GridBagSizer(3,3)
 		
-		gridSizer.Add(self.srv1,(1,2))
-		gridSizer.Add(self.srv2,(2,2))
-		gridSizer.Add(self.srv3,(3,2))
+		gridSizer.Add(self.srv1,(2,2))
+		gridSizer.Add(self.srv2,(3,2))
+		gridSizer.Add(self.srv3,(4,2))
 	
-		gridSizer.Add(btnIn,(2,3),flag=wx.EXPAND)
-		gridSizer.Add(btnUp,(1,4),flag=wx.EXPAND)
-		gridSizer.Add(btnOut,(2,5),flag=wx.EXPAND|wx.RIGHT,border=15)
-		gridSizer.Add(btnDown,(3,4),flag=wx.EXPAND)
+		gridSizer.Add(btnIn,(3,4),flag=wx.EXPAND)
+		gridSizer.Add(btnUp,(2,5),flag=wx.EXPAND)
+		gridSizer.Add(btnOut,(3,6),flag=wx.EXPAND|wx.RIGHT,border=15)
+		gridSizer.Add(btnDown,(4,5),flag=wx.EXPAND)
 		
-		gridSizer.Add(armTxt,(2,4),flag=wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER_HORIZONTAL)
-		gridSizer.Add(wristTxt,(6,4),flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL)
-		gridSizer.Add(scoopTxt,(4,1),flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM)
-		gridSizer.Add(voltTxt,(6,1),flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM)
+		gridSizer.Add(titleTxt, (0, 0), span=(1, 7), flag=wx.ALIGN_CENTER)
+		gridSizer.Add(armTxt,(3,5),flag=wx.ALIGN_CENTER)
+		gridSizer.Add(wristTxt,(7,5),flag=wx.ALIGN_CENTER)
+		gridSizer.Add(scoopTxt,(5,1),flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM)
+		gridSizer.Add(voltTxt,(7,1),flag=wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_BOTTOM)
 		
-		gridSizer.Add(srv1Txt,(1,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
-		gridSizer.Add(srv2Txt,(2,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
-		gridSizer.Add(srv3Txt,(3,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
+		gridSizer.Add(srv1Txt,(2,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
+		gridSizer.Add(srv2Txt,(3,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
+		gridSizer.Add(srv3Txt,(4,1),flag=wx.EXPAND|wx.ALIGN_CENTER_VERTICAL)
 		
-		gridSizer.Add(voltOutput,(7,2),flag=wx.FIXED_MINSIZE)
+		gridSizer.Add(voltOutput,(8,2),flag=wx.FIXED_MINSIZE)
 		
-		gridSizer.Add(btnWristUp, (5, 4), flag=wx.EXPAND)
-		gridSizer.Add(btnWristR, (6, 5), flag=wx.EXPAND|wx.RIGHT,border=15)
-		gridSizer.Add(btnWristDown, (7, 4), flag=wx.EXPAND)
-		gridSizer.Add(btnWristL, (6, 3), flag=wx.EXPAND)
+		gridSizer.Add(btnWristUp, (6, 5), flag=wx.EXPAND)
+		gridSizer.Add(btnWristR, (7, 6), flag=wx.EXPAND|wx.RIGHT,border=15)
+		gridSizer.Add(btnWristDown, (8, 5), flag=wx.EXPAND)
+		gridSizer.Add(btnWristL, (7, 4), flag=wx.EXPAND)
 		
-		gridSizer.Add(btnScoopO, (5, 1), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-		gridSizer.Add(btnScoopC, (5, 2), flag=wx.FIXED_MINSIZE)
+		gridSizer.Add(btnScoopO, (6, 1), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
+		gridSizer.Add(btnScoopC, (6, 2), flag=wx.FIXED_MINSIZE)
 		
-		gridSizer.Add(btnVoltUpdate, (7, 1), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
-		
+		gridSizer.Add(btnVoltUpdate, (8, 1), flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER_HORIZONTAL)
+		'''
 		gridSizer.AddGrowableCol(0)
 		gridSizer.AddGrowableCol(1)
 		gridSizer.AddGrowableCol(2)
@@ -187,7 +192,7 @@ class ArmControls(wx.Panel):
 		gridSizer.AddGrowableCol(4)
 		gridSizer.AddGrowableCol(5)
 		gridSizer.AddGrowableCol(6)
-		
+		'''
 		self.SetSizer(gridSizer)
 		
 	def OnButton(self,e,value):
