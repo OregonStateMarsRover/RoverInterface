@@ -20,13 +20,16 @@ import wx
 
 class ProbeDisplay(wx.Panel):
 
-	def __init__(self,parent):
+	def __init__(self,parent, roverStatus):
 		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
 		
 		button = wx.Button(self, label='Get Probe Data', pos=(70,190), size=(180,30))
 		self.Bind(wx.EVT_BUTTON, self.pressbutton, button)
+		self.Bind(wx.EVT_PAINT, self.OnPaint)
 		
 		titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
+        
+		self.roverStatus = roverStatus
         
 		#Degree symbol unicode
 		dgsymbol_u = u'\u00b0'
@@ -41,13 +44,27 @@ class ProbeDisplay(wx.Panel):
 		CtempLbl = wx.StaticText(self, -1, u"Temperature (%sC):" % dgsymbol_u, pos = (45, 163))
 		
 		#Empty textboxes to show the data from the probe
-		SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (195,40))
-		ConductivityOutput = wx.TextCtrl(self, -1, pos = (195,70))
-		SalinityOutput = wx.TextCtrl(self, -1, pos = (195, 100))
-		FtempOutput = wx.TextCtrl(self, -1, pos = (195, 130))
-		CtempOutput = wx.TextCtrl(self, -1, pos = (195, 160))
-		
+		self.SoilMoistureOutput = wx.TextCtrl(self, -1, pos = (195,40))
+		self.ConductivityOutput = wx.TextCtrl(self, -1, pos = (195,70))
+		self.SalinityOutput = wx.TextCtrl(self, -1, pos = (195, 100))
+		self.FtempOutput = wx.TextCtrl(self, -1, pos = (195, 130))
+		self.CtempOutput = wx.TextCtrl(self, -1, pos = (195, 160))
+	
+	
+	def OnPaint(self, e):
+		self.SoilMoistureOutput.SetValue("%s" % self.roverStatus.soil_moisture)
+		self.ConductivityOutput.SetValue("%s" % self.roverStatus.conductivity)
+		self.SalinityOutput.SetValue("%s" % self.roverStatus.salinity)
+		self.FtempOutput.SetValue("%s" % self.roverStatus.f_temp)
+		self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
+	    
 	def pressbutton(self,event):
+		self.roverStatus.UpdateProbe()
+		self.SoilMoistureOutput.SetValue("%s" % self.roverStatus.soil_moisture)
+		self.ConductivityOutput.SetValue("%s" % self.roverStatus.conductivity)
+		self.SalinityOutput.SetValue("%s" % self.roverStatus.salinity)
+		self.FtempOutput.SetValue("%s" % self.roverStatus.f_temp)
+		self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
 		#This is the command to retrieve the info from the soil probe
 		print "Request Temp, Moisture, and Conductivity - cmd"
 		
