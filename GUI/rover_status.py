@@ -75,3 +75,23 @@ class RoverStatus():
 
     def UpdateProbe(self):
         pass
+        
+    def SetAngle(self, angle):
+        self.angle = math.radians(angle)
+
+        self.fl_angle = self.angle
+        self.fr_angle = self.angle
+        self.ml_angle = self.angle
+        self.mr_angle = self.angle
+        self.rl_angle = self.angle
+        self.rr_angle = self.angle
+        
+    def SetThrottle(self, throttle):
+        self.throttle = throttle
+        
+        self.fl_throttle = self.throttle
+        self.fr_throttle = self.throttle
+        self.ml_throttle = self.throttle
+        self.mr_throttle = self.throttle
+        self.rl_throttle = self.throttle
+        self.rr_throttle = self.throttle

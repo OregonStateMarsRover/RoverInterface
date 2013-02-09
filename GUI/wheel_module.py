@@ -87,6 +87,7 @@ class DriveSim(wx.Panel):
 
         self.Refresh()
 
+
     def draw_wheel(self, wheel, pos):
         pos1 = (int(pos[0] - 25 * math.sin(wheel['angle']) + 12.5 * math.cos(wheel['angle'])),
                 int(pos[1] - 25 * math.cos(wheel['angle']) - 12.5 * math.sin(wheel['angle'])))
@@ -114,57 +115,4 @@ class DriveSim(wx.Panel):
 
         self.dc.DrawPolygon([pos6,pos5,pos7,pos8])
         
-
-
-
-        '''
-class Gui(wx.Frame):
-    
-    def __init__(self, parent, title):
         
-        wx.Frame.__init__(self, parent, wx.ID_ANY, size=(500, 320))
-        
-        self.InitUI()
-        self.Centre()
-        self.Show()
-        
-    def InitUI(self):
-        
-        self.wheelChange = [0];
-        
-        self.wheelDiagram = WheelDiagram(self)
-
-        self.angleSpin = wx.SpinCtrl(self, value='0', size=(60, -1))
-        self.angleSpin.SetRange(-90, 90)
-        
-        self.throttleSpin = wx.SpinCtrl(self, value='0', size=(60, -1))
-        self.throttleSpin.SetRange(0, 100)
-        
-        self.Bind(wx.EVT_SPINCTRL, self.OnSpinCtrl)
-        
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        
-        vSizer = wx.BoxSizer(wx.VERTICAL)
-        
-        vSizer.Add(self.angleSpin, flag=wx.FIXED_MINSIZE)
-        vSizer.Add(self.throttleSpin, flag=wx.FIXED_MINSIZE)
-        
-        sizer.Add(vSizer, flag=wx.FIXED_MINSIZE)
-        sizer.Add(self.wheelDiagram, flag=wx.FIXED_MINSIZE)
-        
-        self.SetSizer(sizer)
-        
-    def OnSpinCtrl(self, e):
-        obj = e.GetEventObject()
-        if obj == self.angleSpin:
-            self.wheelDiagram.set_angle(obj.GetValue(), self.wheelChange)
-        elif obj == self.throttleSpin:
-            self.wheelDiagram.throttle = obj.GetValue()
-            self.Refresh()
-
-
-if __name__ == '__main__':
-    app = wx.App()
-    Gui(None, 'Rover Wheel Vector Position')
-    app.MainLoop()
-    '''
