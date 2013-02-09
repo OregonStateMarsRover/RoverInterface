@@ -5,16 +5,25 @@
 # Description: A class to hold the rover variables. Designed to ease rover-gui interaction
 #############################
 
+import math
+
 class RoverStatus():
-    fl_angle = 0
-    fr_angle = 0
-    ml_angle = 0
-    mr_angle = 0
-    rl_angle = 0
-    rr_angle = 0
-    
-    angle = 0
+    angle = 0.0
     throttle = 100
+    
+    fl_angle = angle
+    fr_angle = angle
+    ml_angle = angle
+    mr_angle = angle
+    rl_angle = angle
+    rr_angle = angle
+    
+    fl_throttle = throttle
+    fr_throttle = throttle
+    ml_throttle = throttle
+    mr_throttle = throttle
+    rl_throttle = throttle
+    rr_throttle = throttle
     
     tri_hori = 0
     tri_vert = 0
@@ -48,3 +57,23 @@ class RoverStatus():
     
     def UpdateProbe(self):
         pass
+        
+    def SetAngle(self, angle):
+        self.angle = math.radians(angle)
+
+        self.fl_angle = self.angle
+        self.fr_angle = self.angle
+        self.ml_angle = self.angle
+        self.mr_angle = self.angle
+        self.rl_angle = self.angle
+        self.rr_angle = self.angle
+        
+    def SetThrottle(self, throttle):
+        self.throttle = throttle
+        
+        self.fl_throttle = self.throttle
+        self.fr_throttle = self.throttle
+        self.ml_throttle = self.throttle
+        self.mr_throttle = self.throttle
+        self.rl_throttle = self.throttle
+        self.rr_throttle = self.throttle
