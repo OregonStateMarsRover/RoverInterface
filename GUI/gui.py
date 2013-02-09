@@ -18,12 +18,7 @@ class AllTerrain(wx.Panel):
 
     def __init__(self, parent, roverStatus):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
-        '''
-        driveSim = wx.Panel(self, size=(500, 320))
-        driveSim.SetBackgroundColour("Black")
-        driveSimText = wx.StaticText(driveSim, -1, "Drive Sim", pos=(220, 150))
-        driveSimText.SetForegroundColour("White")
-        '''
+
         driveSim = DriveSim(self, roverStatus)
         driveControls = DriveControls(self, driveSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
@@ -57,12 +52,7 @@ class Science(wx.Panel):
     def __init__(self, parent, roverStatus):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
         
-        '''
-        driveSim = wx.Panel(self, size=(500, 320))
-        driveSim.SetBackgroundColour("Black")
-        driveSimText = wx.StaticText(driveSim, -1, "Drive Sim", pos=(220, 150))
-        driveSimText.SetForegroundColour("White")
-        '''
+
         driveSim = DriveSim(self, roverStatus)
         armSim = ArmSim(self, (320, 320), roverStatus)
         driveControls = DriveControls(self, driveSim, roverStatus)
@@ -104,12 +94,7 @@ class AstroRescue(wx.Panel):
 
     def __init__(self, parent, roverStatus):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
-        '''
-        driveSim = wx.Panel(self, size=(500, 320))
-        driveSim.SetBackgroundColour("Black")
-        driveSimText = wx.StaticText(driveSim, -1, "Drive Sim", pos=(220, 150))
-        driveSimText.SetForegroundColour("White")
-        '''
+
         driveSim = DriveSim(self, roverStatus)
         driveControls = DriveControls(self, driveSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
@@ -145,12 +130,7 @@ class EquipService(wx.Panel):
 
     def __init__(self, parent, roverStatus):
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY)
-        '''
-        driveSim = wx.Panel(self, size=(500, 320))
-        driveSim.SetBackgroundColour("Black")
-        driveSimText = wx.StaticText(driveSim, -1, "Drive Sim", pos=(220, 150))
-        driveSimText.SetForegroundColour("White")
-        '''
+
         driveSim = DriveSim(self, roverStatus)
         armSim = ArmSim(self, (320, 320), roverStatus)
         armControls = ArmControls(self, armSim, roverStatus)
