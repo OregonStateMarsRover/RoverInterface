@@ -10,8 +10,8 @@ import math
 class RoverStatus():
 
     # drive_mode = 'zeroRadius'
-    drive_mode = 'vector'
-    # drive_mode = 'explicit'
+    # drive_mode = 'vector'
+    drive_mode = 'explicit'
 
     # 0    3
     # 1    4

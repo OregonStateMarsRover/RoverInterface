@@ -40,6 +40,9 @@ class DriveSim(wx.Panel):
             zeroRadius(self)
         elif self.roverStatus.drive_mode == 'vector':
             vector(self)
+        elif self.roverStatus.drive_mode == 'explicit':
+            explicit(self)
+
         self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
         self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
         self.ml_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[4]['angle']))

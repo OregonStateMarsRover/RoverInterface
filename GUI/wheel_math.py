@@ -18,11 +18,15 @@ def input_joystick(self):
 
 #Ackerman (Explicit) steering mode is selected:
 def explicit(self):
-    input_joystick()
+    #input_joystick()
     #outputs (target values)
-    c = (self.right_joystick_percent / 100.0) * self.cMax
-    v = (self.left_joystick_percent / 100.0) * self.vMax
-    r = 1.0 / c
+    c = (self.roverStatus.angle / 4) * self.cMax
+    v = self.roverStatus.throttle/100.0 * self.vMax
+    
+    if c == 0:
+        r = 999
+    else:
+        r = 1.0 / c
 
     #(radians) steering angle of wheel 1
     theta1 = math.atan(self.b / (r + self.w))
@@ -39,6 +43,15 @@ def explicit(self):
     v3 = v1
     v4 = v5 / math.cos(theta4)
     v6 = v4
+
+    v_max = max(math.fabs(v1), math.fabs(v2), math.fabs(v3), math.fabs(v4), math.fabs(v5), math.fabs(v6))
+    v_ratio = math.fabs(v_max / v)
+    v1 = v1 / v_ratio
+    v2 = v2 / v_ratio
+    v3 = v3 / v_ratio
+    v4 = v4 / v_ratio
+    v5 = v5 / v_ratio
+    v6 = v6 / v_ratio
 
     #(rad/s) rotation rate of drive motor 1
     omega1 = v1 / self.R
