@@ -8,24 +8,28 @@ import wx
 
 class TripodControls(wx.Panel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, roverStatus):
         wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320, 250), style=wx.BORDER_SUNKEN)
 
         sizer = wx.GridBagSizer(3,3)
         
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         
-        self.vOrientation = wx.Slider(self, value=0, minValue=0, maxValue=100, size=(-1, 130), style=wx.SL_VERTICAL|wx.SL_INVERSE)
-        self.hOrientation = wx.Slider(self, value=0, minValue=0, maxValue=100, size=(140, -1), style=wx.SL_HORIZONTAL)
-        self.zoom = wx.Slider(self, value=0, minValue=0, maxValue=100, size=(-1, 40), style=wx.SL_VERTICAL|wx.SL_INVERSE)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
         
-        self.vOrientation.Bind(wx.EVT_SCROLL, self.DisplayValue)
-        self.hOrientation.Bind(wx.EVT_SCROLL, self.DisplayValue)
-        self.zoom.Bind(wx.EVT_SCROLL, self.DisplayValue)
+        self.roverStatus = roverStatus
         
-        self.spinVOri = wx.SpinCtrl(self, value="0", size=(55, -1))
-        self.spinHOri = wx.SpinCtrl(self, value="0", size=(55, -1))
-        self.spinZoom = wx.SpinCtrl(self, value="0", size=(55, -1))
+        self.vOrientation = wx.Slider(self, value=self.roverStatus.tri_vert, minValue=0, maxValue=100, size=(-1, 130), style=wx.SL_VERTICAL|wx.SL_INVERSE)
+        self.hOrientation = wx.Slider(self, value=self.roverStatus.tri_hori, minValue=0, maxValue=100, size=(140, -1), style=wx.SL_HORIZONTAL)
+        self.zoom = wx.Slider(self, value=self.roverStatus.tri_zoom, minValue=0, maxValue=100, size=(-1, 40), style=wx.SL_VERTICAL|wx.SL_INVERSE)
+        
+        self.vOrientation.Bind(wx.EVT_SCROLL, self.ChangeValue)
+        self.hOrientation.Bind(wx.EVT_SCROLL, self.ChangeValue)
+        self.zoom.Bind(wx.EVT_SCROLL, self.ChangeValue)
+        
+        self.spinVOri = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_vert, size=(55, -1))
+        self.spinHOri = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_hori, size=(55, -1))
+        self.spinZoom = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_zoom, size=(55, -1))
         
         self.spinVOri.SetRange(0, 100)
         self.spinHOri.SetRange(0, 100)
@@ -55,25 +59,29 @@ class TripodControls(wx.Panel):
         sizer.Add(self.spinZoom, (4, 3), flag=wx.ALIGN_CENTER_VERTICAL)
         
         self.SetSizer(sizer)
-        
-    def DisplayValue(self, event):
-        obj = event.GetEventObject()
-        value = obj.GetValue()
-        if obj == self.vOrientation:
-            self.spinVOri.SetValue(value)
-        elif obj == self.hOrientation:
-            self.spinHOri.SetValue(value)
-        elif obj == self.zoom:
-            self.spinZoom.SetValue(value)
-
+    
+    def OnPaint(self, e):
+        self.spinVOri.SetValue(self.roverStatus.tri_vert)
+        self.vOrientation.SetValue(self.roverStatus.tri_vert)
+        self.spinHOri.SetValue(self.roverStatus.tri_hori)
+        self.hOrientation.SetValue(self.roverStatus.tri_hori)
+        self.spinZoom.SetValue(self.roverStatus.tri_zoom)
+        self.zoom.SetValue(self.roverStatus.tri_zoom)
+    
     def ChangeValue(self, event):
         obj = event.GetEventObject()
         value = obj.GetValue()
         
-        if obj == self.spinVOri:
+        if obj == self.spinVOri or obj == self.vOrientation:
+            self.roverStatus.tri_vert = value
+            self.spinVOri.SetValue(value)
             self.vOrientation.SetValue(value)
-        elif obj == self.spinHOri:
+        elif obj == self.spinHOri or obj == self.hOrientation:
+            self.roverStatus.tri_hori = value
+            self.spinHOri.SetValue(value)
             self.hOrientation.SetValue(value)
-        elif obj == self.spinZoom:
+        elif obj == self.spinZoom or obj == self.zoom:
+            self.roverStatus.tri_zoom = value
+            self.spinZoom.SetValue(value)
             self.zoom.SetValue(value)
 

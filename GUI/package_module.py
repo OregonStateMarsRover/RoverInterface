@@ -9,11 +9,13 @@ import wx
 
 class PackageControls(wx.Panel):
     
-    def __init__(self, parent):
+    def __init__(self, parent, roverStatus):
         
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
         
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
+        
+        self.roverStatus = roverStatus
         
         stPackageControls = wx.StaticText(self, label="Package Controls")
         stPackageControls.SetFont(titleFont)
@@ -45,4 +47,35 @@ class PackageControls(wx.Panel):
         self.SetSizer(sizer)
         
     def OnButton(self,e,value):
-		print(value)
+        print(value)
+        if value == 'Button 1':
+            if self.roverStatus.package_one:
+                self.roverStatus.package_one = False
+            else:
+                self.roverStatus.package_one = True
+        elif value == 'Button 2':
+            if self.roverStatus.package_two:
+                self.roverStatus.package_two = False
+            else:
+                self.roverStatus.package_two = True
+        elif value == 'Button 3':
+            if self.roverStatus.package_three:
+                self.roverStatus.package_three = False
+            else:
+                self.roverStatus.package_three = True
+        elif value == 'Button 4':
+            if self.roverStatus.package_four:
+                self.roverStatus.package_four = False
+            else:
+                self.roverStatus.package_four = True
+        elif value == 'Button 5':
+            if self.roverStatus.package_five:
+                self.roverStatus.package_five = False
+            else:
+                self.roverStatus.package_five = True
+        elif value == 'Button 6':
+            if self.roverStatus.package_six:
+                self.roverStatus.package_six = False
+            else:
+                self.roverStatus.package_six = True
+		
