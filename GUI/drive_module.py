@@ -5,23 +5,29 @@
 import wx
 
 class DriveControls(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, roverStatus):
         
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
         
+        self.parent = parent
+        
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         
-        self.throttle = wx.Slider(self, value=100, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
-        self.angle = wx.Slider(self, value=0, minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        
+        self.roverStatus = roverStatus
+        
+        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.angle = wx.Slider(self, value=self.roverStatus.angle, minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
-        self.throttle.Bind(wx.EVT_SCROLL, self.DisplayThrottleValue)
-        self.angle.Bind(wx.EVT_SCROLL, self.DisplayAngleValue)
+        self.throttle.Bind(wx.EVT_SCROLL, self.ChangeThrottleValue)
+        self.angle.Bind(wx.EVT_SCROLL, self.ChangeAngleValue)
 
-        self.spinCtrlThrottle = wx.SpinCtrl(self, value="100", size=(55, -1))
+        self.spinCtrlThrottle = wx.SpinCtrl(self, value="%d" % self.roverStatus.throttle, size=(55, -1))
         self.spinCtrlThrottle.SetRange(0, 100)
         self.spinCtrlThrottle.Bind(wx.EVT_SPINCTRL, self.ChangeThrottleValue)
         
-        self.spinCtrlAngle = wx.SpinCtrl(self, value="0", size=(55, -1))
+        self.spinCtrlAngle = wx.SpinCtrl(self, value="%d" % self.roverStatus.angle, size=(55, -1))
         self.spinCtrlAngle.SetRange(-90, 90)
         self.spinCtrlAngle.Bind(wx.EVT_SPINCTRL, self.ChangeAngleValue)
         
@@ -36,29 +42,29 @@ class DriveControls(wx.Panel):
         self.Center()
         self.__do_layout()
 
-    def DisplayThrottleValue(self, event):
-        obj = event.GetEventObject()
-        value = obj.GetValue()
+    def OnPaint(self, event):
+        self.spinCtrlThrottle.SetValue(self.roverStatus.throttle)
+        self.throttle.SetValue(self.roverStatus.throttle)
+        self.spinCtrlAngle.SetValue(self.roverStatus.angle)
+        self.angle.SetValue(self.roverStatus.angle)
 
-        self.spinCtrlThrottle.SetValue(value)
-
-    def DisplayAngleValue(self, event):
-        obj = event.GetEventObject()
-        value = obj.GetValue()
-
-        self.spinCtrlAngle.SetValue(value)
-    
     def ChangeThrottleValue(self, event):
         obj = event.GetEventObject()
-        value = obj.GetValue()
+        self.roverStatus.throttle = obj.GetValue()
 
-        self.throttle.SetValue(value)
+        self.spinCtrlThrottle.SetValue(self.roverStatus.throttle)
+        self.throttle.SetValue(self.roverStatus.throttle)
+        
+        parent.Refresh()
 
     def ChangeAngleValue(self, event):
         obj = event.GetEventObject()
-        value = obj.GetValue()
-
-        self.angle.SetValue(value)
+        self.roverStatus.angle = obj.GetValue()
+        
+        self.spinCtrlAngle.SetValue(self.roverStatus.angle)
+        self.angle.SetValue(self.roverStatus.angle)
+        
+        parent.Refresh()
     
     def ZeroPtTurn(self, event):
         print("Zero Point Turn")
