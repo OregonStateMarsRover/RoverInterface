@@ -74,11 +74,11 @@ def vector(self):
 
     #(radians) steering angle of all wheels
     #theta = (self.right_joystick_percent / 100.0) * self.thetaMax
-    theta = self.roverStatus.angle * self.thetaMax
+    theta = self.roverStatus.angle # * self.thetaMax
 
     #(m/s) linear velocity of all drive wheels
     #v = (self.left_joystick_percent / 100.0) * self.vMax
-    v = self.roverStatus.throttle * self.vMax
+    v = self.roverStatus.throttle/100.0 * self.vMax
 
     #(radians/s) rotation rate of all drive motors
     omega = v / self.R

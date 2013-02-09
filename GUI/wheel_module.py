@@ -38,6 +38,8 @@ class DriveSim(wx.Panel):
     def OnPaint(self, e):
         if self.roverStatus.drive_mode == 'zeroRadius':
             zeroRadius(self)
+        elif self.roverStatus.drive_mode == 'vector':
+            vector(self)
         self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
         self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
         self.ml_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[4]['angle']))
@@ -114,5 +116,5 @@ class DriveSim(wx.Panel):
         self.dc.SetBrush(wx.Brush('#00ff00'))
 
         self.dc.DrawPolygon([pos6,pos5,pos7,pos8])
-        
+
         
