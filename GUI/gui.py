@@ -25,7 +25,7 @@ class AllTerrain(wx.Panel):
         driveSimText.SetForegroundColour("White")
         '''
         driveSim = DriveSim(self, roverStatus)
-        driveControls = DriveControls(self, roverStatus)
+        driveControls = DriveControls(self, driveSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
         
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
@@ -65,7 +65,7 @@ class Science(wx.Panel):
         '''
         driveSim = DriveSim(self, roverStatus)
         armSim = ArmSim(self, (320, 320), roverStatus)
-        driveControls = DriveControls(self, roverStatus)
+        driveControls = DriveControls(self, driveSim, roverStatus)
         armControls = ArmControls(self, armSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
         probeDisplay = ProbeDisplay(self, roverStatus)
@@ -111,7 +111,7 @@ class AstroRescue(wx.Panel):
         driveSimText.SetForegroundColour("White")
         '''
         driveSim = DriveSim(self, roverStatus)
-        driveControls = DriveControls(self, roverStatus)
+        driveControls = DriveControls(self, driveSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
         packageControls = PackageControls(self, roverStatus)
         
@@ -155,7 +155,7 @@ class EquipService(wx.Panel):
         armSim = ArmSim(self, (320, 320), roverStatus)
         armControls = ArmControls(self, armSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
-        driveControls = DriveControls(self, roverStatus)
+        driveControls = DriveControls(self, driveSim, roverStatus)
         
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
         
@@ -230,6 +230,7 @@ class Gui(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(notebook, 1, wx.ALL|wx.EXPAND, 5)
         panel.SetSizer(sizer)
+
 
 
 if __name__ == '__main__':
