@@ -5,11 +5,13 @@
 import wx
 
 class DriveControls(wx.Panel):
-    def __init__(self, parent, roverStatus):
+    def __init__(self, parent, driveSim, roverStatus):
         
         wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
         
         self.parent = parent
+
+        self.driveSim = driveSim
         
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         
@@ -17,14 +19,14 @@ class DriveControls(wx.Panel):
         
         self.roverStatus = roverStatus
         
-        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=-100, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
         self.angle = wx.Slider(self, value=self.roverStatus.angle, minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
         self.throttle.Bind(wx.EVT_SCROLL, self.ChangeThrottleValue)
         self.angle.Bind(wx.EVT_SCROLL, self.ChangeAngleValue)
 
         self.spinCtrlThrottle = wx.SpinCtrl(self, value="%d" % self.roverStatus.throttle, size=(55, -1))
-        self.spinCtrlThrottle.SetRange(0, 100)
+        self.spinCtrlThrottle.SetRange(-100, 100)
         self.spinCtrlThrottle.Bind(wx.EVT_SPINCTRL, self.ChangeThrottleValue)
         
         self.spinCtrlAngle = wx.SpinCtrl(self, value="%d" % self.roverStatus.angle, size=(55, -1))
@@ -50,12 +52,13 @@ class DriveControls(wx.Panel):
 
     def ChangeThrottleValue(self, event):
         obj = event.GetEventObject()
+        print obj.GetValue()
         self.roverStatus.throttle = obj.GetValue()
 
         self.spinCtrlThrottle.SetValue(self.roverStatus.throttle)
         self.throttle.SetValue(self.roverStatus.throttle)
-        
-        parent.Refresh()
+        self.parent.Refresh()
+        self.driveSim.Refresh()
 
     def ChangeAngleValue(self, event):
         obj = event.GetEventObject()
@@ -64,7 +67,7 @@ class DriveControls(wx.Panel):
         self.spinCtrlAngle.SetValue(self.roverStatus.angle)
         self.angle.SetValue(self.roverStatus.angle)
         
-        parent.Refresh()
+        self.parent.Refresh()
     
     def ZeroPtTurn(self, event):
         print("Zero Point Turn")
