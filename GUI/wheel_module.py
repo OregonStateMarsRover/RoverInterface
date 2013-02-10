@@ -42,6 +42,10 @@ class DriveSim(wx.Panel):
             vector(self)
         elif self.roverStatus.drive_mode == 'explicit':
             explicit(self)
+        elif self.roverStatus.drive_mode == 'independent':
+            independent(self)
+        elif self.roverStatus.drive_mode == 'tank':
+            tank(self)
 
         self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
         self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
@@ -61,34 +65,34 @@ class DriveSim(wx.Panel):
         obj = e.GetEventObject()
         angle = obj.GetValue()
 
-        # if obj == self.fl_angleSpin:
-        #     self.set_angle(angle, [1])
-        # elif obj == self.fr_angleSpin:
-        #     self.set_angle(angle, [2])
-        # elif obj == self.ml_angleSpin:
-        #     self.set_angle(angle, [3])
-        # elif obj == self.mr_angleSpin:
-        #     self.set_angle(angle, [4])
-        # elif obj == self.rl_angleSpin:
-        #     self.set_angle(angle, [5])
-        # elif obj == self.rr_angleSpin:
-        #     self.set_angle(angle, [6])
+        if obj == self.fl_angleSpin:
+            self.set_angle(angle, [1])
+        elif obj == self.fr_angleSpin:
+            self.set_angle(angle, [2])
+        elif obj == self.ml_angleSpin:
+            self.set_angle(angle, [3])
+        elif obj == self.mr_angleSpin:
+            self.set_angle(angle, [4])
+        elif obj == self.rl_angleSpin:
+            self.set_angle(angle, [5])
+        elif obj == self.rr_angleSpin:
+            self.set_angle(angle, [6])
         self.Refresh()
 
     def set_angle(self, angle, wheelChange=[0]):
         for wheel in wheelChange:
             if wheel == 0 or wheel == 1:
-                self.roverStatus.wheel[3]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[3]['angle'] = math.radians(angle)
             if wheel == 0 or wheel == 2:
-                self.roverStatus.wheel[0]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[0]['angle'] = math.radians(angle)
             if wheel == 0 or wheel == 3:
-                self.roverStatus.wheel[4]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[4]['angle'] = math.radians(angle)
             if wheel == 0 or wheel == 4:
-                self.roverStatus.wheel[1]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[1]['angle'] = math.radians(angle)
             if wheel == 0 or wheel == 5:
-                self.roverStatus.wheel[5]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[5]['angle'] = math.radians(angle)
             if wheel == 0 or wheel == 6:
-                self.roverStatus.wheel[2]['angle'] = math.radians(-angle)
+                self.roverStatus.wheel[2]['angle'] = math.radians(angle)
 
         self.Refresh()
 
