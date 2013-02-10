@@ -96,7 +96,6 @@ class DriveSim(wx.Panel):
 
         self.Refresh()
 
-
     def draw_wheel(self, wheel, pos):
         pos1 = (int(pos[0] - 25 * math.sin(wheel['angle']) + 12.5 * math.cos(wheel['angle'])),
                 int(pos[1] - 25 * math.cos(wheel['angle']) - 12.5 * math.sin(wheel['angle'])))
@@ -110,18 +109,16 @@ class DriveSim(wx.Panel):
         self.dc.DrawPolygon([pos1, pos2, pos3, pos4])
         print (wheel['velo'] / self.vMax * 50 + 50)
 
-        pos5 = (pos2[0] - 50 / 2 * math.sin(wheel['angle']), 
+        pos5 = (pos2[0] - 50 / 2 * math.sin(wheel['angle']),
                 pos2[1] - 50 / 2 * math.cos(wheel['angle']))
-        pos6 = (pos3[0] - 50 / 2 * math.sin(wheel['angle']), 
+        pos6 = (pos3[0] - 50 / 2 * math.sin(wheel['angle']),
                 pos3[1] - 50 / 2 * math.cos(wheel['angle']))
 
-        pos7 = (pos2[0] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.sin(wheel['angle']), 
+        pos7 = (pos2[0] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.sin(wheel['angle']),
                 pos2[1] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.cos(wheel['angle']))
-        pos8 = (pos3[0] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.sin(wheel['angle']), 
+        pos8 = (pos3[0] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.sin(wheel['angle']),
                 pos3[1] - (wheel['velo'] / self.vMax * 50 + 50) / 2 * math.cos(wheel['angle']))
 
         self.dc.SetBrush(wx.Brush('#00ff00'))
 
-        self.dc.DrawPolygon([pos6,pos5,pos7,pos8])
-
-        
+        self.dc.DrawPolygon([pos6, pos5, pos7, pos8])
