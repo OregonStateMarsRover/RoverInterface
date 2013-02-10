@@ -7,19 +7,19 @@ import math
 
 class DriveControls(wx.Panel):
     def __init__(self, parent, driveSim, roverStatus):
-        
-        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
-        
+
+        wx.Panel.__init__(self, parent=parent, id=wx.ID_ANY, size=(320, 250), style=wx.BORDER_SUNKEN)
+
         self.parent = parent
 
         self.driveSim = driveSim
-        
+
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
-        
+
         self.Bind(wx.EVT_PAINT, self.OnPaint)
-        
+
         self.roverStatus = roverStatus
-        
+
         self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=-100, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
         self.angle = wx.Slider(self, value=math.degrees(self.roverStatus.angle), minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
@@ -69,7 +69,7 @@ class DriveControls(wx.Panel):
         self.angle.SetValue(-math.degrees(self.roverStatus.angle))
 
         self.parent.Refresh()
-        
+
     def ZeroPtTurn(self, event):
         print("Zero Point Turn")
 

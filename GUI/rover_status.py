@@ -7,6 +7,7 @@
 
 import math
 
+
 class RoverStatus():
 
     # drive_mode = 'zeroRadius'
@@ -14,8 +15,6 @@ class RoverStatus():
     drive_mode = 'explicit'
     # drive_mode = 'independent'
     # TODO: drive_mode = 'tank'
-    # 
-    # zeroRadius, vector, explicit, independent, Tank
 
     # 0    3
     # 1    4
@@ -80,7 +79,7 @@ class RoverStatus():
 
     def UpdateProbe(self):
         pass
-        
+
     def SetAngle(self, angle):
         self.angle = math.radians(angle)
 
@@ -90,10 +89,10 @@ class RoverStatus():
         # self.mr_angle = self.angle
         # self.rl_angle = self.angle
         # self.rr_angle = self.angle
-        
+
     def SetThrottle(self, throttle):
         self.throttle = throttle
-        
+
         # self.fl_throttle = self.throttle
         # self.fr_throttle = self.throttle
         # self.ml_throttle = self.throttle
