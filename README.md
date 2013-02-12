@@ -48,3 +48,21 @@
 * salinity
 * f_temp 
 * c_temp 
+
+## JoyStick Class
+* Attributes
+    + parent - GUI class
+    + roverStatus - class that holds current data of rover
+* Functions
+    + OnEvent - any change in joystick controls update roverStatus
+        - Change joystick attribute in roverStatus
+        - refresh parent, so that parent knows that roverStatus has changed.
+
+## Listener Class
+* Attributs
+    + parent - GUI class
+    + roverStatus - class that holds current data of rover
+* Functions
+    + OnMessage - pase message and update roverStatus
+        - Change wheel, arm, package, etc attributes in roverStatus
+        - refresh parent, so that parent knows that roverStatus has changed.
