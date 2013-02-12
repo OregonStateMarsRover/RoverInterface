@@ -21,14 +21,14 @@ class DriveControls(wx.Panel):
 
         self.roverStatus = roverStatus
 
-        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=-100, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
         self.angle = wx.Slider(self, value=math.degrees(self.roverStatus.angle), minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
         self.throttle.Bind(wx.EVT_SCROLL, self.ChangeThrottleValue)
         self.angle.Bind(wx.EVT_SCROLL, self.ChangeAngleValue)
 
         self.spinCtrlThrottle = wx.SpinCtrl(self, value="%d" % self.roverStatus.throttle, size=(55, -1))
-        self.spinCtrlThrottle.SetRange(-100, 100)
+        self.spinCtrlThrottle.SetRange(0, 100)
         self.spinCtrlThrottle.Bind(wx.EVT_SPINCTRL, self.ChangeThrottleValue)
         
         self.spinCtrlAngle = wx.SpinCtrl(self, value="%d" % math.degrees(self.roverStatus.angle), size=(55, -1))
