@@ -1,7 +1,13 @@
+#################################################################
+# Filename: Wheel_math.py                                       #
+# Author: Francis Vo                                            #
+# Description: This file does Wheel for driving the Mars Rover. #
+#################################################################
 
 import math
 
 
+# Setup Constants need for all the wheel math
 def setup_constants(self):
     self.b = 0.381
     self.w = 0.7396 / 2
@@ -11,16 +17,19 @@ def setup_constants(self):
     self.thetaMax = (3.14159 / 180) * 140
 
 
-def input_joystick(self):
-    self.right_joystick_percent = self.hs1.value
-    self.left_joystick_percent = self.hs2.value
-
-
 # independent mode is selected:
 def independent(self):
+
+    # Note: no joystick input
+
+    # Velocity
     v = self.roverStatus.throttle / 100.0 * self.vMax
+    # Omega is the turning rate of the wheels
     omega = v / self.R
 
+    # No setting for Wheel angle, because they all add different and independent
+    
+    # All wheels are at the same speed
     self.roverStatus.wheel[0]['velo']  = v
     self.roverStatus.wheel[1]['velo']  = v
     self.roverStatus.wheel[2]['velo']  = v
@@ -28,6 +37,7 @@ def independent(self):
     self.roverStatus.wheel[4]['velo']  = v
     self.roverStatus.wheel[5]['velo']  = v
 
+    # Set the turning rates of each wheel
     self.roverStatus.wheel[0]['omega'] = omega
     self.roverStatus.wheel[1]['omega'] = omega
     self.roverStatus.wheel[2]['omega'] = omega
@@ -35,10 +45,17 @@ def independent(self):
     self.roverStatus.wheel[4]['omega'] = omega
     self.roverStatus.wheel[5]['omega'] = omega
 
-
+# Tank mode is selected:
 def tank(self):
+    # Placeholders for joystick inputs
+    left_joystick_percent = 1
+    right_joystick_percent = 1
+    # max allowed speed
     v = self.roverStatus.throttle / 100.0 * self.vMax
-
+    v_left = v * left_joystick_percent
+    v_right = v * right_joystick_percent
+    
+    # all wheels are all angle 0
     self.roverStatus.wheel[0]['angle'] = 0
     self.roverStatus.wheel[1]['angle'] = 0
     self.roverStatus.wheel[2]['angle'] = 0
@@ -46,13 +63,17 @@ def tank(self):
     self.roverStatus.wheel[4]['angle'] = 0
     self.roverStatus.wheel[5]['angle'] = 0
 
+    # right side velocity
     self.roverStatus.wheel[0]['velo']  = v
     self.roverStatus.wheel[1]['velo']  = v
     self.roverStatus.wheel[2]['velo']  = v
+    
+    # left side velocity
     self.roverStatus.wheel[3]['velo']  = v
     self.roverStatus.wheel[4]['velo']  = v
     self.roverStatus.wheel[5]['velo']  = v
 
+    # Do not let Wheel turn so turn rate is 0
     self.roverStatus.wheel[0]['omega'] = 0
     self.roverStatus.wheel[1]['omega'] = 0
     self.roverStatus.wheel[2]['omega'] = 0
@@ -63,8 +84,7 @@ def tank(self):
 
 #Ackerman (Explicit) steering mode is selected:
 def explicit(self):
-    #input_joystick()
-    #outputs (target values)
+    
     c = (self.roverStatus.angle / 4) * self.cMax
     v = self.roverStatus.throttle / 100.0 * self.vMax
 
@@ -106,6 +126,7 @@ def explicit(self):
     omega5 = v5 / self.R
     omega6 = omega4
 
+
     self.roverStatus.wheel[0]['angle'] = theta1
     self.roverStatus.wheel[1]['angle'] = theta2
     self.roverStatus.wheel[2]['angle'] = theta3
@@ -128,7 +149,7 @@ def explicit(self):
 
 #Vector (Crab) steering mode is selected:
 def vector(self):
-    #input_joystick()
+    
 
     #(radians) steering angle of all wheels
     #theta = (self.right_joystick_percent / 100.0) * self.thetaMax
