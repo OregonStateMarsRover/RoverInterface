@@ -1,7 +1,7 @@
-############ XBox Controller Parser - joy.py ##########
+############ Logitech F310 Gamepad Parser - joy.py ##########
 # Original Author: John Zeller
-# Description:  Joy_Core parses data coming from the Xbox controller and
-#				updates a dictionary of states.
+# Description:  Joy parses data coming from the Logitech F310 Gamepad and
+#				updates a dictionary of joy_states.
 
 ### NOTES #####################################################################
 # 1) LEAVE MODE 'OFF' there is no support in parser_core.py for MODE ON       #
