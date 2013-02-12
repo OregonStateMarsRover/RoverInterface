@@ -1,4 +1,4 @@
-########## Receptionist ########## 
+########## Receptionist - receptionist.py ########## 
 
 # Original Author: John Zeller
 
@@ -9,6 +9,13 @@
 # tuples that the Listener can then use to have RoverPacket assemble packets.
 # After this process is finished, the assembled packets are then added to the
 # queue for the Receptionist to then execute.
+
+# TO DO
+# Make GUI that shows what receptionist is currently sending from its queue
+# Perhaps organize these into the
+
+# TO DO 2
+# Make GUI launch bus and handle which controller is which port
 
 import sys
 sys.path.append('./Serial')
@@ -22,11 +29,12 @@ from listener import *
 
 # Receptionist
 class Receptionist(object):
-        def __init__(self):
+        def __init__(self, roverStatus):
                 self.bus = Bus()
                 self.queue = Queue.Queue()
                 # This Listener listens to bus and adds messages to the queue
-                self.listenerthread = Listener(self.bus, self.queue)
+                self.listenerthread = Listener(self.bus, self.queue,
+                                               roverStatus)
                 self.listenerthread.start()
                 self.start_time = time.clock()
                 self.prev_time = 0
@@ -36,7 +44,7 @@ class Receptionist(object):
         #       every item is a python list from 1-6 in length. But, the items
         #       in the python list are simply bytearrays that can be sent
         #       immediately.
-        def start(self):
+        def run(self):
                 count_start_time = time.clock() - self.start_time
                 self.prev_time = time.clock()
                 while 1:
@@ -62,14 +70,10 @@ class Receptionist(object):
                                         for packet in data:
                                                 self.count += 1
                                                 print repr(packet)
-                                                self.bus.rover.write(packet)
+ #OFF ROVER TEST                                               self.bus.rover.write(packet)
                                 
                         if (time.clock() - count_start_time) > 1:
                         #        print "..................... This many \
                         #               messages/second: ", self.count
                                 self.count = 0
                                 count_start_time = time.clock() - self.start_time
-
-if __name__ == '__main__':
-        receptionist = Receptionist()
-        receptionist.start()

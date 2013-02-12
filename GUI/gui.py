@@ -5,7 +5,9 @@
 #Description: Organizes control and display modules into four tabs
 ##############################
 
-import wx, sys
+import wx
+import sys
+import threading
 sys.path.append('./modules')
 from arm_module import *
 from science_module import *
@@ -196,7 +198,8 @@ class Gui(wx.Frame):
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
-
+        
+        self.InitReceptionist()
         self.InitUI()
         self.Centre()
         self.Maximize()
@@ -210,6 +213,11 @@ class Gui(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         panel.SetSizer(sizer)
+        
+    def InitRecepionist(self, roverStatus):
+        receptionist = Receptionist(self.roverStatus)
+        receptionist.start()
+        
 
 
 if __name__ == '__main__':

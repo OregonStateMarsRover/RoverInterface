@@ -38,13 +38,11 @@ import sys
 import threading
 
 class ParserCore(threading.Thread):
-	def __init__(self, bus, RoverStatus):
-		# Initializes threading
+	def __init__(self, bus, roverStatus):
 		threading.Thread.__init__(self)
-		# Stores the bus and roverstatus objects
 		self.bus = bus
-		self.joy_states = RoverStatus.joy_states
-		# Creates lists and dictionaries
+		self.joy_states = roverStatus.joy_states
+		# Creates templist for storing the 8-byte packages from gamepad
 		self.templist = []
 		# All button raw packet values of data coming from gamepad
 		self.buttons = {'\x00':'A', '\x01':'B', '\x02':'X', '\x03':'Y',		\
