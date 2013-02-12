@@ -5,7 +5,8 @@
 #Description: Organizes control and display modules into four tabs
 ##############################
 
-import wx
+import wx, sys
+sys.path.append('./modules')
 from arm_module import *
 from science_module import *
 from tripod_module import *
