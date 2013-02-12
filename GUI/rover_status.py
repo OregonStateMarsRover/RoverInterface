@@ -14,11 +14,11 @@ class RoverStatus():
     # drive_mode = 'vector'
     drive_mode = 'explicit'
     # drive_mode = 'independent'
-    # TODO: drive_mode = 'tank'
+    # drive_mode = 'tank'
 
-    # 0    3
-    # 1    4
-    # 2    5
+    # 3    0
+    # 4    1
+    # 5    2
 
     wheel = [{}, {}, {}, {}, {}, {}]
 
