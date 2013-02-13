@@ -39,6 +39,8 @@ class ParserMain(threading.Thread):
 				'LJ/Button':0, 'RJ/Button':0, 				\
 				'LJ/Left':0, 'LJ/Right':0, 'LJ/Up':0, 'LJ/Down':0, 	\
 				'RJ/Left':0, 'RJ/Right':0, 'RJ/Up':0, 'RJ/Down':0,	\
+                'LJ/UpDown':0, 'RJ/UpDown':0, 'LJ/LeftRight':0,     \
+                'RJ/LeftRight':0,									\
 				'Byte0':0, 'Byte1':0, 'Byte2':0, 'Byte3':0,		\
 				'Byte4':0, 'Byte5':0, 'Byte6':0, 'Byte7':0,		\
 				'Byte0/INT':0, 'Byte1/INT':0, 'Byte2/INT':0, 		\

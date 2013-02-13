@@ -51,9 +51,11 @@ class ParserCore(threading.Thread):
 				'\x04':'LB', '\x05':'RB', '\x06':'Back', '\x07':'Start', \
 				'\x08':'Middle', '\t':'LJ/Button', '\n':'RJ/Button'}
 		# List of Joy Names
-		self.joys = ['LT', 'RT', 					\
-			     'LJ/Left', 'LJ/Right', 'LJ/Up', 'LJ/Down', 	\
-			     'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down']
+		self.joys = ['LT', 'RT', 									\
+				     'LJ/Left', 'LJ/Right', 'LJ/Up', 'LJ/Down', 	\
+				     'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down',		\
+				     'LJ/LeftRight', 'LJ/UpDown', 'RJ/LeftRight',	\
+					 'RJ/UpDown']
 		# List of Byte names for states
 		self.bytes = ['Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7']
 		self.bytes_int = ['Byte0/INT', 'Byte1/INT', 'Byte2/INT', 'Byte3/INT', \
@@ -129,30 +131,38 @@ class ParserCore(threading.Thread):
 			if ord(self.templist[5])<=127: # Right
 				val = ord(self.templist[5])
 				self.states['LJ/Right'] = val
+				self.states['LJ/LeftRight'] = val
 			elif ord(self.templist[5])>=128: # Left
 				val = ord(self.templist[5]) - 255
 				self.states['LJ/Left'] = val
+				self.states['LJ/LeftRight'] = val
 		elif self.templist[7]=='\x01' and self.templist[6]=='\x02': # Left-Joy U/D
 			if ord(self.templist[5])<=127: # Down
 				val = -(ord(self.templist[5]))		# Flip to negative
 				self.states['LJ/Down'] = val
+				self.states['LJ/UpDown'] = val
 			elif ord(self.templist[5])>=128: # Up
 				val = (ord(self.templist[5]) - 255) * -1	# Flip to positive
 				self.states['LJ/Up'] = val
+				self.states['LJ/UpDown'] = val
 		elif self.templist[7]=='\x03' and self.templist[6]=='\x02': # Right-Joy L/R
 			if ord(self.templist[5])<=127: # Right
 				val = ord(self.templist[5])
 				self.states['RJ/Right'] = val
+				self.states['RJ/LeftRight'] = val
 			elif ord(self.templist[5])>=128: # Left
 				val = ord(self.templist[5]) - 255
 				self.states['RJ/Left'] = val
+				self.states['RJ/LeftRight'] = val
 		elif self.templist[7]=='\x04' and self.templist[6]=='\x02': # Right-Joy U/D
 			if ord(self.templist[5])<=127: # Down
 				val = -(ord(self.templist[5]))		# Flip to negative
 				self.states['RJ/Down'] = val
+				self.states['RJ/UpDown'] = val
 			elif ord(self.templist[5])>=128: # Up
 				val = (ord(self.templist[5]) - 255) * -1	# Flip to positive
 				self.states['RJ/Up'] = val
+				self.states['RJ/UpDown'] = val
 
 	def parse_released_button(self):
 		# Updates states of buttons to 0(off)

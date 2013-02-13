@@ -21,7 +21,7 @@ class Queuer(threading.Thread):
         self.joy_queue = joy_queue
         self.roverStatus = roverStatus
         self.joy_states = roverStatus.joy_states
-        self.waitTime = 0.2 # Wait 20ms between packet cycles
+        self.waitTime = 1 # Wait 20ms between packet cycles
         # Addresses for Rover modules - Wheels are [front, middle, back]
         #                               Arm is [elbow1, elbow2, wrist]
         self.address = {'beaglebone':1, 'leftWheels':[2, 3, 4],         \
@@ -43,43 +43,43 @@ class Queuer(threading.Thread):
     def poll_joy_drivecommand(self):
         # Returns list of 6 tuples of drive commands in the form
         # (addr, speed, angle)
+        # Priority List (Right of Way):
+		# 	1) LJ/RJ (Both because they don't have overcrossing commands)
+		# 	2) RT - ONLY ALLOW if LJ/RJ are 0
+		# 	3) LT - ONLY ALLOW if LJ/RJ and RT are 0
         command_list = []
         if self.roverStatus.control_scheme == 'tank':
             # LJ controls left wheels, RJ controls right wheels
-            # Left Wheels
-            if self.joy_states['LJ/Up'] != 0:
+            if (self.joy_states['RJ/UpDown'] or self.joy_states['LJ/UpDown']) != 0:
+                # Left Wheels - LJ
                 for wheelAddr in self.address['leftWheels']:
-                    speed = self.intToByte(self.joy_states['LJ/Up'])
+                    speed = self.intToByte(self.joy_states['LJ/UpDown'])
                     data = wheelAddr, speed, 0
-                    command_list.append(data)
-            elif self.joy_states['LJ/Down'] != 0:
-                for wheelAddr in self.address['leftWheels']:
-                    speed = self.intToByte(self.joy_states['LJ/Down'])
-                    data = wheelAddr, speed, 0
-                    command_list.append(data)
-            else:
-                for wheelAddr in self.address['leftWheels']:
-                    data = wheelAddr, 0, 0
                     command_list.append(data)
                 
-            # Right Wheels
-            if self.joy_states['RJ/Up'] != 0:
+                # Right Wheels - RJ
                 for wheelAddr in self.address['rightWheels']:
-                    speed = self.intToByte(self.joy_states['RJ/Up'])
+                    speed = self.intToByte(self.joy_states['RJ/UpDown'])
                     data = wheelAddr, speed, 0
                     command_list.append(data)
-            elif self.joy_states['RJ/Down'] != 0:
-                for wheelAddr in self.address['rightWheels']:
-                    speed = self.intToByte(self.joy_states['RJ/Down'])
+            
+            # Right Trigger - Left FWD, Right Rev
+            elif (self.joy_states['RT'] != 0) and \
+                    ((self.joy_states['RJ/UpDown'] and self.joy_states['LJ/UpDown']) == 0):
+                # Divide RT by 2 so that it's a value from 0 to 127
+                speed = self.joy_states['RT'] / 2
+                for wheelAddr in self.address['leftWheels']:
+                    speed = self.intToByte(velocity)
                     data = wheelAddr, speed, 0
                     command_list.append(data)
-            else:
                 for wheelAddr in self.address['rightWheels']:
-                    data = wheelAddr, 0, 0
+                    speed = self.intToByte(-(velocity))
+                    data = wheelAddr, speed, 0
                     command_list.append(data)
-                
+                    
             # Left Trigger - Right FWD, Left Rev
-            if self.joy_states['LT'] != 0:
+            elif (self.joy_states['LT'] != 0) and (self.joy_states['RT'] and \
+                    (self.joy_states['RJ/UpDown'] and self.joy_states['LJ/UpDown']) == 0):
                 # Divide LT by 2 so that it's a value from 0 to 127
                 velocity = self.joy_states['LT'] / 2
                 for wheelAddr in self.address['leftWheels']:
@@ -97,32 +97,17 @@ class Queuer(threading.Thread):
                 for wheelAddr in self.address['rightWheels']:
                     data = wheelAddr, 0, 0
                     command_list.append(data)
-            
-            # Right Trigger - Left FWD, Right Rev
-            if self.joy_states['RT'] != 0:
-                # Divide RT by 2 so that it's a value from 0 to 127
-                speed = self.joy_states['RT'] / 2
-                for wheelAddr in self.address['leftWheels']:
-                    speed = self.intToByte(velocity)
-                    data = wheelAddr, speed, 0
-                    command_list.append(data)
-                for wheelAddr in self.address['rightWheels']:
-                    speed = self.intToByte(-(velocity))
-                    data = wheelAddr, speed, 0
-                    command_list.append(data)
-            else:
-                for wheelAddr in self.address['leftWheels']:
-                    data = wheelAddr, 0, 0
-                    command_list.append(data)
-                for wheelAddr in self.address['rightWheels']:
-                    data = wheelAddr, 0, 0
-                    command_list.append(data)
+                    
         elif self.roverStatus.control_scheme == 'vector':
             # do vector
             nothing = 0
         elif self.roverStatus.control_scheme == 'explicit':
             # do explicit
             nothing = 0
+            
+        # Priority List (Right of Way):
+		# 	2) RT - If RT != 0
+		# 	3) LT - ONLY ALLOW if RT is 0 and LT != 0
         elif self.roverStatus.control_scheme == 'zeroRadius':
             # Adjust corner wheels to 45-degrees
             angle = 45
@@ -143,6 +128,7 @@ class Queuer(threading.Thread):
                     else:
                         data = wheelAddr, speed, 0
                         command_list.append(data)
+            elif (self.joy_states['LT'] == 0) and (self.joy_states['RT'] != 0):
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(velocity)
                     if wheelAddr == 5: # Angle: 45
