@@ -221,10 +221,8 @@ class Gui(wx.Frame):
         panel.SetSizer(sizer)
         
     def InitReceptionist(self, roverStatus):
-        receptionist = Receptionist(self.roverStatus)
-        receptionist.start()
-        
-
+        self.receptionistthread = Receptionist(self.roverStatus)
+        self.receptionistthread.start()
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()
