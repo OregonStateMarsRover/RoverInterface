@@ -1,7 +1,7 @@
 ############ Logitech F310 Gamepad Parser - joy.py ##########
 # Original Author: John Zeller
 # Description:  Joy parses data coming from the Logitech F310 Gamepad and
-#    			updates a dictionary of joy_states.
+#				updates a dictionary of joy_states.
 
 ### NOTES #####################################################################
 # 1) LEAVE MODE 'OFF' there is no support in parser_core.py for MODE ON       #
@@ -37,14 +37,12 @@
 import sys
 import threading
 
-class ParserCore(threading.Thread):
-	def __init__(self, bus, RoverStatus):
-		# Initializes threading
+class JoyParser(threading.Thread):
+	def __init__(self, bus, roverStatus):
 		threading.Thread.__init__(self)
-		# Stores the bus and roverstatus objects
 		self.bus = bus
-		self.joy_states = RoverStatus.joy_states
-		# Creates lists and dictionaries
+		self.joy_states = roverStatus.joy_states
+		# Creates templist for storing the 8-byte packages from gamepad
 		self.templist = []
 		# All button raw packet values of data coming from gamepad
 		self.buttons = {'\x00':'A', '\x01':'B', '\x02':'X', '\x03':'Y',		\
@@ -54,7 +52,9 @@ class ParserCore(threading.Thread):
 		# List of Joy Names
 		self.joys = ['LT', 'RT', 									\
 				     'LJ/Left', 'LJ/Right', 'LJ/Up', 'LJ/Down', 	\
-				     'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down']
+				     'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down',		\
+				     'LJ/LeftRight', 'LJ/UpDown', 'RJ/LeftRight',	\
+					 'RJ/UpDown']
 		# Initializes templist
 		for x in range(8):
 		        self.templist.append(0)
@@ -64,7 +64,7 @@ class ParserCore(threading.Thread):
 		while 1:
 			# Read 1 byte and copy state to Byte States
 			for x in range(8):
-				self.templist[x] = self.bus.gamepad.read(1)
+				self.templist[x] = self.bus.joy_rover.read(1)
 				
 			# BUTTON is PRESSED
 			if self.templist[4]=='\x01' or self.templist[4]=='\xFF':
@@ -125,30 +125,38 @@ class ParserCore(threading.Thread):
 			if ord(self.templist[5])<=127: # Right
 				val = ord(self.templist[5])
 				self.joy_states['LJ/Right'] = val
+				self.joy_states['LJ/LeftRight'] = val
 			elif ord(self.templist[5])>=128: # Left
 				val = ord(self.templist[5]) - 255
 				self.joy_states['LJ/Left'] = val
+				self.joy_states['LJ/LeftRight'] = val
 		elif self.templist[7]=='\x01' and self.templist[6]=='\x02': # L-Joy U/D
 			if ord(self.templist[5])<=127: # Down
 				val = -(ord(self.templist[5]))		# Flip to negative
 				self.joy_states['LJ/Down'] = val
+				self.joy_states['LJ/UpDown'] = val
 			elif ord(self.templist[5])>=128: # Up
 				val = (ord(self.templist[5]) - 255) * -1	# Flip to positive
 				self.joy_states['LJ/Up'] = val
+				self.joy_states['LJ/UpDown'] = val
 		elif self.templist[7]=='\x03' and self.templist[6]=='\x02': # R-Joy L/R
 			if ord(self.templist[5])<=127: # Right
 				val = ord(self.templist[5])
 				self.joy_states['RJ/Right'] = val
+				self.joy_states['RJ/LeftRight'] = val
 			elif ord(self.templist[5])>=128: # Left
 				val = ord(self.templist[5]) - 255
 				self.joy_states['RJ/Left'] = val
+				self.joy_states['RJ/LeftRight'] = val
 		elif self.templist[7]=='\x04' and self.templist[6]=='\x02': # R-Joy U/D
 			if ord(self.templist[5])<=127: # Down
 				val = -(ord(self.templist[5]))		# Flip to negative
 				self.joy_states['RJ/Down'] = val
+				self.joy_states['RJ/UpDown'] = val
 			elif ord(self.templist[5])>=128: # Up
 				val = (ord(self.templist[5]) - 255) * -1	# Flip to positive
 				self.joy_states['RJ/Up'] = val
+				self.joy_states['RJ/UpDown'] = val
 
 	def parse_released_button(self):
 		# Updates states of buttons to 0(off)
