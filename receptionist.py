@@ -25,7 +25,7 @@ import Queue
 import threading
 from roverpacket import *
 from bus import *
-from listener import *
+from listener import *\
 
 class Receptionist(threading.Thread):
     def __init__(self, roverStatus):
@@ -43,6 +43,8 @@ class Receptionist(threading.Thread):
             if self.queue.empty() is False:
                 # NOTE: 'data' is a python list that must be iterated through
                 data = self.queue.get()
+                temp = data
                 for packet in data:
                     print repr(packet)
+                
  #OFF ROVER TEST                    self.bus.rover.write(packet)
