@@ -33,8 +33,7 @@ class Receptionist(threading.Thread):
         self.bus = Bus()
         self.queue = Queue.Queue()
         # This Listener listens to bus and adds messages to the queue
-        self.listenerthread = Listener(self.bus, self.queue,
-                                       roverStatus)
+        self.listenerthread = Listener(self.bus, self.queue, roverStatus)
         self.listenerthread.start()
 
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
