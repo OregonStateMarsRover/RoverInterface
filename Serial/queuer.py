@@ -31,14 +31,14 @@ class Queuer(threading.Thread):
     def run(self):
         while 1:
             # Make Joy Drive Commands
-            for commands in self.poll_joy_drivecommand():
+            joy_command = self.poll_joy_drivecommand()
+            for command in joy_command:
                 self.joy_queue.put(command)
             # Make Joy Arm Commands
                 # Do something
             # Make Button Commands
             #self.joy_queue.put(self.poll_button_command())
-            
-            sleep(self.waitTime)
+            time.sleep(self.waitTime)
             
     def poll_joy_drivecommand(self):
         # Returns list of 6 tuples of drive commands in the form
@@ -50,27 +50,33 @@ class Queuer(threading.Thread):
             if self.joy_states['LJ/Up'] != 0:
                 for wheelAddr in self.address['leftWheels']:
                     speed = self.intToByte(self.joy_states['LJ/Up'])
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             elif self.joy_states['LJ/Down'] != 0:
                 for wheelAddr in self.address['leftWheels']:
                     speed = self.intToByte(self.joy_states['LJ/Down'])
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             else:
                 for wheelAddr in self.address['leftWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
                 
             # Right Wheels
             if self.joy_states['RJ/Up'] != 0:
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(self.joy_states['RJ/Up'])
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             elif self.joy_states['RJ/Down'] != 0:
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(self.joy_states['RJ/Down'])
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             else:
                 for wheelAddr in self.address['rightWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
                 
             # Left Trigger - Right FWD, Left Rev
             if self.joy_states['LT'] != 0:
@@ -78,15 +84,19 @@ class Queuer(threading.Thread):
                 velocity = self.joy_states['LT'] / 2
                 for wheelAddr in self.address['leftWheels']:
                     speed = self.intToByte(-(velocity))
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(velocity)
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             else:
                 for wheelAddr in self.address['leftWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
             
             # Right Trigger - Left FWD, Right Rev
             if self.joy_states['RT'] != 0:
@@ -94,15 +104,19 @@ class Queuer(threading.Thread):
                 speed = self.joy_states['RT'] / 2
                 for wheelAddr in self.address['leftWheels']:
                     speed = self.intToByte(velocity)
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(-(velocity))
-                    command_list.append(wheelAddr, speed, 0)
+                    data = wheelAddr, speed, 0
+                    command_list.append(data)
             else:
                 for wheelAddr in self.address['leftWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
-                    command_list.append(wheelAddr, 0, 0)
+                    data = wheelAddr, 0, 0
+                    command_list.append(data)
         elif self.roverStatus.control_scheme == 'vector':
             # do vector
             nothing = 0
@@ -120,41 +134,53 @@ class Queuer(threading.Thread):
                     speed = self.intToByte(-(velocity))
                     if wheelAddr == 2: # Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     elif wheelAddr == 4: #Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, speed, 0)
+                        data = wheelAddr, speed, 0
+                        command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(velocity)
                     if wheelAddr == 5: # Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     elif wheelAddr == 7: #Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, speed, 0)
+                        data = wheelAddr, speed, 0
+                        command_list.append(data)
             else:
                 for wheelAddr in self.address['leftWheels']:
                     if wheelAddr == 2: # Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     elif wheelAddr == 4: #Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, 0, 0)
+                        data = wheelAddr, 0, 0
+                        command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     if wheelAddr == 5: # Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     elif wheelAddr == 7: #Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, 0, 0)
+                        data = wheelAddr, 0, 0
+                        command_list.append(data)
             
             # Right Trigger - Left FWD, Right Rev
             if self.joy_states['LT'] != 0:
@@ -164,48 +190,62 @@ class Queuer(threading.Thread):
                     speed = self.intToByte(velocity)
                     if wheelAddr == 2: # Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     elif wheelAddr == 4: #Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, speed, 0)
+                        data = wheelAddr, speed, 0
+                        command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     speed = self.intToByte(-(velocity))
                     if wheelAddr == 5: # Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     elif wheelAddr == 7: #Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, speed, angle)
+                        data = wheelAddr, speed, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, speed, 0)
+                        data = wheelAddr, speed, 0
+                        command_list.append(data)
             else:
                 for wheelAddr in self.address['leftWheels']:
                     if wheelAddr == 2: # Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     elif wheelAddr == 4: #Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, 0, 0)
+                        data = wheelAddr, 0, 0
+                        command_list.append(data)
                 for wheelAddr in self.address['rightWheels']:
                     if wheelAddr == 5: # Angle: 45
                         angle = self.intToByte(angle)
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     elif wheelAddr == 7: #Angle: -45
                         angle = self.intToByte(-(angle))
-                        command_list.append(wheelAddr, 0, angle)
+                        data = wheelAddr, 0, angle
+                        command_list.append(data)
                     else:
-                        command_list.append(wheelAddr, 0, 0)
+                        data = wheelAddr, 0, 0
+                        command_list.append(data)
         
         # Emergency Stop All Systems - Middle Button
         if self.joy_states['Middle'] == 1:
             for wheelAddr in self.address['leftWheels']:
-                command_list.append(wheelAddr, 0, 0)
+                data = wheelAddr, 0, 0
+                command_list.append(data)
             for wheelAddr in self.address['rightWheels']:
-                command_list.append(wheelAddr, 0, 0)
+                data = wheelAddr, 0, 0
+                command_list.append(data)
                 
         return command_list
     

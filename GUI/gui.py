@@ -8,7 +8,12 @@
 import wx
 import sys
 import threading
-sys.path.append('./modules')
+# For running in GUI directory
+sys.path.append('./modules/')
+sys.path.append('../')
+# For running in RoverInterface directory
+sys.path.append('./GUI/modules/')
+sys.path.append('./')
 from arm_module import *
 from science_module import *
 from tripod_module import *
@@ -16,6 +21,7 @@ from drive_module import *
 from package_module import *
 from rover_status import *
 from wheel_module import *
+from receptionist import *
 
 
 class AllTerrain(wx.Panel):
@@ -199,7 +205,7 @@ class Gui(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
         
-        self.InitReceptionist()
+        self.InitReceptionist(self.roverStatus)
         self.InitUI()
         self.Centre()
         self.Maximize()
@@ -214,7 +220,7 @@ class Gui(wx.Frame):
         sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         panel.SetSizer(sizer)
         
-    def InitRecepionist(self, roverStatus):
+    def InitReceptionist(self, roverStatus):
         receptionist = Receptionist(self.roverStatus)
         receptionist.start()
         

@@ -35,19 +35,13 @@ class Receptionist(object):
         self.listenerthread = Listener(self.bus, self.queue,
                                        roverStatus)
         self.listenerthread.start()
-        self.start_time = time.clock()
-        self.prev_time = 0
-        self.count = 0
 
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
-    def run(self):
-        count_start_time = time.clock() - self.start_time
-        self.prev_time = time.clock()
+    def start(self):
         while 1:
             if self.queue.empty() is False:
                 # NOTE: 'data' is a python list that must be iterated through
                 data = self.queue.get()
                 for packet in data:
-                    self.count += 1
                     print repr(packet)
  #OFF ROVER TEST                    self.bus.rover.write(packet)
