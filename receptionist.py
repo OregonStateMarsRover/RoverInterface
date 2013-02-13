@@ -27,8 +27,9 @@ from roverpacket import *
 from bus import *
 from listener import *
 
-class Receptionist(object):
+class Receptionist(threading.Thread):
     def __init__(self, roverStatus):
+        threading.Thread.__init__(self)
         self.bus = Bus()
         self.queue = Queue.Queue()
         # This Listener listens to bus and adds messages to the queue
@@ -37,7 +38,7 @@ class Receptionist(object):
         self.listenerthread.start()
 
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
-    def start(self):
+    def run(self):
         while 1:
             if self.queue.empty() is False:
                 # NOTE: 'data' is a python list that must be iterated through
