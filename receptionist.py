@@ -1,4 +1,4 @@
-########## Receptionist - receptionist.py ########## 
+########## Receptionist - receptionist.py ##########
 
 # Original Author: John Zeller
 
@@ -19,13 +19,15 @@
 
 import sys
 sys.path.append('./Serial')
-import serial
-import time
+# import serial
+# import time
 import Queue
 import threading
 from roverpacket import *
 from bus import *
-from listener import *\
+from queuer import *
+# from listener import *\
+
 
 class Receptionist(threading.Thread):
     def __init__(self, roverStatus):
@@ -33,17 +35,32 @@ class Receptionist(threading.Thread):
         self.bus = Bus()
         self.queue = Queue.Queue()
         # This Listener listens to bus and adds messages to the queue
-        self.listenerthread = Listener(self.bus, self.queue, roverStatus)
-        self.listenerthread.start()
+        # self.listenerthread = Listener(self.bus, self.queue, roverStatus)
+        # self.listenerthread.start()
+
+        self.joy_queue = Queue.Queue()
+        self.queuerthread = Queuer(self.joy_queue, roverStatus)
+        self.queuerthread.start()
 
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
+    # TODO: If the address is 2-7, then make a bogie packet
     def run(self):
         while 1:
             if self.queue.empty() is False:
                 # NOTE: 'data' is a python list that must be iterated through
                 data = self.queue.get()
-                temp = data
+                #temp = data
                 for packet in data:
                     print repr(packet)
-                
- #OFF ROVER TEST                    self.bus.rover.write(packet)
+
+            packet_list = []
+            if self.joy_queue.empty() is False:
+                packet_data = self.joy_queue.get()
+                addr, speed, angle = packet_data
+                packet = BogiePacket(addr, speed, angle)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+
+            self.queue.put(packet_list)  # Add to recepetionists queue
+
+ # OFF ROVER TEST                    self.bus.rover.write(packet)

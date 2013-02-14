@@ -7,7 +7,7 @@
 
 import wx
 import sys
-import threading
+# import threading
 # For running in GUI directory
 sys.path.append('./modules/')
 sys.path.append('../')
@@ -204,8 +204,8 @@ class Gui(wx.Frame):
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
-        
-        self.InitReceptionist(self.roverStatus)
+
+        self.InitReceptionist()
         self.InitUI()
         self.Centre()
         self.Maximize()
@@ -219,10 +219,15 @@ class Gui(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
         panel.SetSizer(sizer)
-        
-    def InitReceptionist(self, roverStatus):
+
+    def InitReceptionist(self):
         self.receptionistthread = Receptionist(self.roverStatus)
+        self.bus = self.receptionistthread.bus
         self.receptionistthread.start()
+
+    def InitJoy(self):
+        self.joythread = JoyParser(self.bus, self.roverStatus)
+        self.joythread.start()
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()
