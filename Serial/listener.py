@@ -23,8 +23,6 @@ class Listener(threading.Thread):
         self.bus = bus
         self.queue = queue
         self.joy_queue = Queue.Queue()
-        self.joythread = JoyParser(self.bus, roverStatus)
-        self.joythread.start()
         self.queuerthread = Queuer(self.joy_queue, roverStatus)
         self.queuerthread.start()
 
