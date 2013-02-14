@@ -42,19 +42,19 @@ class RoverStatus():
     # mr_angle = wheel[4]['angle']
     # rl_angle = wheel[2]['angle']
     # rr_angle = wheel[5]['angle']
-    
+
     # Create a dictionary to be used to keep states from joy.py
-    joy_states = {'A':0, 'B':0, 'X':0, 'Y':0,                         \
-                  'Back':0, 'Start':0, 'Middle':0,                    \
-                  'Left':0, 'Right':0, 'Up':0, 'Down':0,              \
-                  'LB':0, 'RB':0, 'LT':0, 'RT':0,                     \
-                  'LJ/Button':0, 'RJ/Button':0,                       \
-                  'LJ/Left':0, 'LJ/Right':0, 'LJ/Up':0, 'LJ/Down':0,  \
-                  'RJ/Left':0, 'RJ/Right':0, 'RJ/Up':0, 'RJ/Down':0,  \
-                  'LJ/UpDown':0, 'RJ/UpDown':0, 'LJ/LeftRight':0,     \
-                  'RJ/LeftRight':0,}
-    control_scheme = 'tank' # Should be changed by GUI selection - Is not now
-    
+    joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
+                  'Back': 0, 'Start': 0, 'Middle': 0,
+                  'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
+                  'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
+                  'LJ/Button': 0, 'RJ/Button': 0,
+                  'LJ/Left': 0, 'LJ/Right': 0, 'LJ/Up': 0, 'LJ/Down': 0,
+                  'RJ/Left': 0, 'RJ/Right': 0, 'RJ/Up': 0, 'RJ/Down': 0,
+                  'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
+                  'RJ/LeftRight': 0, }
+    control_scheme = 'tank'  # Should be changed by GUI selection - Is not now
+
     angle = 0
     throttle = 100
 
@@ -64,7 +64,7 @@ class RoverStatus():
 
     arm_seg = [{}, {}, {}]
 
-    #Arm segment lengths
+    # Arm segment lengths
     arm_seg[0]['len'] = 1.4
     arm_seg[1]['len'] = 1.3
     arm_seg[2]['len'] = 1.0
