@@ -21,7 +21,7 @@ class Queuer(threading.Thread):
         self.joy_queue = joy_queue
         self.roverStatus = roverStatus
         self.joy_states = roverStatus.joy_states
-        self.waitTime = 1 # Wait 20ms between packet cycles
+        self.waitTime = 0.1 # Wait 20ms between packet cycles
         # Addresses for Rover modules - Wheels are [front, middle, back]
         #                               Arm is [elbow1, elbow2, wrist]
         self.address = {'beaglebone':1, 'leftWheels':[2, 3, 4],         \
