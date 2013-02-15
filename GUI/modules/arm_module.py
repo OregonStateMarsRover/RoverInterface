@@ -5,12 +5,12 @@
 #Description: Contains three classes- Arm, ArmSim, and ArmControls.
 #		-Arm(): Stores variables for the arm simulation and has methods that calculate the position of joints and draw the arm
 #		-ArmSim(wx.Panel): Generates plot for arm and calls draw command for arm
-#		-ArmControls(wx.Panel): Generates controls for the arm 
+#		-ArmControls(wx.Panel): Generates controls for the arm
 ##############################
 
 import wx
 import math
-from wx.lib.plot import PlotCanvas,PlotGraphics,PolyLine
+from wx.lib.plot import PlotCanvas, PlotGraphics, PolyLine
 
 
 class Arm():
