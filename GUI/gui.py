@@ -226,7 +226,7 @@ class Gui(wx.Frame):
         self.receptionistthread.start()
 
     def InitJoy(self):
-        self.joythread = JoyParser(self.bus, self.roverStatus)
+        self.joythread = JoyParser(self, self.bus, self.roverStatus)
         self.joythread.start()
 
 if __name__ == '__main__':

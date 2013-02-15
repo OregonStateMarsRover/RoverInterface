@@ -34,18 +34,21 @@
 #						'RJ/Left':0, 'RJ/Right':0, 'RJ/Up':0, 'RJ/Down':0} 	  #
 ###############################################################################
 
-#import sys
+# import sys
 import threading
 
 
 class JoyParser(threading.Thread):
-    def __init__(self, bus, roverStatus):
-        # TODO: Refresh parent
-        threading.Thread.__init__(self)
+    def __init__(self, parent, bus, roverStatus):
+
+        # Pull parameters into self
+        self.parent = parent
         self.bus = bus
         self.joy_states = roverStatus.joy_states
+
         # Creates templist for storing the 8-byte packages from gamepad
         self.templist = []
+
         # All button raw packet values of data coming from gamepad
         self.buttons = {'\x00': 'A', '\x01': 'B', '\x02': 'X', '\x03': 'Y',
                         '\x04': 'LB', '\x05': 'RB', '\x06': 'Back',
@@ -58,9 +61,13 @@ class JoyParser(threading.Thread):
                      'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down',
                      'LJ/LeftRight', 'LJ/UpDown', 'RJ/LeftRight',
                      'RJ/UpDown']
+
+        threading.Thread.__init__(self)
+
         # Initializes templist
         for x in range(8):
             self.templist.append(0)
+        parent.Refresh()
 
     def run(self):
         # Start Parser
