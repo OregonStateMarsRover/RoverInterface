@@ -4,6 +4,7 @@
 # Description: This file does Wheel for driving the Mars Rover. #
 #################################################################
 
+import sys
 import math
 
 
@@ -18,6 +19,8 @@ def setup_constants(self):
 
 # TODO: Math use joy status
 # independent mode is selected:
+
+
 def independent(self):
     # Note: no joystick input
 
@@ -27,14 +30,14 @@ def independent(self):
     omega = v / self.R
 
     # No setting for Wheel angle, because they all add different and independent
-    
+
     # All wheels are at the same speed
-    self.roverStatus.wheel[0]['velo']  = v
-    self.roverStatus.wheel[1]['velo']  = v
-    self.roverStatus.wheel[2]['velo']  = v
-    self.roverStatus.wheel[3]['velo']  = v
-    self.roverStatus.wheel[4]['velo']  = v
-    self.roverStatus.wheel[5]['velo']  = v
+    self.roverStatus.wheel[0]['velo'] = v
+    self.roverStatus.wheel[1]['velo'] = v
+    self.roverStatus.wheel[2]['velo'] = v
+    self.roverStatus.wheel[3]['velo'] = v
+    self.roverStatus.wheel[4]['velo'] = v
+    self.roverStatus.wheel[5]['velo'] = v
 
     # Set the turning rates of each wheel
     self.roverStatus.wheel[0]['omega'] = omega
@@ -44,16 +47,17 @@ def independent(self):
     self.roverStatus.wheel[4]['omega'] = omega
     self.roverStatus.wheel[5]['omega'] = omega
 
+
 # Tank mode is selected:
 def tank(self):
     # Placeholders for joystick inputs
-    left_joystick_percent = self.roverStatus.joy_states['LJ/UpDown']/128.0
-    right_joystick_percent = self.roverStatus.joy_states['RJ/UpDown']/128.0
+    left_joystick_percent = self.roverStatus.joy_states['LJ/UpDown'] / 128.0
+    right_joystick_percent = self.roverStatus.joy_states['RJ/UpDown'] / 128.0
     # max allowed speed
     v = self.roverStatus.throttle / 100.0 * self.vMax
     v_left = v * left_joystick_percent
     v_right = v * right_joystick_percent
-    
+
     # all wheels are all angle 0
     self.roverStatus.wheel[0]['angle'] = 0
     self.roverStatus.wheel[1]['angle'] = 0
@@ -63,14 +67,14 @@ def tank(self):
     self.roverStatus.wheel[5]['angle'] = 0
 
     # right side velocity
-    self.roverStatus.wheel[0]['velo']  = v
-    self.roverStatus.wheel[1]['velo']  = v
-    self.roverStatus.wheel[2]['velo']  = v
-    
+    self.roverStatus.wheel[0]['velo'] = v * v_right
+    self.roverStatus.wheel[1]['velo'] = v * v_right
+    self.roverStatus.wheel[2]['velo'] = v * v_right
+
     # left side velocity
-    self.roverStatus.wheel[3]['velo']  = v
-    self.roverStatus.wheel[4]['velo']  = v
-    self.roverStatus.wheel[5]['velo']  = v
+    self.roverStatus.wheel[3]['velo'] = v * v_left
+    self.roverStatus.wheel[4]['velo'] = v * v_left
+    self.roverStatus.wheel[5]['velo'] = v * v_left
 
     # Do not let Wheel turn so turn rate is 0
     self.roverStatus.wheel[0]['omega'] = 0
@@ -81,9 +85,9 @@ def tank(self):
     self.roverStatus.wheel[5]['omega'] = 0
 
 
-#Ackerman (Explicit) steering mode is selected:
+# Ackerman (Explicit) steering mode is selected:
 def explicit(self):
-    
+
     c = (self.roverStatus.angle / 4) * self.cMax
     v = self.roverStatus.throttle / 100.0 * self.vMax
 
@@ -109,7 +113,7 @@ def explicit(self):
     v6 = v4
 
     v_max = max(math.fabs(v1), math.fabs(v2), math.fabs(v3), math.fabs(v4), math.fabs(v5), math.fabs(v6))
-    v_ratio = math.fabs(v_max / v)
+    v_ratio = sys.maxint if v == 0 else math.fabs(v_max / v)
     v1 = v1 / v_ratio
     v2 = v2 / v_ratio
     v3 = v3 / v_ratio
@@ -125,19 +129,18 @@ def explicit(self):
     omega5 = v5 / self.R
     omega6 = omega4
 
-
     self.roverStatus.wheel[0]['angle'] = theta1
     self.roverStatus.wheel[1]['angle'] = theta2
     self.roverStatus.wheel[2]['angle'] = theta3
     self.roverStatus.wheel[3]['angle'] = theta4
     self.roverStatus.wheel[4]['angle'] = theta5
     self.roverStatus.wheel[5]['angle'] = theta6
-    self.roverStatus.wheel[0]['velo']  = v1
-    self.roverStatus.wheel[1]['velo']  = v2
-    self.roverStatus.wheel[2]['velo']  = v3
-    self.roverStatus.wheel[3]['velo']  = v4
-    self.roverStatus.wheel[4]['velo']  = v5
-    self.roverStatus.wheel[5]['velo']  = v6
+    self.roverStatus.wheel[0]['velo'] = v1
+    self.roverStatus.wheel[1]['velo'] = v2
+    self.roverStatus.wheel[2]['velo'] = v3
+    self.roverStatus.wheel[3]['velo'] = v4
+    self.roverStatus.wheel[4]['velo'] = v5
+    self.roverStatus.wheel[5]['velo'] = v6
     self.roverStatus.wheel[0]['omega'] = omega1
     self.roverStatus.wheel[1]['omega'] = omega2
     self.roverStatus.wheel[2]['omega'] = omega3
@@ -146,16 +149,15 @@ def explicit(self):
     self.roverStatus.wheel[5]['omega'] = omega6
 
 
-#Vector (Crab) steering mode is selected:
+# Vector (Crab) steering mode is selected:
 def vector(self):
-    
 
     #(radians) steering angle of all wheels
-    #theta = (self.right_joystick_percent / 100.0) * self.thetaMax
+    # theta = (self.right_joystick_percent / 100.0) * self.thetaMax
     theta = self.roverStatus.angle  # * self.thetaMax
 
     #(m/s) linear velocity of all drive wheels
-    #v = (self.left_joystick_percent / 100.0) * self.vMax
+    # v = (self.left_joystick_percent / 100.0) * self.vMax
     v = self.roverStatus.throttle / 100.0 * self.vMax
 
     #(radians/s) rotation rate of all drive motors
@@ -167,12 +169,12 @@ def vector(self):
     self.roverStatus.wheel[3]['angle'] = theta
     self.roverStatus.wheel[4]['angle'] = theta
     self.roverStatus.wheel[5]['angle'] = theta
-    self.roverStatus.wheel[0]['velo']  = v
-    self.roverStatus.wheel[1]['velo']  = v
-    self.roverStatus.wheel[2]['velo']  = v
-    self.roverStatus.wheel[3]['velo']  = v
-    self.roverStatus.wheel[4]['velo']  = v
-    self.roverStatus.wheel[5]['velo']  = v
+    self.roverStatus.wheel[0]['velo'] = v
+    self.roverStatus.wheel[1]['velo'] = v
+    self.roverStatus.wheel[2]['velo'] = v
+    self.roverStatus.wheel[3]['velo'] = v
+    self.roverStatus.wheel[4]['velo'] = v
+    self.roverStatus.wheel[5]['velo'] = v
     self.roverStatus.wheel[0]['omega'] = omega
     self.roverStatus.wheel[1]['omega'] = omega
     self.roverStatus.wheel[2]['omega'] = omega
@@ -183,7 +185,7 @@ def vector(self):
 
 # %% Zero-Radius (In-Place) steering mode is selected:
 def zeroRadius(self):
-    #input_joystick()
+    # input_joystick()
 
     #(radians) steering angle of wheel 1
     theta1 = math.atan(self.b / self.w)
@@ -194,7 +196,7 @@ def zeroRadius(self):
     theta6 = theta1
 
     #(m/s) linear velocity of drive wheel 1
-    v1 = self.roverStatus.throttle / 100.0 * self.vMax  #* 0.5
+    v1 = self.roverStatus.throttle / 100.0 * self.vMax  # * 0.5
     v2 = v1 * (self.w / (self.b ** 2 + self.w ** 2) ** 0.5)
     v3 = v1
     v4 = -v1
@@ -215,12 +217,12 @@ def zeroRadius(self):
     self.roverStatus.wheel[3]['angle'] = theta4
     self.roverStatus.wheel[4]['angle'] = theta5
     self.roverStatus.wheel[5]['angle'] = theta6
-    self.roverStatus.wheel[0]['velo']  = v1
-    self.roverStatus.wheel[1]['velo']  = v2
-    self.roverStatus.wheel[2]['velo']  = v3
-    self.roverStatus.wheel[3]['velo']  = v4
-    self.roverStatus.wheel[4]['velo']  = v5
-    self.roverStatus.wheel[5]['velo']  = v6
+    self.roverStatus.wheel[0]['velo'] = v1
+    self.roverStatus.wheel[1]['velo'] = v2
+    self.roverStatus.wheel[2]['velo'] = v3
+    self.roverStatus.wheel[3]['velo'] = v4
+    self.roverStatus.wheel[4]['velo'] = v5
+    self.roverStatus.wheel[5]['velo'] = v6
     self.roverStatus.wheel[0]['omega'] = omega1
     self.roverStatus.wheel[1]['omega'] = omega2
     self.roverStatus.wheel[2]['omega'] = omega3
