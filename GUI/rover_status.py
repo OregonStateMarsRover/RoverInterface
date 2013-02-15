@@ -20,6 +20,7 @@ class RoverStatus():
     # 4    1
     # 5    2
 
+    # TODO: make wheels 2 to 7 (starting with front left, ending with rear right)
     wheel = [{}, {}, {}, {}, {}, {}]
 
     wheel[0]['angle'] = 0
