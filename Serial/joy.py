@@ -3,7 +3,7 @@
 # Description:  Joy parses data coming from the Logitech F310 Gamepad and
 #				updates a dictionary of joy_states.
 
-### NOTES #####################################################################
+### NOTE: #####################################################################
 # 1) LEAVE MODE 'OFF' there is no support in parser_core.py for MODE ON       #
 # 2) This parser was built using this tutorial as a reference:		      	  #
 #	http://hackshark.com/?p=147#axzz2BHTVXCFz			      				  #
@@ -40,6 +40,7 @@ import threading
 
 class JoyParser(threading.Thread):
     def __init__(self, bus, roverStatus):
+        # TODO: Refresh parent
         threading.Thread.__init__(self)
         self.bus = bus
         self.joy_states = roverStatus.joy_states
@@ -51,6 +52,7 @@ class JoyParser(threading.Thread):
                         '\x07': 'Start', '\x08': 'Middle', '\t': 'LJ/Button',
                         '\n': 'RJ/Button'}
         # List of Joy Names
+        # TODO: Remove Left, Right, Up, Down
         self.joys = ['LT', 'RT',
                      'LJ/Left', 'LJ/Right', 'LJ/Up', 'LJ/Down',
                      'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down',

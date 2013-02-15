@@ -16,10 +16,9 @@ def setup_constants(self):
     self.cMax = 1.0 / self.w - 0.001
     self.thetaMax = (3.14159 / 180) * 140
 
-
+# TODO: Math use joy status
 # independent mode is selected:
 def independent(self):
-
     # Note: no joystick input
 
     # Velocity

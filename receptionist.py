@@ -33,6 +33,7 @@ class Receptionist(threading.Thread):
     def __init__(self, roverStatus):
         threading.Thread.__init__(self)
         self.bus = Bus()
+        # TODO: Add mutex around queuer 
         self.queue = Queue.Queue()
         # This Listener listens to bus and adds messages to the queue
         # self.listenerthread = Listener(self.bus, self.queue, roverStatus)
@@ -42,8 +43,8 @@ class Receptionist(threading.Thread):
         self.queuerthread = Queuer(self.joy_queue, roverStatus)
         self.queuerthread.start()
 
-    # NOTE: Packets in queue are simply bytearrays that can be sent immediately
     # TODO: If the address is 2-7, then make a bogie packet
+    # NOTE: Packets in queue are simply bytearrays that can be sent immediately
     def run(self):
         while 1:
             if self.queue.empty() is False:
@@ -54,6 +55,7 @@ class Receptionist(threading.Thread):
                     print repr(packet)
 
             packet_list = []
+            # TODO: move to queuer 
             if self.joy_queue.empty() is False:
                 packet_data = self.joy_queue.get()
                 addr, speed, angle = packet_data
