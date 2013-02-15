@@ -47,8 +47,8 @@ def independent(self):
 # Tank mode is selected:
 def tank(self):
     # Placeholders for joystick inputs
-    left_joystick_percent = 1
-    right_joystick_percent = 1
+    left_joystick_percent = self.roverStatus.joy_states['LJ/UpDown']/128.0
+    right_joystick_percent = self.roverStatus.joy_states['RJ/UpDown']/128.0
     # max allowed speed
     v = self.roverStatus.throttle / 100.0 * self.vMax
     v_left = v * left_joystick_percent

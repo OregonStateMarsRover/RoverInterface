@@ -33,7 +33,7 @@ class Receptionist(threading.Thread):
     def __init__(self, roverStatus):
         threading.Thread.__init__(self)
         self.bus = Bus()
-        # TODO: Add mutex around queuer 
+        # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
         # This Listener listens to bus and adds messages to the queue
         # self.listenerthread = Listener(self.bus, self.queue, roverStatus)
@@ -58,7 +58,7 @@ class Receptionist(threading.Thread):
                     print repr(packet)
 
             packet_list = []
-            # TODO: move to queuer 
+            # TODO: move to queuer
             if self.joy_queue.empty() is False:
                 packet_data = self.joy_queue.get()
                 addr, speed, angle = packet_data
@@ -69,4 +69,3 @@ class Receptionist(threading.Thread):
             self.queue.put(packet_list)  # Add to recepetionists queue
 
  # OFF ROVER TEST                    self.bus.rover.write(packet)
-                
