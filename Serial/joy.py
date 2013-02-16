@@ -88,7 +88,7 @@ class JoyParser(threading.Thread):
             else:
                 self.parse_pressed_joy()
                 self.sanitize_joys()
-            print self.joy_states
+            # print self.joy_states
             self.parent.Refresh()
 
     def sanitize_joys(self):
