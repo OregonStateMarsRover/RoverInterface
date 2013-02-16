@@ -50,10 +50,10 @@ class Queuer(threading.Thread):
 
         for wheelAddr in range(2, 8):
             velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
-            velocity = velocity * 100
+            velocity = round(velocity * 100)
             velocity = self.intToByte(velocity)
             angle = self.roverStatus.wheel[wheelAddr - 2]['angle']
-            angle = self.intToByte(angle)
+            angle = round(self.intToByte(angle))
             cmd = wheelAddr, velocity, angle
             command_list.append(cmd)
 
