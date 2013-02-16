@@ -50,11 +50,8 @@ class RoverStatus():
                   'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
                   'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
                   'LJ/Button': 0, 'RJ/Button': 0,
-                  'LJ/Left': 0, 'LJ/Right': 0, 'LJ/Up': 0, 'LJ/Down': 0,
-                  'RJ/Left': 0, 'RJ/Right': 0, 'RJ/Up': 0, 'RJ/Down': 0,
                   'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
                   'RJ/LeftRight': 0, }
-    control_scheme = 'tank'  # Should be changed by GUI selection - Is not now
 
     angle = 0
     throttle = 100

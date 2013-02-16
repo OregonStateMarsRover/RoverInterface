@@ -44,10 +44,7 @@ class Receptionist(threading.Thread):
                 #print "InWaiting(): " + str(self.bus.rover.inWaiting())
                 # Flush Output to keep it fresh
                 #self.bus.rover.flushOutput()
-                # NOTE: 'data' is a python list that must be iterated through
-                data = self.queue.get()
-                #temp = data
-                for packet in data:
-                    print repr(packet)
+                packet = self.queue.get()
+                print repr(packet)
 
  # OFF ROVER TEST                    self.bus.rover.write(packet)
