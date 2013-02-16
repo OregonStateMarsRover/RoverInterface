@@ -109,7 +109,6 @@ class RoverPacket(object):
 class BogiePacket(RoverPacket):
     def __init__(self, addr, speed, turning):
         content = [int(speed), int(turning)]
-        # print content
         RoverPacket.__init__(self, addr, content)
 
     @classmethod
