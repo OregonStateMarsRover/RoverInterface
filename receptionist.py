@@ -48,7 +48,7 @@ class Receptionist(threading.Thread):
     def run(self):
         while 1:
             if self.queue.empty() is False:
-                print "InWaiting(): " + str(self.bus.rover.inWaiting())
+                #print "InWaiting(): " + str(self.bus.rover.inWaiting())
                 # Flush Output to keep it fresh
                 #self.bus.rover.flushOutput()
                 # NOTE: 'data' is a python list that must be iterated through
