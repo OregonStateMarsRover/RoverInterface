@@ -207,11 +207,13 @@ class Gui(wx.Frame):
 
         self.InitReceptionist()
         self.InitUI()
+        self.InitJoy()
         self.Centre()
         self.Maximize()
         self.Show()
 
     def InitUI(self):
+        print "Starting UI"
         panel = wx.Panel(self)
 
         notebook = RoverNotebook(panel, self.roverStatus)
@@ -221,11 +223,13 @@ class Gui(wx.Frame):
         panel.SetSizer(sizer)
 
     def InitReceptionist(self):
+        print "Starting Receptionist"
         self.receptionistthread = Receptionist(self.roverStatus)
         self.bus = self.receptionistthread.bus
         self.receptionistthread.start()
 
     def InitJoy(self):
+        print "Starting JoyParser"
         self.joythread = JoyParser(self, self.bus, self.roverStatus)
         self.joythread.start()
 
