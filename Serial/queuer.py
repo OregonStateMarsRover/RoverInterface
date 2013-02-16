@@ -22,7 +22,9 @@ class Queuer(threading.Thread):
         self.waitTime = 0.1  # Wait 20ms between packet cycles
 
     def run(self):
+        count = 0
         while 1:
+            count = count + 1
             # Make Joy Drive Commands
             drive_commands = self.poll_drive_command()
             drive_commands = self.assemble_drive_packet(drive_commands)
@@ -32,6 +34,15 @@ class Queuer(threading.Thread):
                 # Do something
             # Make Button Commands
             #self.receptionist_queue.put(self.poll_button_command())
+            print "Packet " + str(count)
+            print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
+            print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
+            print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
+            print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
+            print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
+            print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
+            print " "
+            print " "
             time.sleep(self.waitTime)
 
     def assemble_drive_packet(self, drive_commands):
