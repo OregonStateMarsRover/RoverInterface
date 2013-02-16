@@ -30,7 +30,7 @@ class Queuer(threading.Thread):
             # Make Joy Arm Commands
                 # Do something
             # Make Button Commands
-            # self.receptionist_queue.put(self.poll_button_command())
+            self.receptionist_queue.put(self.poll_button_command())
             time.sleep(self.waitTime)
 
     def poll_drive_command(self):
@@ -40,9 +40,9 @@ class Queuer(threading.Thread):
 
         for wheelAddr in range(2, 8):
             velocity = self.roverStatus.wheel[wheelAddr]['velo']
-            velocity = inttoByte(velocity)
+            velocity = self.intToByte(velocity)
             angle = self.roverStatus.wheel[wheelAddr]['angle']
-            angle = inttoByte(angle)
+            angle = self.intToByte(angle)
             cmd = wheelAddr, velocity, angle
             command_list.append(cmd)
 
