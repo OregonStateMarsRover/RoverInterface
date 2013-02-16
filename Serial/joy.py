@@ -60,11 +60,9 @@ class JoyParser(threading.Thread):
                      'LJ/LeftRight', 'LJ/UpDown', 'RJ/LeftRight',
                      'RJ/UpDown']
 
-
         # Initializes templist
         for x in range(8):
             self.templist.append(0)
-        parent.Refresh()
 
     def run(self):
         # Start Parser
@@ -85,7 +83,7 @@ class JoyParser(threading.Thread):
             else:
                 self.parse_pressed_joy()
                 self.sanitize_joys()
-            print self.joy_states
+            # print self.joy_states
             # self.parent.Refresh()
 
     def sanitize_joys(self):
@@ -114,7 +112,6 @@ class JoyParser(threading.Thread):
                 self.joy_states['Down'] = 1
 
         # print self.joy_states
-
     def parse_pressed_joy(self):
         # Updates joy states with values 0-255 as ints
         if self.templist[7] == '\x02' and self.templist[6] == '\x02':  # LT
