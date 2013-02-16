@@ -23,13 +23,23 @@ class ProbeDisplay(wx.Panel):
 	def __init__(self,parent, roverStatus):
 		wx.Panel.__init__(self,parent,id=wx.ID_ANY, size=(320,250), style=wx.BORDER_SUNKEN)
 		
-		button = wx.Button(self, label='Get Probe Data', pos=(70,190), size=(180,30))
+		button = wx.Button(self, label='Get Probe Data', pos=(180,190), size=(120,30))
 		self.Bind(wx.EVT_BUTTON, self.pressbutton, button)
 		self.Bind(wx.EVT_PAINT, self.OnPaint)
 		
 		titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         
 		self.roverStatus = roverStatus
+		
+	        self.slider = wx.Slider(self, -1, 0, 0, 100, pos=(70,200), size=(100,-1), 
+		style = wx.SL_AUTOTICKS)
+		
+		self.slider.Bind(wx.EVT_SCROLL, self.ChangeValue)
+		
+		self.sliderwheel = wx.SpinCtrl(self, value="0", size = (60,-1), pos = (10, 200))
+		self.sliderwheel.Bind(wx.EVT_SPINCTRL, self.ChangeValue)
+		
+		self.slider.SetTickFreq(5,1)
         
 		#Degree symbol unicode
 		dgsymbol_u = u'\u00b0'
@@ -49,8 +59,11 @@ class ProbeDisplay(wx.Panel):
 		self.SalinityOutput = wx.TextCtrl(self, -1, pos = (195, 100))
 		self.FtempOutput = wx.TextCtrl(self, -1, pos = (195, 130))
 		self.CtempOutput = wx.TextCtrl(self, -1, pos = (195, 160))
+		
+		#Static text for the slider.
+		SliderLbl = wx.StaticText(self, -1, label = "Distance:", pos = (11, 180))
 	
-	
+
 	def OnPaint(self, e):
 		self.SoilMoistureOutput.SetValue("%s" % self.roverStatus.soil_moisture)
 		self.ConductivityOutput.SetValue("%s" % self.roverStatus.conductivity)
@@ -67,4 +80,14 @@ class ProbeDisplay(wx.Panel):
 		self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
 		#This is the command to retrieve the info from the soil probe
 		print "Request Temp, Moisture, and Conductivity - cmd"
+		
+        def ChangeValue(self, event):
+                obj = event.GetEventObject()
+                value = obj.GetValue()
+                self.sliderwheel.SetValue(value)
+                self.slider.SetValue(value)
+                
+                
+                
+        
 		
