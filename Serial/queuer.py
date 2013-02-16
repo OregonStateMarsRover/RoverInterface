@@ -24,14 +24,24 @@ class Queuer(threading.Thread):
     def run(self):
         while 1:
             # Make Joy Drive Commands
-            drive_command = self.poll_drive_command()
-            for command in drive_command:
+            drive_commands = self.poll_drive_command()
+            drive_commands = self.assemble_drive_packet(drive_commands)
+            for command in drive_commands:
                 self.receptionist_queue.put(command)
             # Make Joy Arm Commands
                 # Do something
             # Make Button Commands
-            self.receptionist_queue.put(self.poll_button_command())
+            #self.receptionist_queue.put(self.poll_button_command())
             time.sleep(self.waitTime)
+
+    def assemble_drive_packet(self, drive_commands):
+        packet_list = []
+        for command in drive_commands:
+                wheelAddr, velocity, angle = command
+                packet = BogiePacket(wheelAddr, velocity, angle)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+        return packet_list
 
     def poll_drive_command(self):
         # Returns list of 6 tuples of drive commands in the form
@@ -40,6 +50,7 @@ class Queuer(threading.Thread):
 
         for wheelAddr in range(2, 8):
             velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
+            velocity = velocity * 100
             velocity = self.intToByte(velocity)
             angle = self.roverStatus.wheel[wheelAddr - 2]['angle']
             angle = self.intToByte(angle)
