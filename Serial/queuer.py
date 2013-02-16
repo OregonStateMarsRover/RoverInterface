@@ -39,9 +39,9 @@ class Queuer(threading.Thread):
         command_list = []
 
         for wheelAddr in range(2, 8):
-            velocity = self.roverStatus.wheel[wheelAddr]['velo']
+            velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
             velocity = self.intToByte(velocity)
-            angle = self.roverStatus.wheel[wheelAddr]['angle']
+            angle = self.roverStatus.wheel[wheelAddr - 2]['angle']
             angle = self.intToByte(angle)
             cmd = wheelAddr, velocity, angle
             command_list.append(cmd)
