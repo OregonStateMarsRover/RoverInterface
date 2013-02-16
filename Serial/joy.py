@@ -40,6 +40,7 @@ import threading
 
 class JoyParser(threading.Thread):
     def __init__(self, parent, bus, roverStatus):
+        threading.Thread.__init__(self)
 
         # Pull parameters into self
         self.parent = parent
@@ -55,14 +56,10 @@ class JoyParser(threading.Thread):
                         '\x07': 'Start', '\x08': 'Middle', '\t': 'LJ/Button',
                         '\n': 'RJ/Button'}
         # List of Joy Names
-        # TODO: Remove Left, Right, Up, Down
         self.joys = ['LT', 'RT',
-                     'LJ/Left', 'LJ/Right', 'LJ/Up', 'LJ/Down',
-                     'RJ/Left', 'RJ/Right', 'RJ/Up', 'RJ/Down',
                      'LJ/LeftRight', 'LJ/UpDown', 'RJ/LeftRight',
                      'RJ/UpDown']
 
-        threading.Thread.__init__(self)
 
         # Initializes templist
         for x in range(8):
