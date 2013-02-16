@@ -79,9 +79,6 @@ class DriveControls(wx.Panel):
             self.rbIndependent.SetValue(True)
         elif self.roverStatus.drive_mode == 'tank':
             self.rbTank.SetValue(True)
-        print "Joystatus"
-        print self.roverStatus.joy_states
-        print "Joystatus"
 
     def ChangeThrottleValue(self, event):
         obj = event.GetEventObject()

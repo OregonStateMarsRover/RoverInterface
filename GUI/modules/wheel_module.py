@@ -54,12 +54,12 @@ class DriveSim(wx.Panel):
         self.rl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[5]['angle']))
         self.rr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[2]['angle']))
         #print(self.roverStatus.fl_angle)
-        front_left   = self.draw_wheel(self.roverStatus.wheel[3], (200, 80))
-        front_right  = self.draw_wheel(self.roverStatus.wheel[0], (300, 80))
-        middle_left  = self.draw_wheel(self.roverStatus.wheel[4], (200, 170))
-        middle_right = self.draw_wheel(self.roverStatus.wheel[1], (300, 170))
-        rear_left    = self.draw_wheel(self.roverStatus.wheel[5], (200, 260))
-        rear_right   = self.draw_wheel(self.roverStatus.wheel[2], (300, 260))
+        self.draw_wheel(self.roverStatus.wheel[3], (200, 80))
+        self.draw_wheel(self.roverStatus.wheel[0], (300, 80))
+        self.draw_wheel(self.roverStatus.wheel[4], (200, 170))
+        self.draw_wheel(self.roverStatus.wheel[1], (300, 170))
+        self.draw_wheel(self.roverStatus.wheel[5], (200, 260))
+        self.draw_wheel(self.roverStatus.wheel[2], (300, 260))
 
     def OnSpinCtrl(self, e):
         obj = e.GetEventObject()

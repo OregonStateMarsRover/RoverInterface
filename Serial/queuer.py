@@ -34,15 +34,15 @@ class Queuer(threading.Thread):
                 # Do something
             # Make Button Commands
             #self.receptionist_queue.put(self.poll_button_command())
-            print "Packet " + str(count)
-            print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
-            print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
-            print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
-            print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
-            print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
-            print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
-            print " "
-            print " "
+            # print "Packet " + str(count)
+            # print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
+            # print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
+            # print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
+            # print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
+            # print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
+            # print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
+            # print " "
+            # print " "
             time.sleep(self.waitTime)
 
     def assemble_drive_packet(self, drive_commands):
