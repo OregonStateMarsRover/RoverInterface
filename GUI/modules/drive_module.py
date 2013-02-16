@@ -5,6 +5,7 @@
 import wx
 import math
 
+
 class DriveControls(wx.Panel):
     def __init__(self, parent, driveSim, roverStatus):
 
@@ -21,8 +22,10 @@ class DriveControls(wx.Panel):
 
         self.roverStatus = roverStatus
 
-        self.throttle = wx.Slider(self, value=self.roverStatus.throttle, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
-        self.angle = wx.Slider(self, value=math.degrees(self.roverStatus.angle), minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.throttle = wx.Slider(
+            self, value=self.roverStatus.throttle, minValue=0, maxValue=100, size=(200, -1), style=wx.SL_HORIZONTAL)
+        self.angle = wx.Slider(self, value=math.degrees(
+            self.roverStatus.angle), minValue=-90, maxValue=90, size=(200, -1), style=wx.SL_HORIZONTAL)
 
         self.throttle.Bind(wx.EVT_SCROLL, self.ChangeThrottleValue)
         self.angle.Bind(wx.EVT_SCROLL, self.ChangeAngleValue)
@@ -30,33 +33,33 @@ class DriveControls(wx.Panel):
         self.spinCtrlThrottle = wx.SpinCtrl(self, value="%d" % self.roverStatus.throttle, size=(55, -1))
         self.spinCtrlThrottle.SetRange(0, 100)
         self.spinCtrlThrottle.Bind(wx.EVT_SPINCTRL, self.ChangeThrottleValue)
-        
+
         self.spinCtrlAngle = wx.SpinCtrl(self, value="%d" % math.degrees(self.roverStatus.angle), size=(55, -1))
         self.spinCtrlAngle.SetRange(-90, 90)
         self.spinCtrlAngle.Bind(wx.EVT_SPINCTRL, self.ChangeAngleValue)
-        
-        #self.zeroPtTurn = wx.Button(self, label="Zero Point Turn")
-        #self.zeroPtTurn.Bind(wx.EVT_BUTTON, self.ZeroPtTurn)
-        
+
+        # self.zeroPtTurn = wx.Button(self, label="Zero Point Turn")
+        # self.zeroPtTurn.Bind(wx.EVT_BUTTON, self.ZeroPtTurn)
+
         self.stDriveControls = wx.StaticText(self, label="Drive Controls")
         self.stDriveControls.SetFont(titleFont)
         self.stThrottle = wx.StaticText(self, label="Throttle")
         self.stAngle = wx.StaticText(self, label="Angle")
         self.stDriveMode = wx.StaticText(self, label="Drive Mode")
         self.stDriveMode.SetFont(subTitleFont)
-        
+
         self.rbZeroRadius = wx.RadioButton(self, label="Zero Radius", style=wx.RB_GROUP)
         self.rbVector = wx.RadioButton(self, label="Vector")
         self.rbExplicit = wx.RadioButton(self, label="Explicit")
         self.rbIndependent = wx.RadioButton(self, label="Independent")
         self.rbTank = wx.RadioButton(self, label="Tank")
-        
+
         self.rbZeroRadius.Bind(wx.EVT_RADIOBUTTON, self.ChangeMode)
         self.rbVector.Bind(wx.EVT_RADIOBUTTON, self.ChangeMode)
         self.rbExplicit.Bind(wx.EVT_RADIOBUTTON, self.ChangeMode)
         self.rbIndependent.Bind(wx.EVT_RADIOBUTTON, self.ChangeMode)
         self.rbTank.Bind(wx.EVT_RADIOBUTTON, self.ChangeMode)
-        
+
         self.Center()
         self.__do_layout()
 
@@ -65,7 +68,7 @@ class DriveControls(wx.Panel):
         self.throttle.SetValue(self.roverStatus.throttle)
         self.spinCtrlAngle.SetValue(-math.degrees(self.roverStatus.angle))
         self.angle.SetValue(-math.degrees(self.roverStatus.angle))
-        
+
         if self.roverStatus.drive_mode == 'zeroRadius':
             self.rbZeroRadius.SetValue(True)
         elif self.roverStatus.drive_mode == 'vector':
@@ -76,7 +79,10 @@ class DriveControls(wx.Panel):
             self.rbIndependent.SetValue(True)
         elif self.roverStatus.drive_mode == 'tank':
             self.rbTank.SetValue(True)
-        
+        print "Joystatus"
+        print self.roverStatus.joy_states
+        print "Joystatus"
+
     def ChangeThrottleValue(self, event):
         obj = event.GetEventObject()
         self.roverStatus.throttle = obj.GetValue()
@@ -95,7 +101,7 @@ class DriveControls(wx.Panel):
 
         self.parent.Refresh()
 
-    #def ZeroPtTurn(self, event):
+    # def ZeroPtTurn(self, event):
     #    print("Zero Point Turn")
 
     def ChangeMode(self, event):
@@ -111,52 +117,52 @@ class DriveControls(wx.Panel):
             self.roverStatus.drive_mode = 'independent'
         elif obj == self.rbTank:
             self.roverStatus.drive_mode = 'tank'
-        
+
         print "drive mode: ", self.roverStatus.drive_mode
         self.parent.Refresh()
-        
+
     def __do_layout(self):
         gridSizer = wx.FlexGridSizer(8, 1, 3, 3)
-        
+
         gridSizer.Add(self.stDriveControls, flag=wx.ALIGN_CENTER)
         gridSizer.Add(self.stAngle, flag=wx.ALIGN_CENTER)
-        
+
         hSizerAngle = wx.BoxSizer(wx.HORIZONTAL)
 
         hSizerAngle.Add(self.angle)
         hSizerAngle.Add(self.spinCtrlAngle)
-        
+
         gridSizer.Add(hSizerAngle, flag=wx.ALIGN_CENTER)
         gridSizer.Add(self.stThrottle, flag=wx.ALIGN_CENTER)
-        
+
         hSizerThrot = wx.BoxSizer(wx.HORIZONTAL)
-        
+
         hSizerThrot.Add(self.throttle)
         hSizerThrot.Add(self.spinCtrlThrottle)
-        
+
         gridSizer.Add(hSizerThrot, flag=wx.ALIGN_CENTER)
-        
+
         hSizerAngle = wx.BoxSizer(wx.HORIZONTAL)
-        
+
         gridSizer.Add(wx.StaticText(self))
-        #gridSizer.Add(self.zeroPtTurn, (7, 1), flag=wx.EXPAND)
+        # gridSizer.Add(self.zeroPtTurn, (7, 1), flag=wx.EXPAND)
         gridSizer.Add(self.stDriveMode, flag=wx.ALIGN_CENTER)
-        
+
         hSizerRBTop = wx.BoxSizer(wx.HORIZONTAL)
-        
+
         hSizerRBTop.Add(self.rbZeroRadius)
         hSizerRBTop.Add(self.rbVector)
         hSizerRBTop.Add(self.rbExplicit)
-        
+
         hSizerRBBot = wx.BoxSizer(wx.HORIZONTAL)
-        
+
         hSizerRBBot.Add(self.rbIndependent)
         hSizerRBBot.Add(self.rbTank)
-        
+
         gridSizer.Add(hSizerRBTop, flag=wx.ALIGN_CENTER)
         gridSizer.Add(hSizerRBBot, flag=wx.ALIGN_CENTER)
 
         gridSizer.AddGrowableCol(0, 0)
-        
+
         self.SetSizer(gridSizer)
         self.Layout()

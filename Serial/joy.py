@@ -85,8 +85,8 @@ class JoyParser(threading.Thread):
             else:
                 self.parse_pressed_joy()
                 self.sanitize_joys()
-            # print self.joy_states
-            self.parent.Refresh()
+            print self.joy_states
+            # self.parent.Refresh()
 
     def sanitize_joys(self):
         # Adjusts the joy states when close to 0, to make sure 0 happens
@@ -112,6 +112,8 @@ class JoyParser(threading.Thread):
                 self.joy_states['Right'] = 1
             elif self.templist[7] == '\x07':  # Down
                 self.joy_states['Down'] = 1
+
+        # print self.joy_states
 
     def parse_pressed_joy(self):
         # Updates joy states with values 0-255 as ints
@@ -166,6 +168,8 @@ class JoyParser(threading.Thread):
                 self.joy_states['RJ/Up'] = val
                 self.joy_states['RJ/UpDown'] = val
 
+        # print self.joy_states
+
     def parse_released_button(self):
         # Updates states of buttons to 0(off)
         if self.templist[5] == '\x00' and self.templist[6] == '\x01':  # Letters,
@@ -184,3 +188,5 @@ class JoyParser(threading.Thread):
                     self.joy_states['Left'] = 0
                 elif self.joy_states['Right'] == 1:  # Right
                     self.joy_states['Right'] = 0
+
+        # print self.joy_states
