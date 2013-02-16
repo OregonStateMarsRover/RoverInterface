@@ -19,14 +19,11 @@
 
 import sys
 sys.path.append('./Serial')
-# import serial
-# import time
 import Queue
 import threading
 from roverpacket import *
 from bus import *
 from queuer import *
-# from listener import *\
 
 
 class Receptionist(threading.Thread):
@@ -35,12 +32,8 @@ class Receptionist(threading.Thread):
         self.bus = Bus()
         # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
-        # This Listener listens to bus and adds messages to the queue
-        # self.listenerthread = Listener(self.bus, self.queue, roverStatus)
-        # self.listenerthread.start()
-
-        self.joy_queue = Queue.Queue()
-        self.queuerthread = Queuer(self.joy_queue, roverStatus)
+        # Launch the queuer thread
+        self.queuerthread = Queuer(self.queue, roverStatus)
         self.queuerthread.start()
 
     # TODO: If the address is 2-7, then make a bogie packet
@@ -56,16 +49,5 @@ class Receptionist(threading.Thread):
                 #temp = data
                 for packet in data:
                     print repr(packet)
-
-            packet_list = []
-            # TODO: move to queuer
-            if self.joy_queue.empty() is False:
-                packet_data = self.joy_queue.get()
-                addr, speed, angle = packet_data
-                packet = BogiePacket(addr, speed, angle)
-                packet = packet.msg()  # Serializes packet
-                packet_list.append(packet)
-
-            self.queue.put(packet_list)  # Add to recepetionists queue
 
  # OFF ROVER TEST                    self.bus.rover.write(packet)
