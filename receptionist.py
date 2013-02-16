@@ -39,12 +39,14 @@ class Receptionist(threading.Thread):
     # TODO: If the address is 2-7, then make a bogie packet
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
     def run(self):
+        count = 0
         while 1:
             if self.queue.empty() is False:
+                count = count + 1
                 #print "InWaiting(): " + str(self.bus.rover.inWaiting())
                 # Flush Output to keep it fresh
                 #self.bus.rover.flushOutput()
                 packet = self.queue.get()
-                print repr(packet)
+#                print "Packet #" + str(count) + ": " + repr(packet)
 
  # OFF ROVER TEST                    self.bus.rover.write(packet)
