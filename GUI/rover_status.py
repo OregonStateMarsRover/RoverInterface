@@ -11,8 +11,8 @@ import math
 class RoverStatus():
 
     # drive_mode = 'zeroRadius'
-    # drive_mode = 'vector'
-    drive_mode = 'explicit'
+    drive_mode = 'vector'
+    # drive_mode = 'explicit'
     # drive_mode = 'independent'
     # drive_mode = 'tank'
 
