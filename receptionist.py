@@ -27,13 +27,15 @@ from queuer import *
 
 
 class Receptionist(threading.Thread):
-    def __init__(self, roverStatus):
+    def __init__(self, gui, roverStatus):
         threading.Thread.__init__(self)
         self.bus = Bus()
+        self.gui = gui
+        self.roverStatus = roverStatus
         # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
         # Launch the queuer thread
-        self.queuerthread = Queuer(self.queue, roverStatus)
+        self.queuerthread = Queuer(gui, self.queue, roverStatus)
         self.queuerthread.start()
 
     # TODO: If the address is 2-7, then make a bogie packet

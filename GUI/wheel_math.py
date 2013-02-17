@@ -23,7 +23,7 @@ def setup_constants(self):
 
 def independent(self):
     # Note: no joystick input
-
+    setup_constants(self)
     # Velocity
     v = self.roverStatus.throttle / 100.0 * self.vMax
     # Omega is the turning rate of the wheels
@@ -50,6 +50,7 @@ def independent(self):
 
 # Tank mode is selected:
 def tank(self):
+    setup_constants(self)
     # Placeholders for joystick inputs
     left_joystick_percent = self.roverStatus.joy_states['LJ/UpDown'] / 128.0
     right_joystick_percent = self.roverStatus.joy_states['RJ/UpDown'] / 128.0
@@ -88,7 +89,7 @@ def tank(self):
 
 # Ackerman (Explicit) steering mode is selected:
 def explicit(self):
-
+    setup_constants(self)
     c = (self.roverStatus.angle / 4) * self.cMax
     v = self.roverStatus.throttle / 100.0 * self.vMax
 
@@ -152,6 +153,7 @@ def explicit(self):
 
 # Vector (Crab) steering mode is selected:
 def vector(self):
+    setup_constants(self)
 
     #(radians) steering angle of all wheels
     # theta = (self.right_joystick_percent / 100.0) * self.thetaMax
@@ -186,6 +188,7 @@ def vector(self):
 
 # %% Zero-Radius (In-Place) steering mode is selected:
 def zeroRadius(self):
+    setup_constants(self)
     # input_joystick()
 
     #(radians) steering angle of wheel 1

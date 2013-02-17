@@ -14,10 +14,10 @@ from joy import *
 
 
 class Queuer(threading.Thread):
-    def __init__(self, receptionist_queue, roverStatus):
+    def __init__(self, gui, receptionist_queue, roverStatus):
         threading.Thread.__init__(self)
+        self.gui = gui
         self.receptionist_queue = receptionist_queue
-        self.roverStatus = roverStatus
         self.roverStatus = roverStatus
         self.waitTime = 0.1  # Wait 20ms between packet cycles
 
@@ -26,6 +26,9 @@ class Queuer(threading.Thread):
         while 1:
             count = count + 1
             # Make Joy Drive Commands
+            self.gui.UpdateMath()
+            if count % 20 == 0:
+                self.gui.Refresh()
             drive_commands = self.poll_drive_command()
             drive_commands = self.assemble_drive_packet(drive_commands)
             for command in drive_commands:
@@ -34,15 +37,15 @@ class Queuer(threading.Thread):
                 # Do something
             # Make Button Commands
             #self.receptionist_queue.put(self.poll_button_command())
-            # print "Packet " + str(count)
-            # print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
-            # print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
-            # print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
-            # print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
-            # print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
-            # print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
-            # print " "
-            # print " "
+            print "Packet " + str(count)
+            print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
+            print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
+            print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
+            print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
+            print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
+            print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
+            print " "
+            print " "
             time.sleep(self.waitTime)
 
     def assemble_drive_packet(self, drive_commands):
@@ -58,7 +61,6 @@ class Queuer(threading.Thread):
         # Returns list of 6 tuples of drive commands in the form
         # (wheelAddr, velocity, angle)
         command_list = []
-
         for wheelAddr in range(2, 8):
             velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
             velocity = round(velocity * 100)
