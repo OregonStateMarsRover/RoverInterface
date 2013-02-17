@@ -22,6 +22,7 @@ from package_module import *
 from rover_status import *
 from wheel_module import *
 from receptionist import *
+from wheel_math import *
 
 
 class AllTerrain(wx.Panel):
@@ -224,7 +225,7 @@ class Gui(wx.Frame):
 
     def InitReceptionist(self):
         print "Starting Receptionist"
-        self.receptionistthread = Receptionist(self.roverStatus)
+        self.receptionistthread = Receptionist(self, self.roverStatus)
         self.bus = self.receptionistthread.bus
         self.receptionistthread.start()
 
@@ -232,6 +233,18 @@ class Gui(wx.Frame):
         print "Starting JoyParser"
         self.joythread = JoyParser(self, self.bus, self.roverStatus)
         self.joythread.start()
+
+    def UpdateMath(self):
+        if self.roverStatus.drive_mode == 'zeroRadius':
+            zeroRadius(self)
+        elif self.roverStatus.drive_mode == 'vector':
+            vector(self)
+        elif self.roverStatus.drive_mode == 'explicit':
+            explicit(self)
+        elif self.roverStatus.drive_mode == 'independent':
+            independent(self)
+        elif self.roverStatus.drive_mode == 'tank':
+            tank(self)
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()
