@@ -157,12 +157,18 @@ def vector(self):
 
     #(radians) steering angle of all wheels
     # theta = (self.right_joystick_percent / 100.0) * self.thetaMax
-    theta = self.roverStatus.angle  # * self.thetaMax
-
+    o = self.roverStatus.joy_states['RJ/UpDown']
+    a = self.roverStatus.joy_states['RJ/LeftRight']
+    theta = math.atan2(o * 1.0, a * 1.0) - math.pi / 2
+    v = self.roverStatus.throttle / 100.0 * self.vMax
+    v = (o ** 2 + a ** 2) ** 0.5 / 129 * v
+    if math.degrees(theta) < -90:
+        theta += math.pi
+        v = -v
+    # print(math.degrees(theta))
+    # theta = self.roverStatus.angle  # * self.thetaMax
     #(m/s) linear velocity of all drive wheels
     # v = (self.left_joystick_percent / 100.0) * self.vMax
-    v = self.roverStatus.throttle / 100.0 * self.vMax
-
     #(radians/s) rotation rate of all drive motors
     omega = v / self.R
 
@@ -200,7 +206,8 @@ def zeroRadius(self):
     theta6 = theta1
 
     #(m/s) linear velocity of drive wheel 1
-    v1 = self.roverStatus.throttle / 100.0 * self.vMax  # * 0.5
+    right_joystick_percent = self.roverStatus.joy_states['RJ/UpDown'] / 128.0
+    v1 = right_joystick_percent * self.roverStatus.throttle / 100.0 * self.vMax  # * 0.5
     v2 = v1 * (self.w / (self.b ** 2 + self.w ** 2) ** 0.5)
     v3 = v1
     v4 = -v1
