@@ -1,3 +1,16 @@
+#########################################################################
+# OSURC (Oregon State University Robotics Club) GPS SLIP MAP            #
+#                                                                       #
+# Author: Austin Dubina                                                 #
+# Date: 2/8/2013                                                        #
+# Description: A redition of the open source osm-gps-map project        #
+# (http://nzjrs.github.com/osm-gps-map/). A PyGTK based program used to #
+# graphically display points of intrest and the geographical coordinates#
+# of the OSU mars rover. This program downloads and caches maps from    #
+# various open sourced tile servers and displays them in a "slip map"   #
+# fashion.                                                              #
+#########################################################################
+
 import sys
 import os.path
 import gtk
@@ -16,11 +29,12 @@ sys.path.insert(0, libdir)
 class UI(gtk.Window):
     def __init__(self):
 
-        #create new track object
+        #POI and Track Lists
         self.track_list = []
         self.poi_list = []
+
+        #track object
         #self.track = osmgpsmap.GpsMapTrack()
-        #self.track.props.color.blue = True
         
         #initialize the window settings
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
@@ -29,22 +43,37 @@ class UI(gtk.Window):
         self.set_title('OSURC GPS MAP VIEWER')
         self.set_position(gtk.WIN_POS_CENTER)
 
-        #creating the osmgpsmap module (changes the default sources from-1)
+        #osmgpsmap object
         self.osm = osmgpsmap.GpsMap(map_source = 12, show_trip_history = True, record_trip_history = True)
-
         #self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
         #self.osm = osmgpsmap.GpsMap(repo_uri = "http://c.tile.stamen.com/toposm-contours/#Z/#X/#Y.png")
+
+        #OSD object
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
         self.osm.props.has_tooltip = True
 
+        #Event Monitoring       
+        self.osm.connect("button_release_event", self.poi)
+        self.osm.connect("query-tooltip", self.on_query_tooltip)
+
+        #regullary timed callback function
+        gobject.timeout_add(500, self.print_tiles)
+
+        #initialize gui layout
+        self.gui_layout()
+
+
+    def gui_layout(self):
         # Main program VBox layout (adding widgets to window from top down approach)
         self.vbox = gtk.VBox(False, 0)
         self.add(self.vbox)
         
-        # (first VBox widget) Adding Open street map widget to main window
+        # Open street map widget to main window
         self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
 
-        # (second Vbox widget) Hbox widget for map menu buttons (zoom in, zoom out, home, cache, and clear)
+        #################################################################################################################
+        # Horizontal menu for map navitagtion menu buttons (zoom in, zoom out, home, track list, clear poi, clear track)#
+        #################################################################################################################
         self.horz_button_menu = gtk.HBox(False, 0)
         self.vbox.pack_start(self.horz_button_menu, expand=False, fill=False, padding=4)
 
@@ -64,17 +93,18 @@ class UI(gtk.Window):
         track_list_button.connect('clicked', self.print_track_list)
         self.horz_button_menu.pack_start(track_list_button)
 
-        clear_track_button = gtk.Button('Remove POIs')
-        clear_track_button.connect('clicked', self.remove_images)
-        self.horz_button_menu.pack_start(clear_track_button)
+        clear_poi_button = gtk.Button('Remove POIs')
+        clear_poi_button.connect('clicked', self.remove_images)
+        self.horz_button_menu.pack_start(clear_poi_button)
 
         clear_track_button = gtk.Button("Remove Track")
         clear_track_button.connect('clicked', self.clear_track)
         self.horz_button_menu.pack_start(clear_track_button)
 
-        # (Third Vbox Entry) Hbox widget menu for manually adding Lat and Lon cordinates to slip map  
+        ###################################################################################################################
+        # horizontal menu for manually adding Lat and Lon cordinates to slip map                                          #
+        ###################################################################################################################
         self.horz_marker_menu = gtk.HBox(False, 0)
-
         self.horz_marker_menu.pack_start(gtk.Label("LAT: "), False)
         adj1 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
         self.lat_spin_button = gtk.SpinButton(adj1, 1.0, 5)
@@ -99,7 +129,9 @@ class UI(gtk.Window):
 
         self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
 
-        # Expander Menu for custom Map Repositories
+        ##################################################################################################################
+        # Expander Menu for custom Map Repositories                                                                      #
+        ##################################################################################################################
         self.ex = gtk.Expander("<b>Map Repository URI</b>")
         self.vbox.pack_start(self.ex, expand=False, fill=False)
         self.ex.props.use_markup = True
@@ -155,12 +187,9 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         gobtn.connect("clicked", self.load_map_clicked)
         repo_vb.pack_start(gobtn, False)
 
-        #Event Monitoring       
-        self.osm.connect("button_release_event", self.poi)
-        self.osm.connect("query-tooltip", self.on_query_tooltip)
-
-        #regullary timed callback function
-        gobject.timeout_add(500, self.print_tiles)
+        ###################################################################################################
+        #End of gui gui_layout                                                                            #
+        ###################################################################################################
 
     def load_map_clicked(self, button):
         uri = self.repouri_entry.get_text()
