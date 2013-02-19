@@ -15,6 +15,13 @@ sys.path.insert(0, libdir)
 
 class UI(gtk.Window):
     def __init__(self):
+
+        #create new track object
+        self.track_list = []
+        self.poi_list = []
+        #self.track = osmgpsmap.GpsMapTrack()
+        #self.track.props.color.blue = True
+        
         #initialize the window settings
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
         self.set_default_size(640, 480)
@@ -23,7 +30,8 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #creating the osmgpsmap module (changes the default sources from-1)
-        self.osm = osmgpsmap.GpsMap(map_source = 12)
+        self.osm = osmgpsmap.GpsMap(map_source = 12, show_trip_history = True, record_trip_history = True)
+
         #self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
         #self.osm = osmgpsmap.GpsMap(repo_uri = "http://c.tile.stamen.com/toposm-contours/#Z/#X/#Y.png")
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
@@ -35,9 +43,6 @@ class UI(gtk.Window):
         
         # (first VBox widget) Adding Open street map widget to main window
         self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
-
-        #self.latlon_entry = gtk.Entry()
-        #self.vbox.pack_start(self.latlon_entry, expand=False, fill=True, padding=0)
 
         # (second Vbox widget) Hbox widget for map menu buttons (zoom in, zoom out, home, cache, and clear)
         self.horz_button_menu = gtk.HBox(False, 0)
@@ -55,10 +60,16 @@ class UI(gtk.Window):
         home_button.connect('clicked', self.home_clicked)
         self.horz_button_menu.pack_start(home_button)
 
-        
-        
+        track_list_button = gtk.Button("Print GPS List")
+        track_list_button.connect('clicked', self.print_track_list)
+        self.horz_button_menu.pack_start(track_list_button)
+
         clear_track_button = gtk.Button('Remove POIs')
         clear_track_button.connect('clicked', self.remove_images)
+        self.horz_button_menu.pack_start(clear_track_button)
+
+        clear_track_button = gtk.Button("Remove Track")
+        clear_track_button.connect('clicked', self.clear_track)
         self.horz_button_menu.pack_start(clear_track_button)
 
         # (Third Vbox Entry) Hbox widget menu for manually adding Lat and Lon cordinates to slip map  
@@ -66,14 +77,14 @@ class UI(gtk.Window):
 
         self.horz_marker_menu.pack_start(gtk.Label("LAT: "), False)
         adj1 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
-        self.lat_spin_button = gtk.SpinButton(adj1, 1.0, 4)
+        self.lat_spin_button = gtk.SpinButton(adj1, 1.0, 5)
         self.lat_spin_button.set_wrap(True)
         self.lat_spin_button.set_size_request(100, -1)
         self.horz_marker_menu.pack_start(self.lat_spin_button, False, True, 0)
 
         self.horz_marker_menu.pack_start(gtk.Label("LON: "), False)
         adj2 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
-        self.lon_spin_button = gtk.SpinButton(adj2, 1.0, 4)
+        self.lon_spin_button = gtk.SpinButton(adj2, 1.0, 5)
         self.lon_spin_button.set_wrap(True)
         self.lon_spin_button.set_size_request(100, -1)
         self.horz_marker_menu.pack_start(self.lon_spin_button, False, True, 0)
@@ -134,13 +145,11 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
 
         self.echo_entry = gtk.Entry()
         hb.pack_start(self.echo_entry, expand=True, fill=True)
-        hb.pack_start(self.echo_entry, True)
         repo_vb.pack_start(hb, False)
 
         cache_button = gtk.Button('Cache')
         cache_button.connect('clicked', self.cache_clicked)
         hb.pack_start(cache_button, False)
-        repo_vb.pack_start(hb, False)
 
         gobtn = gtk.Button("Load Map URI")
         gobtn.connect("clicked", self.load_map_clicked)
@@ -189,14 +198,20 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
 
     def remove_images(self, osm):
         self.osm.image_remove_all()
+        self.poi_list = []
 
     def poi(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
         if event.button == 2:
             self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
+            #self.track.add_point(osmgpsmap.point_new_degrees(lat,lon))
+            #self.osm.track_add(self.track)
+            self.track_list.append([lat,lon])
+
         elif event.button == 3:
             pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 30,20)
             self.osm.image_add(lat,lon,pb)
+            self.poi_list.append([lat,lon])
 
     def place_marker(self, event):
         lat = self.lat_spin_button.get_value()
@@ -213,7 +228,7 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         self.osm.convert_screen_to_geographic(x, y, p)
         lat,lon = p.get_degrees()
         self.show_tooltips = True
-        tooltip.set_markup("%+.4f, %+.4f" % p.get_degrees())
+        tooltip.set_markup("%+.5f, %+.5f" % p.get_degrees())
         tooltip.set_icon_from_stock(gtk.STOCK_HOME, gtk.ICON_SIZE_MENU)
         return True
 
@@ -238,6 +253,21 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
             zoom_start=self.osm.props.zoom,
             zoom_end=self.osm.props.max_zoom
         )
+
+    def print_track_list(self, button):
+        if self.track_list:
+            print "Track List:"
+            for idx, val in enumerate(self.track_list):
+                print idx, val
+        if self.poi_list:
+            print "POI List:"
+            for idx, val in enumerate(self.poi_list):
+                print idx, val
+
+    def clear_track(self, button):
+        self.osm.gps_clear()
+        self.track_list = []
+
 
 l = osmgpsmap.get_default_cache_directory()
 print l
