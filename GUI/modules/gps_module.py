@@ -62,13 +62,40 @@ class UI(gtk.Window):
         #initialize gui layout
         self.gui_layout()
 
+    #################################################################################################################
+    # intializes the GUI menu layout                                                                                #
+    #################################################################################################################   
 
     def gui_layout(self):
         # Main program VBox layout (adding widgets to window from top down approach)
         self.vbox = gtk.VBox(False, 0)
         self.add(self.vbox)
-        
-        # Open street map widget to main window
+
+        #################################################################################################################
+        # Menu Bar                                                                                                      #
+        #################################################################################################################
+        mb = gtk.MenuBar()
+
+        filemenu = gtk.Menu()
+        filem = gtk.MenuItem("File")
+        filem.set_submenu(filemenu)
+       
+        exit = gtk.MenuItem("Exit")
+        exit.connect("activate", gtk.main_quit)
+        filemenu.append(exit)
+
+        export = gtk.MenuItem("Export List")
+        export.connect("activate", self.print_track_list)
+        filemenu.append(export)
+
+        mb.append(filem)
+
+        self.vbox.pack_start(mb, False, False, 0)
+
+        #################################################################################################################
+        #Open street map object                                                                                         #
+        #################################################################################################################
+
         self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
 
         #################################################################################################################
@@ -101,9 +128,9 @@ class UI(gtk.Window):
         clear_track_button.connect('clicked', self.clear_track)
         self.horz_button_menu.pack_start(clear_track_button)
 
-        ###################################################################################################################
-        # horizontal menu for manually adding Lat and Lon cordinates to slip map                                          #
-        ###################################################################################################################
+        #################################################################################################################
+        # horizontal menu for manually adding Lat and Lon cordinates to slip map                                        #
+        #################################################################################################################
         self.horz_marker_menu = gtk.HBox(False, 0)
         self.horz_marker_menu.pack_start(gtk.Label("LAT: "), False)
         adj1 = gtk.Adjustment(0.0, -1000.0, 1000.0, 0.5, 100, 0)
@@ -129,9 +156,9 @@ class UI(gtk.Window):
 
         self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
 
-        ##################################################################################################################
-        # Expander Menu for custom Map Repositories                                                                      #
-        ##################################################################################################################
+        #################################################################################################################
+        # Expander Menu for custom Map Repositories                                                                     #
+        #################################################################################################################
         self.ex = gtk.Expander("<b>Map Repository URI</b>")
         self.vbox.pack_start(self.ex, expand=False, fill=False)
         self.ex.props.use_markup = True
@@ -187,10 +214,9 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         gobtn.connect("clicked", self.load_map_clicked)
         repo_vb.pack_start(gobtn, False)
 
-        ###################################################################################################
-        #End of gui gui_layout                                                                            #
-        ###################################################################################################
-
+    #################################################################################################################
+    # unloads and redraws new gps slip map with newly specified map source                                          #
+    #################################################################################################################
     def load_map_clicked(self, button):
         uri = self.repouri_entry.get_text()
         format = self.image_format_entry.get_text()
@@ -213,11 +239,33 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
             self.osm.connect('button_release_event', self.poi)
             self.osm.connect("query-tooltip", self.on_query_tooltip)
             self.osm.show()   
+            self.redraw_gps()
 
+    #################################################################################################################
+    # redraws points of intrest and tracks stored in track_list and poi_list after a map reload                     #
+    #################################################################################################################
+    def redraw_gps(self):
+        if self.track_list:
+            for val in self.track_list:
+                lat, lon = val
+                self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
+
+        if self.poi_list:
+            pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 30,20)
+            for val in self.poi_list:
+                lat, lon = val
+                self.osm.image_add(lat,lon,pb)
+                
+    #################################################################################################################
+    # clears the Lat and Lon spin wheel                                                                             #
+    #################################################################################################################
     def clear_field(self, osm):
         self.lat_spin_button.set_value(0)
         self.lon_spin_button.set_value(0)
 
+    ##################################################################################################################
+    # prints the remaining number of tiles to be downloaded from current map source (located under map expander menu)#
+    ##################################################################################################################
     def print_tiles(self):
         if self.osm.props.tiles_queued != 0:
             self.echo_entry.set_text("Downloading %s Tiles" % self.osm.props.tiles_queued)
@@ -225,10 +273,16 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
             self.echo_entry.set_text("")
         return True
 
+    #################################################################################################################
+    # clears gps map of all POIs and removes them from stored list                                                  #
+    ################################################################################################################# 
     def remove_images(self, osm):
         self.osm.image_remove_all()
         self.poi_list = []
 
+    #################################################################################################################
+    # Adds either POI or Gps Track to map depending on event button caller                                          #
+    #################################################################################################################   
     def poi(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
         if event.button == 2:
@@ -242,6 +296,9 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
             self.osm.image_add(lat,lon,pb)
             self.poi_list.append([lat,lon])
 
+    #################################################################################################################
+    # manually add a poi marker to map using Lat and Lon from spin wheel menu                                       #
+    #################################################################################################################
     def place_marker(self, event):
         lat = self.lat_spin_button.get_value()
         lon = self.lon_spin_button.get_value()
@@ -249,6 +306,9 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         pb = gtk.gdk.pixbuf_new_from_file_at_size("poi.png", 30, 20)
         self.osm.image_add(lat, lon, pb)
 
+    #################################################################################################################
+    # propogate tooltip with lat and lon from event location on map                                                 #
+    #################################################################################################################
     def on_query_tooltip(self, widget, x, y, keyboard_tip, tooltip, data=None):
         if keyboard_tip:
             return False
@@ -260,11 +320,6 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
         tooltip.set_markup("%+.5f, %+.5f" % p.get_degrees())
         tooltip.set_icon_from_stock(gtk.STOCK_HOME, gtk.ICON_SIZE_MENU)
         return True
-
-        #Mouse Click on Map Event
-    def mouse_hover(self, osm, event):
-        lat,lon = self.osm.get_event_location(event).get_degrees()
-        #self.latlon_entry.set_text('LAT [%s] LON [%s]' % (lat, lon))
 
     def zoom_in_clicked(self, button):
         self.osm.set_zoom(self.osm.props.zoom + 1)
@@ -283,6 +338,9 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
             zoom_end=self.osm.props.max_zoom
         )
 
+    #################################################################################################################
+    # prints a list of waypoints from track_list and poi_list (will later replace with text export functionality)   #
+    #################################################################################################################
     def print_track_list(self, button):
         if self.track_list:
             print "Track List:"
