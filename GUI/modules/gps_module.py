@@ -74,21 +74,44 @@ class UI(gtk.Window):
         #################################################################################################################
         # Menu Bar                                                                                                      #
         #################################################################################################################
+        
         mb = gtk.MenuBar()
 
         filemenu = gtk.Menu()
         filem = gtk.MenuItem("File")
         filem.set_submenu(filemenu)
        
+        mb.append(filem)
+        
+        #map source menu
+        map_source_menu = gtk.Menu()
+
+        source_menu = gtk.MenuItem("Map Source")
+        source_menu.set_submenu(map_source_menu)
+
+        sat = gtk.MenuItem("satellite")
+        sat.connect("activate", self.load_map_clicked, "http://maptile.maps.svc.ovi.com/maptiler/maptile/newest/satellite.day/#Z/#X/#Y/256/png8", "png")
+
+        hybrid = gtk.MenuItem("Google Hybrid")
+        hybrid.connect("activate", self.load_map_clicked, "http://mt1.google.com/vt/lyrs=y&x=#X&y=#Y&z=#Z", "png")
+
+        topo = gtk.MenuItem("Topographical")
+        topo.connect("activate", self.load_map_clicked, "http://s3-us-west-1.amazonaws.com/caltopo/topo/#Z/#X/#Y.png?v=1", "png")
+
+        topo2 = gtk.MenuItem("Topographical2")
+        topo2.connect("activate", self.load_map_clicked, "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/#Z/#Y/#X.jpg", "jpg")
+
+        map_source_menu.append(sat)
+        map_source_menu.append(hybrid)
+        map_source_menu.append(topo)
+        map_source_menu.append(topo2)
+
+        filemenu.append(source_menu)
+        
+        #exit menu
         exit = gtk.MenuItem("Exit")
         exit.connect("activate", gtk.main_quit)
         filemenu.append(exit)
-
-        export = gtk.MenuItem("Export List")
-        export.connect("activate", self.print_track_list)
-        filemenu.append(export)
-
-        mb.append(filem)
 
         self.vbox.pack_start(mb, False, False, 0)
 
@@ -156,90 +179,39 @@ class UI(gtk.Window):
 
         self.vbox.pack_start(self.horz_marker_menu, expand=False, fill=False, padding=4)
 
+        self.horz_echo = gtk.HBox()
+        self.horz_echo.pack_start(gtk.Label("Tile Monitor: "), False)
+
         #################################################################################################################
-        # Expander Menu for custom Map Repositories                                                                     #
+        # Tile monitor and general echo entry                                                                           #
         #################################################################################################################
-        self.ex = gtk.Expander("<b>Map Repository URI</b>")
-        self.vbox.pack_start(self.ex, expand=False, fill=False)
-        self.ex.props.use_markup = True
-        repo_vb = gtk.VBox()
-        self.repouri_entry = gtk.Entry()
-        self.repouri_entry.set_text(self.osm.props.repo_uri)
-        self.image_format_entry = gtk.Entry()
-        self.image_format_entry.set_text(self.osm.props.image_format)
-
-        lbl = gtk.Label(
-"""
-Enter an repository URL to fetch map tiles from in the box below. Special metacharacters may be included in this url
-
-<i>Metacharacters:</i>
-\t#X\tMax X location
-\t#Y\tMax Y location
-\t#Z\tMap zoom (0 = min zoom, fully zoomed out)
-\t#S\tInverse zoom (max-zoom - #Z)
-\t#Q\tQuadtree encoded tile (qrts)
-\t#W\tQuadtree encoded tile (1234)
-\t#U\tEncoding not implemeted
-\t#R\tRandom integer, 0-4""")
-        lbl.props.xalign = 0
-        lbl.props.use_markup = True
-        lbl.props.wrap = True
-
-        self.ex.add(repo_vb)
-        repo_vb.pack_start(lbl, False)
-
-        hb = gtk.HBox()
-        hb.pack_start(gtk.Label("URI: "), False)
-        hb.pack_start(self.repouri_entry, True)
-        repo_vb.pack_start(hb, False)
-
-        hb = gtk.HBox()
-        hb.pack_start(gtk.Label("Image Format: "), False)
-        hb.pack_start(self.image_format_entry, True)
-        repo_vb.pack_start(hb, False)
-
-        # Echo entry widget to display tile downloading status
-        hb = gtk.HBox()
-        hb.pack_start(gtk.Label("Tile Monitor: "), False)
-
         self.echo_entry = gtk.Entry()
-        hb.pack_start(self.echo_entry, expand=True, fill=True)
-        repo_vb.pack_start(hb, False)
-
-        cache_button = gtk.Button('Cache')
-        cache_button.connect('clicked', self.cache_clicked)
-        hb.pack_start(cache_button, False)
-
-        gobtn = gtk.Button("Load Map URI")
-        gobtn.connect("clicked", self.load_map_clicked)
-        repo_vb.pack_start(gobtn, False)
+        self.horz_echo.pack_start(self.echo_entry, expand=True, fill=True)
+        self.vbox.pack_start(self.horz_echo, False)
 
     #################################################################################################################
     # unloads and redraws new gps slip map with newly specified map source                                          #
     #################################################################################################################
-    def load_map_clicked(self, button):
-        uri = self.repouri_entry.get_text()
-        format = self.image_format_entry.get_text()
-        if uri and format:
-            if self.osm:
-                #remove old map
-                self.vbox.remove(self.osm)
-            try:
-                self.osm = osmgpsmap.GpsMap(
-                    repo_uri=uri,
-                    image_format=format
-                )
-            except Exception, e:
-                print "ERROR:", e
-                self.osm = osmgpsmap.GpsMap()
+    def load_map_clicked(self, event, url, format):
+        if self.osm:
+            #remove old map
+            self.vbox.remove(self.osm)
+        try:
+            self.osm = osmgpsmap.GpsMap(repo_uri = url,
+                                        image_format = format,
+                                        show_trip_history = True, 
+                                        record_trip_history = True)
+        except Exception, e:
+            print "ERROR:", e
+            self.osm = osmgpsmap.GpsMap()
 
-            self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
-            self.vbox.reorder_child(self.osm, 0)
-            self.osm.props.has_tooltip = True
-            self.osm.connect('button_release_event', self.poi)
-            self.osm.connect("query-tooltip", self.on_query_tooltip)
-            self.osm.show()   
-            self.redraw_gps()
+        self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
+        self.vbox.reorder_child(self.osm, 0)
+        self.osm.props.has_tooltip = True
+        self.osm.connect('button_release_event', self.poi)
+        self.osm.connect("query-tooltip", self.on_query_tooltip)
+        self.osm.show()   
+        self.redraw_gps()
 
     #################################################################################################################
     # redraws points of intrest and tracks stored in track_list and poi_list after a map reload                     #
@@ -305,6 +277,7 @@ Enter an repository URL to fetch map tiles from in the box below. Special metach
 
         pb = gtk.gdk.pixbuf_new_from_file_at_size("poi.png", 30, 20)
         self.osm.image_add(lat, lon, pb)
+        self.poi_list.append([lat, lon])
 
     #################################################################################################################
     # propogate tooltip with lat and lon from event location on map                                                 #
