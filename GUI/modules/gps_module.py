@@ -1,15 +1,21 @@
-#########################################################################
-# OSURC (Oregon State University Robotics Club) GPS SLIP MAP            #
-#                                                                       #
-# Author: Austin Dubina                                                 #
-# Date: 2/8/2013                                                        #
-# Description: A redition of the open source osm-gps-map project        #
-# (http://nzjrs.github.com/osm-gps-map/). A PyGTK based program used to #
-# graphically display points of intrest and the geographical coordinates#
-# of the OSU mars rover. This program downloads and caches maps from    #
-# various open sourced tile servers and displays them in a "slip map"   #
-# fashion.                                                              #
-#########################################################################
+#####################################################################################
+# OSURC (Oregon State University Robotics Club) GPS SLIP MAP                        #
+#                                                                                   #
+# Author: Austin Dubina                                                             #
+# Date: 2/8/2013                                                                    #
+#                                                                                   #
+# Description: A rendition of the open source osm-gps-map project                   #
+# (http://nzjrs.github.com/osm-gps-map/). A PyGTK based program used to graphically #
+# display points of interest and the geographical coordinates of the OSU mars rover.#
+# This program downloads and caches maps from various open sourced tile servers and #
+# displays them in a "slippy map" fashion.                                          #
+#                                                                                   # 
+# Dependencies: The following must be installed to sucessfully run the app          #
+#               -osmgpsmap (sudo apt-get install libosmgpsmap-dev python-osmgpsmap) #
+#                                                                                   #
+#               -pango                                                              #
+#                                                                                   #
+#####################################################################################
 
 import sys
 import os.path
@@ -26,15 +32,26 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
 sys.path.insert(0, libdir)
 
+class GpsLayer(osmgpsmap.GpsMapLayer):
+    def __init__(self):
+        pass
+    def do_draw(self, gpsmap, gdkdrawable):
+        pass
+    def do_render(self, gpsmap):
+        pass
+
+    def do_busy(self):
+        return False
+
+    def do_button_press(self, gpsmap, gdkeventbutton):
+        return False
+
 class UI(gtk.Window):
     def __init__(self):
 
         #POI and Track Lists
         self.track_list = []
         self.poi_list = []
-
-        #track object
-        #self.track = osmgpsmap.GpsMapTrack()
         
         #initialize the window settings
         gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
@@ -44,10 +61,8 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #osmgpsmap object
-        self.osm = osmgpsmap.GpsMap(map_source = 12, show_trip_history = True, record_trip_history = True)
-        #self.osm = osmgpsmap.GpsMap(repo_uri = "http://a.tile.opencyclemap.org/cycle/#Z/#X/#Y.png")
-        #self.osm = osmgpsmap.GpsMap(repo_uri = "http://c.tile.stamen.com/toposm-contours/#Z/#X/#Y.png")
-
+        self.osm = osmgpsmap.GpsMap(repo_uri = "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/#Z/#Y/#X.jpg", show_trip_history = True, record_trip_history = True)
+    
         #OSD object
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
         self.osm.props.has_tooltip = True
@@ -77,41 +92,49 @@ class UI(gtk.Window):
         
         mb = gtk.MenuBar()
 
-        filemenu = gtk.Menu()
+        # File Menu
+        file_menu = gtk.Menu()
         filem = gtk.MenuItem("File")
-        filem.set_submenu(filemenu)
-       
-        mb.append(filem)
+        filem.set_submenu(file_menu)
+
+        # File Items
+        import_list = gtk.MenuItem("Import")
+        #import_list.connect("activate", )
+        file_menu.append(import_list)
+
+        export_list = gtk.MenuItem("Export")
+        #export_list.connect("activate", gtk.)
+        file_menu.append(export_list)
+
+        quit = gtk.MenuItem("Quit")
+        quit.connect("activate", gtk.main_quit)
+        file_menu.append(quit)
         
-        #map source menu
-        map_source_menu = gtk.Menu()
+        mb.append(filem)
 
-        source_menu = gtk.MenuItem("Map Source")
-        source_menu.set_submenu(map_source_menu)
+        # Map Source Menu
+        source_menu = gtk.Menu()
+        sourcem = gtk.MenuItem("Map Source")
+        sourcem.set_submenu(source_menu)
 
+        # Map Source Items
         sat = gtk.MenuItem("satellite")
         sat.connect("activate", self.load_map_clicked, "http://maptile.maps.svc.ovi.com/maptiler/maptile/newest/satellite.day/#Z/#X/#Y/256/png8", "png")
+        source_menu.append(sat)
 
         hybrid = gtk.MenuItem("Google Hybrid")
         hybrid.connect("activate", self.load_map_clicked, "http://mt1.google.com/vt/lyrs=y&x=#X&y=#Y&z=#Z", "png")
+        source_menu.append(hybrid)
 
         topo = gtk.MenuItem("Topographical")
         topo.connect("activate", self.load_map_clicked, "http://s3-us-west-1.amazonaws.com/caltopo/topo/#Z/#X/#Y.png?v=1", "png")
+        source_menu.append(topo)
 
         topo2 = gtk.MenuItem("Topographical2")
         topo2.connect("activate", self.load_map_clicked, "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/#Z/#Y/#X.jpg", "jpg")
+        source_menu.append(topo2)
 
-        map_source_menu.append(sat)
-        map_source_menu.append(hybrid)
-        map_source_menu.append(topo)
-        map_source_menu.append(topo2)
-
-        filemenu.append(source_menu)
-        
-        #exit menu
-        exit = gtk.MenuItem("Exit")
-        exit.connect("activate", gtk.main_quit)
-        filemenu.append(exit)
+        mb.append(sourcem)
 
         self.vbox.pack_start(mb, False, False, 0)
 
@@ -201,18 +224,23 @@ class UI(gtk.Window):
                                         image_format = format,
                                         show_trip_history = True, 
                                         record_trip_history = True)
+            self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
+            self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
+            self.vbox.reorder_child(self.osm, 0)
+            self.osm.props.has_tooltip = True
+            self.osm.connect('button_release_event', self.poi)
+            self.osm.connect("query-tooltip", self.on_query_tooltip)
+            self.osm.show()   
+            self.redraw_gps()
+
         except Exception, e:
             print "ERROR:", e
-            self.osm = osmgpsmap.GpsMap()
+            self.osm = osmgpsmap.GpsMap(map_source = 12, show_trip_history = True, record_trip_history = True)
 
-        self.vbox.pack_start(self.osm, expand=True, fill=True, padding=0)
-        self.vbox.reorder_child(self.osm, 0)
-        self.osm.props.has_tooltip = True
-        self.osm.connect('button_release_event', self.poi)
-        self.osm.connect("query-tooltip", self.on_query_tooltip)
-        self.osm.show()   
-        self.redraw_gps()
-
+        if self.track_list:
+            length = len(self.track_list)
+            lat, lon = self.track_list[length-1]
+            self.osm.set_center_and_zoom(lat,lon, 16)
     #################################################################################################################
     # redraws points of intrest and tracks stored in track_list and poi_list after a map reload                     #
     #################################################################################################################
@@ -301,7 +329,7 @@ class UI(gtk.Window):
         self.osm.set_zoom(self.osm.props.zoom - 1)
 
     def home_clicked(self, button):
-        self.osm.set_center_and_zoom(38.4064050, -110.7922800, 20)
+        self.osm.set_center_and_zoom(38.4064050, -110.7922800, 16)
 
     def cache_clicked(self, button):
         bbox = self.osm.get_bbox()
@@ -334,6 +362,7 @@ print l
    
 if __name__ == "__main__":
     u = UI()
+    gps = GpsLayer()
     u.show_all()
     if os.name == "nt": gtk.gdk.threads_enter()
     gtk.main()
