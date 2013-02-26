@@ -32,19 +32,20 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
 sys.path.insert(0, libdir)
 
-class GpsLayer(osmgpsmap.GpsMapLayer):
+class GpsLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
     def __init__(self):
-        pass
-    def do_draw(self, gpsmap, gdkdrawable):
-        pass
-    def do_render(self, gpsmap):
+        gobject.GObject.__init__(self)
+
+    def draw(self, map, drawable):
         pass
 
-    def do_busy(self):
+    def render(self, map):
+        pass
+
+    def button_press(self, map, event):
         return False
 
-    def do_button_press(self, gpsmap, gdkeventbutton):
-        return False
+gobject.type_register(GpsLayer)
 
 class UI(gtk.Window):
     def __init__(self):
@@ -292,6 +293,11 @@ class UI(gtk.Window):
             self.track_list.append([lat,lon])
 
         elif event.button == 3:
+            
+            #this forces program to close... why?
+            #self.osm.layer_add(GpsLayer())
+            GpsLayer()
+
             pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 30,20)
             self.osm.image_add(lat,lon,pb)
             self.poi_list.append([lat,lon])
@@ -362,7 +368,6 @@ print l
    
 if __name__ == "__main__":
     u = UI()
-    gps = GpsLayer()
     u.show_all()
     if os.name == "nt": gtk.gdk.threads_enter()
     gtk.main()
