@@ -69,7 +69,7 @@ class JoyParser(threading.Thread):
         while 1:
             # Read 1 byte and copy state to Byte States
             for x in range(8):
-                self.templist[x] = self.bus.joy_rover.read(1)
+                self.templist[x] = self.bus.joy_drive.read(1)
 
             # BUTTON is PRESSED
             if self.templist[4] == '\x01' or self.templist[4] == '\xFF':
