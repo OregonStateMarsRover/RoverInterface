@@ -1,2 +1,3 @@
-echo "REMEMBER TO ENABLE THE OPENING OF PORTS IN bus.py!"
+echo "Starting GUI"
 python GUI/gui.py
+echo "GUI Started, launching Receptionist"
