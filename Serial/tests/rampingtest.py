@@ -19,7 +19,7 @@ def grabBurstSpeed():
     if len(args) != 2:
         print "Needs speed in format: python rampingtest.py 20 where 20 is in ms"
     try:
-        burstSpeed = int(args[1])
+        burstSpeed = float(args[1])
     except:
         print "Needs speed in format: python rampingtest.py 20 where 20 is in ms"
     return burstSpeed
@@ -32,6 +32,8 @@ if __name__ == '__main__':
         speed_list.append(x)
     for x in reversed(range(1, 127)):
         speed_list.append(x)
+    for x in range(3):
+	speed_list.append(0)
     for speed in speed_list:
         for wheelAddr in range(2, 8):
             go(wheelAddr, speed, 0)
