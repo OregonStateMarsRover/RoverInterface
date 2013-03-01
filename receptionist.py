@@ -51,4 +51,4 @@ class Receptionist(threading.Thread):
                 packet = self.queue.get()
 #                print "Packet #" + str(count) + ": " + repr(packet)
 
- # OFF ROVER TEST                    self.bus.rover.write(packet)
+                self.bus.rover.write(packet)

@@ -12,10 +12,10 @@ import serial
 
 class Bus(object):
         def __init__(self):
-                self.joy_rover = open('/dev/input/js1', 'r')
+                self.joy_rover = open('/dev/input/js0', 'r')
 # Disabled                self.joy_arm = open(port='/dev/input/js1', 'r')
-# Disabled                self.rover = serial.Serial(port='/dev/ttyUSB2',
-#                                        baudrate=115200)
+                self.rover = serial.Serial(port='/dev/ttyUSB1',
+                                        baudrate=115200)
                 # Perhaps auto detect which is from rover?
 
         def restart(self, bus_name):
