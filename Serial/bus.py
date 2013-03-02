@@ -11,7 +11,7 @@ import serial
 class Bus(object):
         def __init__(self):
             try:
-                self.joy_rover = open('/dev/input/js0', 'r')
+                self.joy_rover = open('/dev/input/js1', 'r')
             except:
                 print "Drive Joy is not found at /dev/input/js0"
             try:
@@ -28,10 +28,10 @@ class Bus(object):
                 if bus_name == 'joy_rover':
                     self.joy_rover.close()
                     try:
-                        self.joy_rover = open('/dev/input/js0', 'r')
+                        self.joy_rover = open('/dev/input/js1', 'r')
                     except:
-                        print "Drive Joy is not found at /dev/input/js0"
-                elif bus_name=='joy_arm':
+                        print "Drive Joy is not found at /dev/input/js1"
+                elif bus_name == 'joy_arm':
                     self.joy_arm.close()
                     try:
                         self.joy_arm = open('/dev/input/js1', 'r')
