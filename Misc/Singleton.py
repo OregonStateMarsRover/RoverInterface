@@ -34,3 +34,12 @@ n2.arg = 3
 print n1.arg
 
 print n1 == n2
+
+# Uses:
+#   If there are objects that you want to be the same without syncing 2 instances
+#
+# Application:
+#   There are Gui elements that are the same like drive sim are in both AllTerrain and Science Tabs
+#   They display the same thing.
+#   They both get refreshed when gui refreshes, so drive sim gets updated 2 times.
+#   Using a Singleton will make this only update once.
