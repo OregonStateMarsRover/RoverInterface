@@ -27,30 +27,31 @@ class Queuer(threading.Thread):
             count = count + 1
             # Make Joy Drive Commands
             self.gui.UpdateMath()
-            if count % 20 == 0:
-                self.gui.Refresh()
+            if count % 10 == 0:
+                # self.gui.Refresh()
+                self.gui.Update()
             drive_commands = self.poll_drive_command()
             drive_commands = self.assemble_drive_packet(drive_commands)
             for command in drive_commands:
-                self.receptionist_queue.put(command) 
+                self.receptionist_queue.put(command)
             # Make Joy Arm Commands
                 # Do something
             # Make Button Commands
-            #self.receptionist_queue.put(self.poll_button_command())
+            # self.receptionist_queue.put(self.poll_button_command())
             print "Packet " + str(count) + "\n" + \
-            str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
-            str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
-            str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
-            str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
-            str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
-            str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
-            #print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
-            #print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
-            #print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
-            #print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
-            #print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
-            #print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
-            #print " "
+                str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
+                str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
+                str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
+                str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
+                str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
+                str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
+            # print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
+            # print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
+            # print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
+            # print "Wheel 4: " + str(self.roverStatus.wheel[3]['velo'])
+            # print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
+            # print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
+            # print " "
             print " "
             time.sleep(self.waitTime)
 
