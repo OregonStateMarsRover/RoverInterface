@@ -34,6 +34,8 @@ class AllTerrain(wx.Panel):
         driveControls = DriveControls(self, driveSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
 
+        self.components = [driveSim, driveControls, tripodControls]
+
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
 
         hSizerTop = wx.BoxSizer(wx.HORIZONTAL)
@@ -69,6 +71,8 @@ class Science(wx.Panel):
         armControls = ArmControls(self, armSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
         probeDisplay = ProbeDisplay(self, roverStatus)
+
+        self.components = [driveSim, armSim, driveControls, armControls, tripodControls, probeDisplay]
 
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
 
@@ -110,6 +114,9 @@ class AstroRescue(wx.Panel):
         tripodControls = TripodControls(self, roverStatus)
         packageControls = PackageControls(self, roverStatus)
 
+
+        self.components = [driveSim, driveControls, tripodControls, packageControls]
+
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
 
         hSizerTop = wx.BoxSizer(wx.HORIZONTAL)
@@ -146,6 +153,8 @@ class EquipService(wx.Panel):
         armControls = ArmControls(self, armSim, roverStatus)
         tripodControls = TripodControls(self, roverStatus)
         driveControls = DriveControls(self, driveSim, roverStatus)
+
+        self.components = [driveSim, armSim, driveControls, armControls]
 
         gridSizer = wx.FlexGridSizer(2, 1, 3, 3)
 
@@ -206,8 +215,8 @@ class Gui(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
 
-        self.InitReceptionist()
         self.InitUI()
+        self.InitReceptionist()
         self.InitJoy()
         self.Centre()
         self.Maximize()
@@ -217,10 +226,10 @@ class Gui(wx.Frame):
         print "Starting UI"
         panel = wx.Panel(self)
 
-        notebook = RoverNotebook(panel, self.roverStatus)
+        self.notebook = RoverNotebook(panel, self.roverStatus)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(notebook, 1, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND, 5)
         panel.SetSizer(sizer)
 
     def InitReceptionist(self):
@@ -245,6 +254,11 @@ class Gui(wx.Frame):
             independent(self)
         elif self.roverStatus.drive_mode == 'tank':
             tank(self)
+
+    def Update(self):
+        self.notebook.Refresh()
+        for component in self.notebook.GetCurrentPage().components:
+            component.Refresh()
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()
