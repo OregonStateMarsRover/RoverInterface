@@ -8,7 +8,7 @@ from roverpacket import BogiePacket
 def go(addr, speed, turning):
     packet = BogiePacket(addr, speed, turning)
 
-    bus = serial.Serial(port='/dev/ttyUSB1',
+    bus = serial.Serial(port='/dev/ttyUSB0',
                         baudrate=115200)
     bus.write(packet.msg())
     print str(packet)
