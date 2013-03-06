@@ -217,7 +217,8 @@ class Gui(wx.Frame):
 
         self.InitUI()
         self.InitReceptionist()
-        self.InitJoy()
+        self.InitDriveJoy()
+        self.InitArmJoy()
         self.Centre()
         self.Maximize()
         self.Show()
@@ -238,10 +239,15 @@ class Gui(wx.Frame):
         self.bus = self.receptionistthread.bus
         self.receptionistthread.start()
 
-    def InitJoy(self):
-        print "Starting JoyParser"
-        self.joythread = JoyParser(self, self.bus, self.roverStatus)
-        self.joythread.start()
+    def InitDriveJoy(self):
+        print "Starting Drive JoyParser"
+        self.drivejoythread = DriveJoyParser(self, self.bus, self.roverStatus)
+        self.drivejoythread.start()
+
+    def InitArmJoy(self):
+        print "Starting Arm JoyParser"
+        self.armjoythread = ArmJoyParser(self, self.bus, self.roverStatus)
+        self.armjoythread.start()
 
     def UpdateMath(self):
         if self.roverStatus.drive_mode == 'zeroRadius':
