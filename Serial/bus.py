@@ -28,26 +28,16 @@ class Bus(object):
 
         def openRover(self):
             try:
-                self.rover = serial.Serial('/dev/ttyUSB1',
+                self.rover = serial.Serial('/dev/ttyUSB0',
                                            baudrate=115200)
             except:
-                print "Rover is not found at /dev/ttyUSB1"
+                print "Rover is not found at /dev/ttyUSB0"
 
         def restart(self, bus_name):
-<<<<<<< HEAD
                 if bus_name == 'joy_drive':
                     self.joy_drive.close()
                     self.openDrive()
                 elif bus_name=='joy_arm':
-=======
-                if bus_name == 'joy_rover':
-                    self.joy_rover.close()
-                    try:
-                        self.joy_rover = open('/dev/input/js1', 'r')
-                    except:
-                        print "Drive Joy is not found at /dev/input/js1"
-                elif bus_name == 'joy_arm':
->>>>>>> 6f2ed3b7b0ba26b30bf7f90922e7fa09815265bc
                     self.joy_arm.close()
                     self.openArm()
                 elif bus_name == 'rover':
