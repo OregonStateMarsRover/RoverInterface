@@ -11,8 +11,8 @@ import serial
 class Bus(object):
         def __init__(self):
             self.openDrive()
-#            self.openArm()
-#            self.openRover()
+            self.openArm()
+            self.openRover()
 
         def openDrive(self):
             try:

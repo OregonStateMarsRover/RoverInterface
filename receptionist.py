@@ -51,5 +51,5 @@ class Receptionist(threading.Thread):
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh
                 packet = self.queue.get()
-
-                self.bus.rover.write(packet)
+                print repr(packet)
+                #self.bus.rover.write(packet)
