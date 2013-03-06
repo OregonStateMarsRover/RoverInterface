@@ -26,8 +26,6 @@ from roverpacket import *
 from bus import *
 from queuer import *
 
-# TODO - Receptionist should be sending a packet to Addr 1 that says it is still alive
-#           every 2 seconds
 class Receptionist(threading.Thread):
     def __init__(self, gui, roverStatus):
         threading.Thread.__init__(self)
@@ -49,6 +47,7 @@ class Receptionist(threading.Thread):
                 # Send still alive message
                 packet = BogiePacket(1, 17, 0)
                 self.queue.put(packet)
+                start_time = time.time() # Reset timer
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh
                 packet = self.queue.get()
