@@ -38,13 +38,13 @@ class Queuer(threading.Thread):
                 # Do something
             # Make Button Commands
             # self.receptionist_queue.put(self.poll_button_command())
-            print "Packet " + str(count) + "\n" #+ \
-#                str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
-#                str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
-#                str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
-#                str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
-#                str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
-#                str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
+            #print "Packet " + str(count) + "\n" + \
+            #    str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
+            #    str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
+            #    str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
+            #    str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
+            #    str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
+            #    str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
             # print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
             # print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
             # print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
@@ -52,7 +52,7 @@ class Queuer(threading.Thread):
             # print "Wheel 5: " + str(self.roverStatus.wheel[4]['velo'])
             # print "Wheel 6: " + str(self.roverStatus.wheel[5]['velo'])
             # print " "
-            print " "
+            #print " "
             time.sleep(self.waitTime)
 
     def assemble_drive_packet(self, drive_commands):
@@ -82,7 +82,7 @@ class Queuer(threading.Thread):
             command_list.append(cmd)
 
         # Emergency Stop All Systems - Middle Button
-        if self.roverStatus.joy_states['Middle'] == 1:
+        if self.roverStatus.drive_joy_states['Middle'] == 1:
             command_list = []   # Overwrite old command list
             for wheelAddr in range(2, 8):
                 cmd = wheelAddr, 0, 0
