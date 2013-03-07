@@ -60,7 +60,6 @@ class Queuer(threading.Thread):
         for command in drive_commands:
                 wheelAddr, velocity, angle = command
                 packet = BogiePacket(wheelAddr, velocity, angle)
-		print packet
                 packet = packet.msg()  # Serializes packet
                 packet_list.append(packet)
         return packet_list
