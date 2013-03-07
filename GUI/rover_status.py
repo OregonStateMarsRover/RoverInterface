@@ -7,14 +7,13 @@
 
 import math
 
-
 class RoverStatus():
 
     # drive_mode = 'zeroRadius'
-    drive_mode = 'vector'
+    # drive_mode = 'vector'
     # drive_mode = 'explicit'
     # drive_mode = 'independent'
-    # drive_mode = 'tank'
+    drive_mode = 'tank'
 
     # 3    0
     # 4    1
@@ -45,13 +44,21 @@ class RoverStatus():
     # rr_angle = wheel[5]['angle']
 
     # Create a dictionary to be used to keep states from joy.py
-    joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
-                  'Back': 0, 'Start': 0, 'Middle': 0,
-                  'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
-                  'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
-                  'LJ/Button': 0, 'RJ/Button': 0,
-                  'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
-                  'RJ/LeftRight': 0, }
+    drive_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
+                        'Back': 0, 'Start': 0, 'Middle': 0,
+                        'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
+                        'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
+                        'LJ/Button': 0, 'RJ/Button': 0,
+                        'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
+                        'RJ/LeftRight': 0, }
+
+    arm_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
+                      'Back': 0, 'Start': 0, 'Middle': 0,
+                      'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
+                      'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
+                      'LJ/Button': 0, 'RJ/Button': 0,
+                      'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
+                      'RJ/LeftRight': 0, }
 
     angle = 0
     throttle = 100
