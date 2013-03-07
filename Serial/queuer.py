@@ -38,13 +38,13 @@ class Queuer(threading.Thread):
                 # Do something
             # Make Button Commands
             # self.receptionist_queue.put(self.poll_button_command())
-            print "Packet " + str(count) + "\n" + \
-                str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
-                str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
-                str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
-                str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
-                str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
-                str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
+            print "Packet " + str(count) + "\n" #+ \
+#                str(int(round(self.roverStatus.wheel[0]['velo'] * 98))) + "\t" +\
+#                str(int(round(self.roverStatus.wheel[1]['velo'] * 98))) + "\t" +\
+#                str(int(round(self.roverStatus.wheel[2]['velo'] * 98))) + "\t" +\
+#                str(int(round(self.roverStatus.wheel[3]['velo'] * 98))) + "\t" +\
+#                str(int(round(self.roverStatus.wheel[4]['velo'] * 98))) + "\t" +\
+#                str(int(round(self.roverStatus.wheel[5]['velo'] * 98)))
             # print "Wheel 1: " + str(self.roverStatus.wheel[0]['velo'])
             # print "Wheel 2: " + str(self.roverStatus.wheel[1]['velo'])
             # print "Wheel 3: " + str(self.roverStatus.wheel[2]['velo'])
@@ -60,6 +60,7 @@ class Queuer(threading.Thread):
         for command in drive_commands:
                 wheelAddr, velocity, angle = command
                 packet = BogiePacket(wheelAddr, velocity, angle)
+		print packet
                 packet = packet.msg()  # Serializes packet
                 packet_list.append(packet)
         return packet_list
