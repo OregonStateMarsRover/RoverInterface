@@ -43,13 +43,14 @@ class Receptionist(threading.Thread):
     def run(self):
         start_time = time.time()
         while 1:
-            if (time.time() - start_time) > 2:
+            if (time.time() - start_time) > 1:
                 # Send still alive message
                 packet = BogiePacket(1, 17, 0)
+                packet = packet.msg()
                 self.queue.put(packet)
                 start_time = time.time() # Reset timer
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh
                 packet = self.queue.get()
                 print repr(packet)
-                #self.bus.rover.write(packet)
+                self.bus.rover.write(packet)
