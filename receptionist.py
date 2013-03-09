@@ -42,12 +42,16 @@ class Receptionist(threading.Thread):
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
     def run(self):
         start_time = time.time()
+        print "hello"
         while 1:
             if (time.time() - start_time) > 1:
                 # Send still alive message
                 packet = BogiePacket(1, 17, 0)
                 packet = packet.msg()
+                print self.queue.qsize
                 self.queue.put(packet)
+                print self.queue.qsize
+
                 start_time = time.time() # Reset timer
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh

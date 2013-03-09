@@ -26,6 +26,7 @@ class Queuer(threading.Thread):
         while 1:
             count = count + 1
             # Make Joy Drive Commands
+            print "queue size: ",self.receptionist_queue.qsize()
             self.gui.UpdateMath()
             if count % 10 == 0:
                 # self.gui.Refresh()
