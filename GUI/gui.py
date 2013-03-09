@@ -260,6 +260,7 @@ class Gui(wx.Frame):
             independent(self)
         elif self.roverStatus.drive_mode == 'tank':
             tank(self)
+        updateArm(self)
 
     def Update(self):
         self.notebook.Refresh()
