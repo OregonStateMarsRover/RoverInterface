@@ -48,13 +48,13 @@ class Receptionist(threading.Thread):
                 # Send still alive message
                 packet = BogiePacket(1, 17, 0)
                 packet = packet.msg()
-                print self.queue.qsize
                 self.queue.put(packet)
-                print self.queue.qsize
-
                 start_time = time.time() # Reset timer
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh
                 packet = self.queue.get()
                 print repr(packet)
-                self.bus.rover.write(packet)
+                try:
+                    self.bus.rover.write(packet)
+                except:
+                    continue
