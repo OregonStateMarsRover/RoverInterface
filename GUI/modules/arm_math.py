@@ -4,9 +4,12 @@ import math
 def updateArm(self):
     target = [self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[1]['pos'][1]]
 
-    target[1] += .001 * self.roverStatus.arm_joy_states['RJ/UpDown']
-    target[0] += .001 * self.roverStatus.arm_joy_states['RJ/LeftRight']
-    reach(self.roverStatus, target)
+    target[1] += .001 * self.roverStatus.arm_joy_states['LJ/UpDown']
+    target[0] += .001 * self.roverStatus.arm_joy_states['LJ/LeftRight']
+
+    for x in xrange(1, 10):
+        reach(self.roverStatus, target)
+    self.roverStatus.arm_seg[2]['angle'] += .0005 * self.roverStatus.arm_joy_states['RJ/UpDown']
 
 
 def reach(roverStatus, target):
