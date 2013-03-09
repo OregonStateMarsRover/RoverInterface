@@ -10,6 +10,7 @@ import serial
 
 class Bus(object):
         def __init__(self):
+            print "bus"
             self.openDrive()
             self.openArm()
             self.openRover()

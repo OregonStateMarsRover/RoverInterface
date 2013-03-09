@@ -57,4 +57,10 @@ class Receptionist(threading.Thread):
                 try:
                     self.bus.rover.write(packet)
                 except:
+                    #print 'bus.rover not working'
+                    try:
+                        self.bus.restart('rover')
+                    except:
+                        #print "bus.rover still cannot start"
+                        continue
                     continue
