@@ -206,6 +206,7 @@ class RoverNotebook(wx.Notebook):
 
     def OnPaint(self, e):
         self.Refresh()
+        print "Notebook draw"
 
 
 class Gui(wx.Frame):
