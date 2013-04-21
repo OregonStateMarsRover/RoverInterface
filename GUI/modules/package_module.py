@@ -78,4 +78,4 @@ class PackageControls(wx.Panel):
                 self.roverStatus.package_six = False
             else:
                 self.roverStatus.package_six = True
-		
+    		

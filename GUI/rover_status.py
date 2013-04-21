@@ -8,6 +8,9 @@
 import math
 
 class RoverStatus():
+    def __init__(self, roverStatusMutex, joyMutex):
+        self.roverStatusMutex = roverStatusMutex
+        self.joyMutex = joyMutex
 
     # drive_mode = 'zeroRadius'
     # drive_mode = 'vector'
