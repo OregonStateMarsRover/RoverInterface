@@ -26,7 +26,7 @@ class Queuer(threading.Thread):
         while 1:
             count = count + 1
             # Make Joy Drive Commands
-            print "queue size: ",self.receptionist_queue.qsize()
+            #print "queue size: ",self.receptionist_queue.qsize()
             self.gui.UpdateMath()
             if count % 10 == 0:
                 # self.gui.Refresh()
@@ -70,23 +70,35 @@ class Queuer(threading.Thread):
         # (wheelAddr, velocity, angle)
         command_list = []
         for wheelAddr in range(2, 8):
-            velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
+            self.roverStatus.roverStatusMutex.acquire()
+            try:
+                velocity = self.roverStatus.wheel[wheelAddr - 2]['velo']
+            finally:
+                self.roverStatus.roverStatusMutex.release()
             if wheelAddr <= 4:
                 velocity = round(velocity * 98)
             if wheelAddr > 4:
                 velocity = -(round(velocity * 98))
             velocity = self.intToByte(velocity)
-            angle = self.roverStatus.wheel[wheelAddr - 2]['angle']
+            self.roverStatus.roverStatusMutex.acquire()
+            try:
+                angle = self.roverStatus.wheel[wheelAddr - 2]['angle']
+            finally:
+                self.roverStatus.roverStatusMutex.release()
             angle = round(self.intToByte(angle))
             cmd = wheelAddr, velocity, angle
             command_list.append(cmd)
 
         # Emergency Stop All Systems - Middle Button
-        if self.roverStatus.drive_joy_states['Middle'] == 1:
-            command_list = []   # Overwrite old command list
-            for wheelAddr in range(2, 8):
-                cmd = wheelAddr, 0, 0
-                command_list.append(cmd)
+        self.roverStatus.joyMutex.acquire()
+        try:
+            if self.roverStatus.drive_joy_states['Middle'] == 1:
+                command_list = []   # Overwrite old command list
+                for wheelAddr in range(2, 8):
+                    cmd = wheelAddr, 0, 0
+                    command_list.append(cmd)
+        finally:
+            self.roverStatus.joyMutex.release()
 
         return command_list
 
