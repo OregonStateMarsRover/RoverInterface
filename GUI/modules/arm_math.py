@@ -20,6 +20,7 @@ def reach(roverStatus, target):
     dy = target[1] - roverStatus.arm_seg[0]['pos'][1]
     da = math.atan2(dy, dx) - angle2
     angle2 += da / 2
+
     roverStatus.arm_seg[1]['angle'] = angle2 - roverStatus.arm_seg[0]['angle'] + math.pi
 
     dx = target[0] - math.cos(angle2) * roverStatus.arm_seg[1]['len']

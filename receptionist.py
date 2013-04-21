@@ -31,7 +31,6 @@ class Receptionist(threading.Thread):
         threading.Thread.__init__(self)
         self.bus = Bus()
         self.gui = gui
-        self.roverStatus = roverStatus
         # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
         # Launch the queuer thread
@@ -42,7 +41,6 @@ class Receptionist(threading.Thread):
     # NOTE: Packets in queue are simply bytearrays that can be sent immediately
     def run(self):
         start_time = time.time()
-        print "hello"
         while 1:
             if (time.time() - start_time) > 1:
                 # Send still alive message

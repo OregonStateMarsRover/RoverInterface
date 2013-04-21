@@ -22,7 +22,7 @@ class TripodControls(wx.Panel):
         self.vOrientation = wx.Slider(self, value=self.roverStatus.tri_vert, minValue=-100, maxValue=100, size=(-1, 130), style=wx.SL_VERTICAL|wx.SL_INVERSE)
         self.hOrientation = wx.Slider(self, value=self.roverStatus.tri_hori, minValue=-100, maxValue=100, size=(140, -1), style=wx.SL_HORIZONTAL)
         self.zoom = wx.Slider(self, value=self.roverStatus.tri_zoom, minValue=0, maxValue=100, size=(-1, 40), style=wx.SL_VERTICAL|wx.SL_INVERSE)
-        
+            
         self.vOrientation.Bind(wx.EVT_SCROLL, self.ChangeValue)
         self.hOrientation.Bind(wx.EVT_SCROLL, self.ChangeValue)
         self.zoom.Bind(wx.EVT_SCROLL, self.ChangeValue)
@@ -30,7 +30,7 @@ class TripodControls(wx.Panel):
         self.spinVOri = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_vert, size=(55, -1))
         self.spinHOri = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_hori, size=(55, -1))
         self.spinZoom = wx.SpinCtrl(self, value="%d" % self.roverStatus.tri_zoom, size=(55, -1))
-        
+            
         self.spinVOri.SetRange(-100, 100)
         self.spinHOri.SetRange(-100, 100)
         self.spinZoom.SetRange(0, 100)

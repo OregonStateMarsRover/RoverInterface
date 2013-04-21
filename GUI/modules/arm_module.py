@@ -40,6 +40,7 @@ class Arm():
     #     dy = self.target[1] - self.roverStatus.arm_seg[0]['pos'][1]
     #     da = math.atan2(dy, dx) - angle2
     #     angle2 += da / 2
+
     #     self.roverStatus.arm_seg[1]['angle'] = angle2 - self.roverStatus.arm_seg[0]['angle'] + math.pi
 
     #     dx = self.target[0] - math.cos(angle2) * self.roverStatus.arm_seg[1]['len']

@@ -45,7 +45,13 @@ class DriveJoyParser(threading.Thread):
         # Pull parameters into self
         self.parent = parent
         self.bus = bus
-        self.drive_joy_states = roverStatus.drive_joy_states
+        #roverStatus.joyMutex.acquire()
+        try:
+            self.drive_joy_states = roverStatus.drive_joy_states
+        except:
+            print "opps"
+        #finally:
+        #    roverStatus.joyMutex.release()
 
         # Creates templist for storing the 8-byte packages from gamepad
         self.templist = []
@@ -196,7 +202,13 @@ class ArmJoyParser(threading.Thread):
         # Pull parameters into self
         self.parent = parent
         self.bus = bus
-        self.arm_joy_states = roverStatus.arm_joy_states
+        #roverStatus.joyMutex.acquire()
+        try:
+            self.arm_joy_states = roverStatus.arm_joy_states
+        except:
+            print "opps"
+        #finally:
+        #    roverStatus.joyMutex.release()
 
         # Creates templist for storing the 8-byte packages from gamepad
         self.templist = []
