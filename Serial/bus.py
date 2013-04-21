@@ -17,9 +17,9 @@ class Bus(object):
 
         def openDrive(self):
             try:
-                self.joy_drive = open('/dev/input/js1', 'r')
+                self.joy_drive = open('/dev/input/js0', 'r')
             except:
-                print "Drive Joy is not found at /dev/input/js1"
+                print "Drive Joy is not found at /dev/input/js0"
 
         def openArm(self):
             try:
@@ -29,7 +29,7 @@ class Bus(object):
 
         def openRover(self):
             try:
-                self.rover = serial.Serial('/dev/ttyUSB2',
+                self.rover = serial.Serial('/dev/ttyUSB1',
                                            baudrate=115200)
             except:
                 print "Rover is not found at /dev/ttyUSB2"
