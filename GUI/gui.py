@@ -215,7 +215,7 @@ class Gui(wx.Frame):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
 
         self.InitMutex()
-        self.roverStatus = RoverStatus(self.roverStatusMutex, self.joyMutex)
+        self.roverStatus = RoverStatus(self.roverStatusMutex, self.joyMutex, self.queueMutex)
 
         self.InitUI()
         self.InitReceptionist()
@@ -238,6 +238,7 @@ class Gui(wx.Frame):
     def InitMutex(self):
         self.roverStatusMutex = Lock()
         self.joyMutex = Lock()
+        self.queueMutex = Lock()
 
     def InitReceptionist(self):
         print "Starting Receptionist"
@@ -256,30 +257,25 @@ class Gui(wx.Frame):
         self.armjoythread.start()
 
     def UpdateMath(self):
-        self.roverStatus.roverStatusMutex.acquire()
-        try:
-            if self.roverStatus.drive_mode == 'zeroRadius':
-                zeroRadius(self)
-            elif self.roverStatus.drive_mode == 'vector':
-                vector(self)
-            elif self.roverStatus.drive_mode == 'explicit':
-                explicit(self)
-            elif self.roverStatus.drive_mode == 'independent':
-                independent(self)
-            elif self.roverStatus.drive_mode == 'tank':
-                tank(self)
-            updateArm(self)
-        finally:
-            self.roverStatus.roverStatusMutex.release()
+        with self.roverStatus.roverStatusMutex:
+            with self.roverStatus.joyMutex:
+                if self.roverStatus.drive_mode == 'zeroRadius':
+                    zeroRadius(self)
+                elif self.roverStatus.drive_mode == 'vector':
+                    vector(self)
+                elif self.roverStatus.drive_mode == 'explicit':
+                    explicit(self)
+                elif self.roverStatus.drive_mode == 'independent':
+                    independent(self)
+                elif self.roverStatus.drive_mode == 'tank':
+                    tank(self)
+                updateArm(self)
 
     def Update(self):
-        self.roverStatus.roverStatusMutex.acquire()
-        try:
+        with self.roverStatus.roverStatusMutex:
             self.notebook.Refresh()
             for component in self.notebook.GetCurrentPage().components:
                 component.Refresh()
-        finally:
-            self.roverStatus.roverStatusMutex.release()
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

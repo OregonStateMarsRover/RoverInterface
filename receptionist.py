@@ -31,6 +31,7 @@ class Receptionist(threading.Thread):
         threading.Thread.__init__(self)
         self.bus = Bus()
         self.gui = gui
+        self.roverStatus = roverStatus
         # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
         # Launch the queuer thread
@@ -46,11 +47,13 @@ class Receptionist(threading.Thread):
                 # Send still alive message
                 packet = BogiePacket(1, 17, 0)
                 packet = packet.msg()
-                self.queue.put(packet)
+                with self.roverStatus.queueMutex:
+                    self.queue.put(packet)
                 start_time = time.time() # Reset timer
             if self.queue.empty() is False:
                 # Flush Output to keep it fresh
-                packet = self.queue.get()
+                with self.roverStatus.queueMutex:
+                    packet = self.queue.get()
                 # print repr(packet)
                 try:
                     self.bus.rover.write(packet)
