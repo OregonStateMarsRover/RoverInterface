@@ -10,13 +10,6 @@
 # After this process is finished, the assembled packets are then added to the
 # queue for the Receptionist to then execute.
 
-# TO DO
-# Make GUI that shows what receptionist is currently sending from its queue
-# Perhaps organize these into the
-
-# TO DO 2
-# Make GUI launch bus and handle which controller is which port
-
 import sys
 sys.path.append('./Serial')
 import Queue
@@ -32,9 +25,7 @@ class Receptionist(threading.Thread):
         self.bus = Bus()
         self.gui = gui
         self.roverStatus = roverStatus
-        # TODO: Add mutex around queuer
         self.queue = Queue.Queue()
-        # Launch the queuer thread
         self.queuerthread = Queuer(gui, self.queue, roverStatus)
         self.queuerthread.start()
 
@@ -43,8 +34,8 @@ class Receptionist(threading.Thread):
     def run(self):
         start_time = time.time()
         while 1:
+            # Send still alive message every 1 second
             if (time.time() - start_time) > 1:
-                # Send still alive message
                 packet = BogiePacket(1, 17, 0)
                 packet = packet.msg()
                 with self.roverStatus.queueMutex:
@@ -54,7 +45,7 @@ class Receptionist(threading.Thread):
                 # Flush Output to keep it fresh
                 with self.roverStatus.queueMutex:
                     packet = self.queue.get()
-                print repr(packet)
+                # print repr(packet)
                 try:
                     self.bus.rover.write(packet)
                 except:

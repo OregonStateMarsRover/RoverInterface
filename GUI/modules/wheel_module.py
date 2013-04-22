@@ -107,7 +107,7 @@ class DriveSim(wx.Panel):
         self.dc.SetBrush(wx.Brush('#000000'))
 
         self.dc.DrawPolygon([pos1, pos2, pos3, pos4])
-        print (wheel['velo'] / self.vMax * 50 + 50)
+        #print (wheel['velo'] / self.vMax * 50 + 50)
 
         pos5 = (pos2[0] - 50 / 2 * math.sin(wheel['angle']),
                 pos2[1] - 50 / 2 * math.cos(wheel['angle']))

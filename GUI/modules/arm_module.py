@@ -66,7 +66,7 @@ class Arm():
             angle3) + self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[2]['len'] * math.sin(angle3) + self.roverStatus.arm_seg[1]['pos'][1])
 
     def drawArm(self):
-        print self.roverStatus.arm_seg[0]['angle'], self.roverStatus.arm_seg[1]['angle'], self.roverStatus.arm_seg[2]['angle']
+        #print self.roverStatus.arm_seg[0]['angle'], self.roverStatus.arm_seg[1]['angle'], self.roverStatus.arm_seg[2]['angle']
 
         self.findPos()
         data = [(0, 0), self.roverStatus.arm_seg[0]['pos'], self.roverStatus.arm_seg[1]['pos'],
@@ -194,14 +194,14 @@ class ArmControls(wx.Panel):
         self.SetSizer(gridSizer)
 
     def OnPaint(self, e):
-        print "paint arm"
+        #print "paint arm"
         self.srv1.SetValue(math.degrees(self.roverStatus.arm_seg[0]['angle']))
         self.srv2.SetValue(math.degrees(self.roverStatus.arm_seg[1]['angle']))
         self.srv3.SetValue(math.degrees(self.roverStatus.arm_seg[2]['angle']))
         self.arm_sim.canvas.Draw(self.arm_sim.arm.drawArm(), xAxis=(-1, 4), yAxis=(-1, 4))
 
     def OnButton(self, e, value):
-        print(value)
+        #print(value)
         target = [self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[1]['pos'][1]]
 
         if value == 'up':

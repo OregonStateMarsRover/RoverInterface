@@ -1,9 +1,12 @@
 ##############################
 #Program Filename: gui.py
 #Author: Cameron Bowie
+#Edited by: Francis Vo, John Zeller
 #Date: 2/6/2013
 #Description: Organizes control and display modules into four tabs
 ##############################
+
+# TODO: Handle which controller is which port
 
 import wx
 import sys
@@ -213,7 +216,6 @@ class RoverNotebook(wx.Notebook):
 
     def OnPaint(self, e):
         self.Refresh()
-        print "Notebook draw"
 
 
 class Gui(wx.Frame):
@@ -306,7 +308,7 @@ class UpdaterThread(Thread):
 
     def run(self):
         while 1:
-            time.sleep(0.5)
+            time.sleep(0.1)
             wx.PostEvent(self._notify_window, UpdaterEvent())
 
 if __name__ == '__main__':
