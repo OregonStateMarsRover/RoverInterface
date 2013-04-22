@@ -27,20 +27,24 @@ class Queuer(threading.Thread):
             # WARNING: If crashing, check UpdateMath isn't called from other thread
             self.gui.UpdateMath()
             drive_commands = self.poll_drive_command()
-            drive_commands = self.assemble_drive_packet(drive_commands)
+            drive_commands = self.assemble_drive_packets(drive_commands)
             with self.roverStatus.queueMutex:
                 for command in drive_commands:
                     self.receptionist_queue.put(command)
 
             # Make Joy Arm Commands
-                # Do something
+            arm_commands = self.poll_arm_command()
+            arm_commands = self.assemble_arm_packets(arm_commands)
+            with self.roverStatus.queueMutex:
+                for command in arm_commands:
+                    self.receptionist_queue.put(command)
             
             # Make Button Commands
             # self.receptionist_queue.put(self.poll_button_command())
             
             time.sleep(self.waitTime)
 
-    def assemble_drive_packet(self, drive_commands):
+    def assemble_drive_packets(self, drive_commands):
         packet_list = []
         for command in drive_commands:
                 wheelAddr, velocity, angle = command
@@ -49,9 +53,19 @@ class Queuer(threading.Thread):
                 packet_list.append(packet)
         return packet_list
 
+    def assemble_arm_packets(self, arm_commands):
+        packet_list = []
+        for command in arm_commands:
+                armAddr, angle = command
+                packet = ArmPacket(armAddr, angle)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+        return packet_list
+
     def poll_drive_command(self):
         # Returns list of 6 tuples of drive commands in the form
         # (wheelAddr, velocity, angle)
+        # Addresses are 2-8 for all 6 wheels
         command_list = []
         for wheelAddr in range(2, 8):
             with self.roverStatus.roverStatusMutex:
@@ -78,9 +92,23 @@ class Queuer(threading.Thread):
         return command_list
 
     def poll_arm_command(self):
-        # Returns list of 3 tuples of arm commands in the form
-        # (addr, speed, angle)
-        nothing = 0
+        # Returns list of 4 tuples of arm commands in the form
+        # (armAddr, angle)
+        # Addresses are shoulder: 8, elbow: 9, wrist_angle: 10, wrist_tilt: 11
+        command_list = []
+
+        with self.roverStatus.roverStatusMutex:
+            shoulder = self.roverStatus.arm_shoulder
+            elbow = self.roverStatus.arm_elbow
+            wrist_angle = self.roverStatus.wrist_angle
+            wrist_tilt = self.roverStatus.wrist_tilt
+        armCmd = [shoulder, elbow, wrist_angle, wrist_tilt]
+        count = 0
+        for armAddr in range(8,12):
+            armCmd[count] = round(self.intToByte(armCmd[count]))
+            cmd = armAddr, armCmd[count]
+            command_list.append(cmd)
+            count += 1
 
     def poll_button_command(self):
         # Returns 1 tuple for a button command in the form (addr, data)
