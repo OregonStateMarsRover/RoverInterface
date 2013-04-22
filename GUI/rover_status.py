@@ -83,7 +83,7 @@ class RoverStatus():
     voltage = 0
 
     ####### TRIPOD CONTROL STATES #######
-    tri_hori = 0
+    tri_hori = 0    # Center to FullLeft is 
     tri_vert = 0
     tri_zoom = 0
 

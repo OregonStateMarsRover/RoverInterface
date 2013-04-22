@@ -110,7 +110,7 @@ class Queuer(threading.Thread):
             cmd = armAddr, armCmd[count]
             command_list.append(cmd)
             count += 1
-            
+
         return command_list
 
     def poll_button_command(self):
@@ -118,6 +118,8 @@ class Queuer(threading.Thread):
         #
         command = None
         # Tripod Controls - (addr, vert_angle, horz_angle) - Angles -100 to 100
+        # (Positive: 0-127) (Reverse: 255-128)
+
         # Angles should be persistent, meaning that this should change the
         # tripod angle state in roverStatus, and then that status should be
         # used to update the tripod command, if it needs updating
