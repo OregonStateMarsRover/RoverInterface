@@ -13,23 +13,32 @@ class RoverStatus():
         self.joyMutex = joyMutex
         self.queueMutex = queueMutex
 
+    ####### JOY STATES #######
+    # Create a dictionary to be used to keep states from joy.py
+    drive_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
+                        'Back': 0, 'Start': 0, 'Middle': 0,
+                        'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
+                        'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
+                        'LJ/Button': 0, 'RJ/Button': 0,
+                        'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
+                        'RJ/LeftRight': 0, }
 
-    # GUI update flags
-    needsRefresh = False
-    needsMathUpdate = False
+    arm_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
+                      'Back': 0, 'Start': 0, 'Middle': 0,
+                      'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
+                      'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
+                      'LJ/Button': 0, 'RJ/Button': 0,
+                      'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
+                      'RJ/LeftRight': 0, }
 
 
+    ####### DRIVE CONTROL STATES #######
     # drive_mode = 'zeroRadius'
     # drive_mode = 'vector'
     # drive_mode = 'explicit'
     # drive_mode = 'independent'
     drive_mode = 'tank'
 
-    # 3    0
-    # 4    1
-    # 5    2
-
-    # TODO: make wheels 2 to 7 (starting with front left, ending with rear right)
     wheel = [{}, {}, {}, {}, {}, {}]
 
     wheel[0]['angle'] = 0
@@ -53,30 +62,10 @@ class RoverStatus():
     # rl_angle = wheel[2]['angle']
     # rr_angle = wheel[5]['angle']
 
-    # Create a dictionary to be used to keep states from joy.py
-    drive_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
-                        'Back': 0, 'Start': 0, 'Middle': 0,
-                        'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
-                        'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
-                        'LJ/Button': 0, 'RJ/Button': 0,
-                        'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
-                        'RJ/LeftRight': 0, }
-
-    arm_joy_states = {'A': 0, 'B': 0, 'X': 0, 'Y': 0,
-                      'Back': 0, 'Start': 0, 'Middle': 0,
-                      'Left': 0, 'Right': 0, 'Up': 0, 'Down': 0,
-                      'LB': 0, 'RB': 0, 'LT': 0, 'RT': 0,
-                      'LJ/Button': 0, 'RJ/Button': 0,
-                      'LJ/UpDown': 0, 'RJ/UpDown': 0, 'LJ/LeftRight': 0,
-                      'RJ/LeftRight': 0, }
-
     angle = 0
     throttle = 100
 
-    tri_hori = 0
-    tri_vert = 0
-    tri_zoom = 0
-
+    ####### ARM CONTROL STATES #######
     arm_seg = [{}, {}, {}]
 
     # Arm segment lengths
@@ -84,13 +73,28 @@ class RoverStatus():
     arm_seg[1]['len'] = 1.3
     arm_seg[2]['len'] = 1.0
 
+    arm_shoulder = 0
+    arm_elbow = 0
+
     wrist_angle = 0
     wrist_tilt = 0
 
     scoop_open = False
-
     voltage = 0
 
+    ####### TRIPOD CONTROL STATES #######
+    tri_hori = 0
+    tri_vert = 0
+    tri_zoom = 0
+
+    ####### SCIENCE PROBE CONTROL STATES #######
+    soil_moisture = 0
+    conductivity = 0
+    salinity = 0
+    f_temp = 0
+    c_temp = 0
+
+    ####### PACKAGE CONTROL STATES #######
     package_one = False
     package_two = False
     package_three = False
@@ -98,11 +102,17 @@ class RoverStatus():
     package_five = False
     package_six = False
 
-    soil_moisture = 0
-    conductivity = 0
-    salinity = 0
-    f_temp = 0
-    c_temp = 0
+    ####### MUX CONTROL STATES #######
+    mux_cam = 1 # 1-4 - Default is 1 "Main Camera"
+
+    def TogglePackage(self, package):
+        # package is ints 1-6
+        packages = ["package_one", "package_two", "package_three"]
+        packages += ["package_four", "package_five", "package_six"]
+        packages[package+1] = True
+
+    def ChangeCamera(self, camera):
+        mux_cam = camera
 
     def UpdateProbe(self):
         pass
