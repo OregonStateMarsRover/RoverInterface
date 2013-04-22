@@ -23,9 +23,10 @@ class Queuer(threading.Thread):
 
     def run(self):
         while 1:
-            # Make Joy Drive Commands
             # WARNING: If crashing, check UpdateMath isn't called from other thread
             self.gui.UpdateMath()
+
+            # Make Joy Drive Commands
             drive_commands = self.poll_drive_command()
             drive_commands = self.assemble_drive_packets(drive_commands)
             with self.roverStatus.queueMutex:
@@ -109,6 +110,8 @@ class Queuer(threading.Thread):
             cmd = armAddr, armCmd[count]
             command_list.append(cmd)
             count += 1
+            
+        return command_list
 
     def poll_button_command(self):
         # Returns 1 tuple for a button command in the form (addr, data)

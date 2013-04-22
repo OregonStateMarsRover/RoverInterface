@@ -118,3 +118,16 @@ class BogiePacket(RoverPacket):
         if (len(new.content) != 2):
             raise Exception("Bogie packet contents had unexpected length of %d" % len(new))
         return new
+
+class ArmPacket(RoverPacket):
+    def __init__(self, addr, angle):
+        content = [int(angle)]
+        RoverPacket.__init__(self, addr, content)
+
+    @classmethod
+    def from_rx(cls, port):
+        new = cls(0, 0, 0)
+        new.rx(port)
+        if (len(new.content) != 1):
+            raise Exception("Arm packet contents had unexpected length of %d" % len(new))
+        return new
