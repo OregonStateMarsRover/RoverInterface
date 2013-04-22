@@ -17,10 +17,7 @@ def setup_constants(self):
     self.cMax = 1.0 / self.w - 0.001
     self.thetaMax = (3.14159 / 180) * 140
 
-# TODO: Math use joy status
-# independent mode is selected:
-
-
+# Independent is really only a development mode, not necessary
 def independent(self):
     # Note: no joystick input
     setup_constants(self)
@@ -90,8 +87,26 @@ def tank(self):
 # Ackerman (Explicit) steering mode is selected:
 def explicit(self):
     setup_constants(self)
-    c = (self.roverStatus.angle / 4) * self.cMax
+    # VECTOR SETUP
+    #(radians) steering angle of all wheels
+    # theta = (self.right_joystick_percent / 100.0) * self.thetaMax
+    o = self.roverStatus.drive_joy_states['RJ/UpDown']
+    a = self.roverStatus.drive_joy_states['RJ/LeftRight']
+    theta = math.atan2(o * 1.0, a * 1.0) - math.pi / 2
     v = self.roverStatus.throttle / 100.0 * self.vMax
+    v = (o ** 2 + a ** 2) ** 0.5 / 129 * v
+    # Keep wheels centers if joy is centered
+    if (math.degrees(theta) == -90) and (a == 0):
+        theta = 0
+    # Keep wheels from over extending past 90 or -90, but allow forward and reverse driving
+    if math.degrees(theta) < -90:
+        theta += math.pi
+        v = -v
+    self.roverStatus.angle = theta
+
+
+    # EXPLICIT EXECUTION OF VECTORS
+    c = (self.roverStatus.angle / 4) * self.cMax
 
     if c == 0:
         r = 999
@@ -162,8 +177,10 @@ def vector(self):
     theta = math.atan2(o * 1.0, a * 1.0) - math.pi / 2
     v = self.roverStatus.throttle / 100.0 * self.vMax
     v = (o ** 2 + a ** 2) ** 0.5 / 129 * v
+    # Keep wheels centers if joy is centered
     if (math.degrees(theta) == -90) and (a == 0):
         theta = 0
+    # Keep wheels from over extending past 90 or -90, but allow forward and reverse driving
     if math.degrees(theta) < -90:
         theta += math.pi
         v = -v
@@ -174,6 +191,7 @@ def vector(self):
     #(radians/s) rotation rate of all drive motors
     omega = v / self.R
 
+    self.roverStatus.angle = theta
     self.roverStatus.wheel[0]['angle'] = theta
     self.roverStatus.wheel[1]['angle'] = theta
     self.roverStatus.wheel[2]['angle'] = theta
