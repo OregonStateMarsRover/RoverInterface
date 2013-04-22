@@ -68,7 +68,7 @@ class RoverStatus():
     ####### ARM CONTROL STATES #######
 
     # Value Constants for Arm
-    initShoulderAngle = 90
+    initShoulderAngle = 110
     initElbowAngle = 20
     initWristAngle = 330
     shoulderMin = -20
