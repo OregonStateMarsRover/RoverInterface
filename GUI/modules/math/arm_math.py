@@ -11,6 +11,12 @@ def updateArm(self):
         reach(self.roverStatus, target)
     self.roverStatus.arm_seg[2]['angle'] += .0005 * self.roverStatus.arm_joy_states['RJ/UpDown']
 
+    # Update roverStatus values used in queuer
+    self.roverStatus.arm_shoulder = round(math.degrees(self.roverStatus.arm_seg[0]['angle']))
+    self.roverStatus.arm_elbow = round(math.degrees(self.roverStatus.arm_seg[1]['angle']))
+    self.roverStatus.wrist_angle = round(math.degrees(self.roverStatus.arm_seg[2]['angle']))
+    self.roverStatus.wrist_tilt = 0
+
 
 def reach(roverStatus, target):
     angle2 = roverStatus.arm_seg[0]['angle'] + roverStatus.arm_seg[1]['angle'] - math.pi

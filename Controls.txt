@@ -48,5 +48,7 @@ Button controls stay the same, regardless of drive mode.
 
 All:
 	A)		Toggles scoop Open/Close
+	X)		Get Probe Data
+	B)		Get Voltage
 	RB)		Soil Probe Out
 	LB)		Soil Probe In

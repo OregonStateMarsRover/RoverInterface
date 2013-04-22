@@ -111,6 +111,9 @@ class Queuer(threading.Thread):
             command_list.append(cmd)
             count += 1
 
+        print "Shoulder: ", shoulder, " - Elbow: ", elbow, " - Wrist Angle: ", \
+                wrist_angle, " - Wrist Tilt: ", wrist_tilt, "\n"
+
         return command_list
 
     def poll_button_command(self):

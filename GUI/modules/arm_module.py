@@ -20,7 +20,6 @@ sys.path.append('./')
 from arm_math import *
 from wx.lib.plot import PlotCanvas, PlotGraphics, PolyLine
 
-
 class Arm():
     '''
     This class calculates and stores arm angles and positions
@@ -90,7 +89,8 @@ class ArmSim(wx.Panel):
 
         # Creates the plot, sets arm angles, and plots arm
         self.canvas = PlotCanvas(self)
-        self.arm = Arm(45, 100, 0, roverStatus)
+        self.arm = Arm(roverStatus.initShoulderAngle, roverStatus.initElbowAngle, roverStatus.initWristAngle, 
+                        roverStatus)     # Initializes points to 45, 100 and 0 degrees
         self.canvas.Draw(self.arm.drawArm(), xAxis=(-1, 4), yAxis=(-1, 4))
 
         gridSizer = wx.GridBagSizer(3, 3)
@@ -114,15 +114,15 @@ class ArmControls(wx.Panel):
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.srv1 = wx.SpinCtrl(
             self, value='%d' % int(round(math.degrees(self.roverStatus.arm_seg[0]['angle']))), size=(60, -1))
-        self.srv1.SetRange(0, 90)
+        self.srv1.SetRange(roverStatus.shoulderMin, roverStatus.shoulderMax)
 
         self.srv2 = wx.SpinCtrl(
             self, value='%d' % int(round(math.degrees(self.roverStatus.arm_seg[1]['angle']))), size=(60, -1))
-        self.srv2.SetRange(0, 360)
+        self.srv2.SetRange(roverStatus.elbowMin, roverStatus.elbowMax)
 
         self.srv3 = wx.SpinCtrl(
             self, value='%d' % int(round(math.degrees(self.roverStatus.arm_seg[2]['angle']))), size=(60, -1))
-        self.srv3.SetRange(0, 360)
+        self.srv3.SetRange(roverStatus.wristMin, roverStatus.wristMax)
 
         btnIn = wx.Button(self, label=u"\u2190", size=(30, -1))
         btnUp = wx.Button(self, label=u"\u2191", size=(30, -1))
