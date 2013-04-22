@@ -7,7 +7,7 @@
 
 import wx
 import sys
-from threading import Lock
+from threading import *
 # For running in GUI directory
 sys.path.append('./modules/')
 sys.path.append('../')
@@ -23,6 +23,13 @@ from rover_status import *
 from wheel_module import *
 from receptionist import *
 from wheel_math import *
+
+# Define notification event for UpdaterThread
+EVT_UPDATE_ID = wx.NewId()
+
+# Define Updater Event
+def EVT_UPDATE(win, func):
+    win.Connect(-1, -1, EVT_UPDATE_ID, func)
 
 
 class AllTerrain(wx.Panel):
@@ -214,9 +221,17 @@ class Gui(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=(1250, 650))
 
+        # Initialize mutex's for thread safety
         self.InitMutex()
         self.roverStatus = RoverStatus(self.roverStatusMutex, self.joyMutex, self.queueMutex)
 
+        # Set up event handler for any updater thread
+        EVT_UPDATE(self, self.Update)
+
+        # Start auto-updating thread
+        self.updater = UpdaterThread(self)
+
+        # Start initializations
         self.InitUI()
         self.InitReceptionist()
         self.InitDriveJoy()
@@ -271,11 +286,28 @@ class Gui(wx.Frame):
                     tank(self)
                 updateArm(self)
 
-    def Update(self):
+    def Update(self, event):
         with self.roverStatus.roverStatusMutex:
             self.notebook.Refresh()
             for component in self.notebook.GetCurrentPage().components:
                 component.Refresh()
+
+
+class UpdaterEvent(wx.PyEvent):
+    def __init__(self):
+        wx.PyEvent.__init__(self)
+        self.SetEventType(EVT_UPDATE_ID)
+
+class UpdaterThread(Thread):
+    def __init__(self, notify_window):
+        Thread.__init__(self)
+        self._notify_window = notify_window
+        self.start()
+
+    def run(self):
+        while 1:
+            time.sleep(0.5)
+            wx.PostEvent(self._notify_window, UpdaterEvent())
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

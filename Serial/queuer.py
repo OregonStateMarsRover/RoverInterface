@@ -22,16 +22,11 @@ class Queuer(threading.Thread):
         self.waitTime = 0.1  # Wait 20ms between packet cycles
 
     def run(self):
-        count = 0
         while 1:
-            count = count + 1
             # Make Joy Drive Commands
             #print "queue size: ",self.receptionist_queue.qsize()
+            # WARNING: If there is ever an issue with crashing, double check that UpdateMath isn't being called from some other thread.
             self.gui.UpdateMath()
-            if count % 10 == 0:
-                # self.gui.Refresh()
-                #self.gui.Update()
-                print "WARNING: self.gui.Update() on line ~34 in queuer.py has been disabled"
             drive_commands = self.poll_drive_command()
             drive_commands = self.assemble_drive_packet(drive_commands)
             with self.roverStatus.queueMutex:

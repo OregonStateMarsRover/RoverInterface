@@ -54,7 +54,7 @@ class Receptionist(threading.Thread):
                 # Flush Output to keep it fresh
                 with self.roverStatus.queueMutex:
                     packet = self.queue.get()
-                # print repr(packet)
+                print repr(packet)
                 try:
                     self.bus.rover.write(packet)
                 except:
