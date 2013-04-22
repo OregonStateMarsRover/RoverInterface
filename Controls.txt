@@ -1,0 +1,52 @@
+This file contains an explanation on all of the Joystick controls
+
+
+---- Drive Joystick ----
+
+Joy controls depend on drive mode.
+
+Tank:
+	Left Joy)	Up and Down control forward and back of left wheels
+	Right Joy)	Up and Down control forward and back of right wheels
+ZeroRadius:
+	Left Joy)	Nothing
+	Right Joy)	Up controls turning to the left
+				Down controls turning to the right
+Vector:
+	Left Joy)	Nothing
+	Right Joy)	Up and Down control forward and back of all wheels together
+				Left and Right control angle of all wheels together
+Explicit:
+	Left Joy)	Nothing
+	Right Joy)	Up and Down control forward and back of all wheels together
+				Left and Right control angle of all wheels together
+All:
+	LJ) Nothing
+	RJ) Nothing
+
+
+Button controls stay the same, regardless of drive mode.
+
+All:
+	D-Pad)	Tilts tripod up, down, left and right
+	Y)		Pulls Tripod back to center
+	RB)		Camera Zoom In (exclusive to main camera)
+	LB)		Camera Zoom Out (exclusive to main camera)
+	Middle)	Emergency Stop ALL driving immediately
+
+
+---- Arm Joystick ----
+
+All:
+	Left Joy)	Up and Down control the wrist angle up and down
+				Left and Right control the wrist tilt spin-left and spin-right
+	Right Joy)	Up, Down, Left and Right all work together to command the end point
+				of the wrist joint on a 2-dimensional plain. The wrist segment is constantly adjusted to be kept level.
+
+
+Button controls stay the same, regardless of drive mode.
+
+All:
+	A)		Toggles scoop Open/Close
+	RB)		Soil Probe Out
+	LB)		Soil Probe In
