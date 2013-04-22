@@ -38,10 +38,10 @@ All:
 ---- Arm Joystick ----
 
 All:
-	Left Joy)	Up and Down control the wrist angle up and down
-				Left and Right control the wrist tilt spin-left and spin-right
-	Right Joy)	Up, Down, Left and Right all work together to command the end point
+	Left Joy)	Up, Down, Left and Right all work together to command the end point
 				of the wrist joint on a 2-dimensional plain. The wrist segment is constantly adjusted to be kept level.
+	Right Joy)	Up and Down control the wrist angle up and down
+				Left and Right control the wrist tilt spin-left and spin-right
 
 
 Button controls stay the same, regardless of drive mode.
