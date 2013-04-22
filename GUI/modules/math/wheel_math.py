@@ -162,6 +162,8 @@ def vector(self):
     theta = math.atan2(o * 1.0, a * 1.0) - math.pi / 2
     v = self.roverStatus.throttle / 100.0 * self.vMax
     v = (o ** 2 + a ** 2) ** 0.5 / 129 * v
+    if (math.degrees(theta) == -90) and (a == 0):
+        theta = 0
     if math.degrees(theta) < -90:
         theta += math.pi
         v = -v
