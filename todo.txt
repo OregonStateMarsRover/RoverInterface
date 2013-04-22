@@ -1,0 +1,10 @@
+1) See if there is an issue with roverpacket assembly
+2) Create a logging system that saves log files into log/
+3) Clear up all remaining print statements
+4) Print only errors to the screen
+	1) Count the number of that type of error
+5) Allow control of Tripod
+6) Allow control of Arm
+7) Allow control of MUX
+8) Allow control of Packages
+9) Allow control of Soil Probe
