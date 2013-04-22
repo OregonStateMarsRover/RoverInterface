@@ -13,6 +13,12 @@ class RoverStatus():
         self.joyMutex = joyMutex
         self.queueMutex = queueMutex
 
+
+    # GUI update flags
+    needsRefresh = False
+    needsMathUpdate = False
+
+
     # drive_mode = 'zeroRadius'
     # drive_mode = 'vector'
     # drive_mode = 'explicit'
