@@ -66,9 +66,21 @@ class RoverStatus():
     throttle = 100
 
     ####### ARM CONTROL STATES #######
+
+    # Value Constants for Arm
+    initShoulderAngle = 90
+    initElbowAngle = 20
+    initWristAngle = 330
+    shoulderMin = -20
+    shoulderMax = 120
+    elbowMin = 10
+    elbowMax = 210
+    wristMin = 10
+    wristMax = 350
+
     arm_seg = [{}, {}, {}]
 
-    # Arm segment lengths
+    # Arm segment lengths - Shoulder, Elbow and Wrist
     arm_seg[0]['len'] = 1.4
     arm_seg[1]['len'] = 1.3
     arm_seg[2]['len'] = 1.0
