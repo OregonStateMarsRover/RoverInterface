@@ -9,7 +9,14 @@
 ##############################
 
 import wx
+import sys
 import math
+# For running in GUI directory
+sys.path.append('./math/')
+sys.path.append('../')
+# For running in RoverInterface directory
+sys.path.append('./GUI/modules/math/')
+sys.path.append('./')
 from arm_math import *
 from wx.lib.plot import PlotCanvas, PlotGraphics, PolyLine
 
