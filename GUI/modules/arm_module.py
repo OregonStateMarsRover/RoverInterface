@@ -211,18 +211,38 @@ class ArmControls(wx.Panel):
         #print(value)
         target = [self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[1]['pos'][1]]
 
+        # Arm Controls
         if value == 'up':
-            print '^'
             target[1] += .01
         elif value == 'down':
-            print 'v'
             target[1] -= .01
         elif value == 'in':
-            print '<'
             target[0] -= .01
         elif value == 'out':
-            print '>'
             target[0] += .01
+
+        # Wrist Controls
+        if value == 'wrist up':
+            self.roverStatus.arm_seg[2]['angle'] += math.radians(1)
+        elif value == 'wrist down':
+            self.roverStatus.arm_seg[2]['angle'] -= math.radians(1)
+        elif value == 'wrist right':
+            self.roverStatus.wrist_tilt += 1
+        elif value == 'wrist left':
+            self.roverStatus.wrist_tilt -= 1
+
+        # Scoop Controls
+        if value == 'scoop open':
+            if self.roverStatus.scoop_toggle is False:
+                self.roverStatus.scoop_toggle = True
+        elif value == 'scoop close':
+            if self.roverStatus.scoop_toggle is True:
+                self.roverStatus.scoop_toggle = False
+        
+        # Voltage Controls
+        if value == 'voltage update':
+            if self.roverStatus.voltage_toggle is False:
+                self.roverStatus.voltage_toggle = True
         for x in xrange(1, 30):
             reach(self.roverStatus,target)
 

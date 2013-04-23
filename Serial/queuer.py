@@ -103,6 +103,8 @@ class Queuer(threading.Thread):
             elbow = self.roverStatus.arm_elbow
             wrist_angle = self.roverStatus.wrist_angle
             wrist_tilt = self.roverStatus.wrist_tilt
+            scoop = self.roverStatus.scoop_toggle
+            voltage = self.roverStatus.voltage_toggle
         armCmd = [shoulder, elbow, wrist_angle, wrist_tilt]
         count = 0
         for armAddr in range(8,12):
@@ -111,8 +113,9 @@ class Queuer(threading.Thread):
             command_list.append(cmd)
             count += 1
 
-        print "Shoulder: ", shoulder, " - Elbow: ", elbow, " - Wrist Angle: ", \
-                wrist_angle, " - Wrist Tilt: ", wrist_tilt, "\n"
+        print "S: ", shoulder, " - E: ", elbow, " - W/A: ", \
+                wrist_angle, " - W/T: ", wrist_tilt, \
+                " - Scoop: ", scoop, " - Voltage: ", voltage, "\n"
 
         return command_list
 
