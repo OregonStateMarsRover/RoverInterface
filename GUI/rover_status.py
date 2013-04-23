@@ -97,7 +97,7 @@ class RoverStatus():
     voltage = 0
 
     ####### TRIPOD CONTROL STATES #######
-    tri_hori = 0    # Center to FullLeft is 
+    tri_hori = 0
     tri_vert = 0
     tri_zoom = 0
 
@@ -117,7 +117,6 @@ class RoverStatus():
     package_three = False
     package_four = False
     package_five = False
-    package_six = False
 
     ####### MUX CONTROL STATES #######
     mux_cam = 1 # 1-4 - Default is 1 "Main Camera"
@@ -125,7 +124,7 @@ class RoverStatus():
     def TogglePackage(self, package):
         # package is ints 1-6
         packages = ["package_one", "package_two", "package_three"]
-        packages += ["package_four", "package_five", "package_six"]
+        packages += ["package_four", "package_five"]
         packages[package+1] = True
 
     def ChangeCamera(self, camera):
