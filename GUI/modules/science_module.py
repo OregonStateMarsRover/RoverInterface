@@ -72,17 +72,17 @@ class ProbeDisplay(wx.Panel):
         self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
 
     def pressbutton(self, event):
-        self.roverStatus.UpdateProbe()
+        self.roverStatus.probe_toggle = True
+
         self.SoilMoistureOutput.SetValue("%s" % self.roverStatus.soil_moisture)
         self.ConductivityOutput.SetValue("%s" % self.roverStatus.conductivity)
         self.SalinityOutput.SetValue("%s" % self.roverStatus.salinity)
         self.FtempOutput.SetValue("%s" % self.roverStatus.f_temp)
         self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
-        # This is the command to retrieve the info from the soil probe
-        print "Request Temp, Moisture, and Conductivity - cmd"
 
     def ChangeValue(self, event):
         obj = event.GetEventObject()
-        value = obj.GetValue()
+        self.roverStatus.probe_distance = obj.GetValue()
+        value = self.roverStatus.probe_distance
         self.sliderwheel.SetValue(value)
         self.slider.SetValue(value)

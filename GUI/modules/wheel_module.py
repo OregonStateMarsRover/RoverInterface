@@ -19,7 +19,7 @@ class DriveSim(wx.Panel):
 
         self.Bind(wx.EVT_SPINCTRL, self.OnSpinCtrl)
 
-        stWheelDiagram = wx.StaticText(self, label="Wheel Diagram", pos=(170, 10))
+        stWheelDiagram = wx.StaticText(self, label="Wheel Simulator", pos=(170, 10))
         stWheelDiagram.SetFont(titleFont)
 
         self.fl_angleSpin = wx.SpinCtrl(self, value='%d' % self.roverStatus.wheel[3]['angle'], size=(60, -1), pos=(100, 67))

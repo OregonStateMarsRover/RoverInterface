@@ -104,7 +104,7 @@ class RoverStatus():
     ####### SCIENCE PROBE CONTROL STATES #######
     probe_toggle = False
     probe_distance = 0
-    
+
     soil_moisture = 0
     conductivity = 0
     salinity = 0
@@ -130,9 +130,6 @@ class RoverStatus():
 
     def ChangeCamera(self, camera):
         mux_cam = camera
-
-    def UpdateProbe(self):
-        pass
 
     def SetAngle(self, angle):
         self.angle = math.radians(angle)

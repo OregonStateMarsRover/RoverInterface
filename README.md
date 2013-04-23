@@ -1,3 +1,28 @@
+# Mars Rover Primary and Secondary Addresses (w/ Data)
+* 1  - BeagleBone
+     + 17 - RESERVED: Rover Alive Packet
+* 2  - Left/Front Wheel     (speed, angle)
+* 3  - Left/Middle Wheel    (speed, angle)
+* 4  - Left/Rear Wheel      (speed, angle)
+* 5  - Right/Front Wheel    (speed, angle)
+* 6  - Right/Middle Wheel   (speed, angle)
+* 7  - Right/Rear Wheel     (speed, angle)
+* 8  - Arm                  (secondAddr, angle)
+     + 1 - Shoulder Motor
+     + 2 - Elbow Motor
+* 9  - Wrist
+     + 1 - Angle Servo      (secondAddr, angle)
+     + 2 - Tilt Servo       (secondAddr, angle)
+     + 3 - Probe Actuate    (secondAddr, distance)
+     + 4 - Probe Get Data   (secondAddr, request)
+     + 5 - Get Voltage      (secondAddr, request)
+* 10 - Tripod 
+     + 1 - Horizontal Servo (secondAddr, angle)
+     + 2 - Vertical Servo   (secondAddr, angle)
+     + 3 - Zoom             (secondAddr, distance)
+* 11 - MUX                  (camera_select)
+* 12 - Package              (package_select)
+
 # Mars Rover Code Flow
 
 ## GUI Class
