@@ -154,7 +154,7 @@ class Queuer(threading.Thread):
             cmd = wristAddr, 3, 0
             command_list.append(cmd)
         # Probe Actuate
-        distance = wrist_tilt
+        distance = probe_distance
         cmd = wristAddr, 4, distance
         command_list.append(cmd)
         # Probe Data
