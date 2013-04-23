@@ -1,6 +1,5 @@
 import math
 
-
 def updateArm(self):
     target = [self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[1]['pos'][1]]
 
@@ -15,7 +14,7 @@ def updateArm(self):
     self.roverStatus.arm_shoulder = round(math.degrees(self.roverStatus.arm_seg[0]['angle']))
     self.roverStatus.arm_elbow = round(math.degrees(self.roverStatus.arm_seg[1]['angle']))
     self.roverStatus.wrist_angle = round(math.degrees(self.roverStatus.arm_seg[2]['angle']))
-    self.roverStatus.wrist_tilt = 0
+    #self.roverStatus.wrist_tilt = 0
 
 
 def reach(roverStatus, target):

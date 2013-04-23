@@ -71,6 +71,7 @@ class RoverStatus():
     initShoulderAngle = 110
     initElbowAngle = 20
     initWristAngle = 330
+    #initWristTilt = 0
     shoulderMin = -20
     shoulderMax = 120
     elbowMin = 10
@@ -85,13 +86,14 @@ class RoverStatus():
     arm_seg[1]['len'] = 1.3
     arm_seg[2]['len'] = 1.0
 
-    arm_shoulder = 0
-    arm_elbow = 0
+    arm_shoulder = 0.0
+    arm_elbow = 0.0
 
-    wrist_angle = 0
-    wrist_tilt = 0
+    wrist_angle = 0.0
+    wrist_tilt = 0.0  # From -90 to 90
 
-    scoop_open = False
+    scoop_toggle = False
+    voltage_toggle = False
     voltage = 0
 
     ####### TRIPOD CONTROL STATES #######
@@ -100,6 +102,9 @@ class RoverStatus():
     tri_zoom = 0
 
     ####### SCIENCE PROBE CONTROL STATES #######
+    probe_toggle = False
+    probe_distance = 0
+    
     soil_moisture = 0
     conductivity = 0
     salinity = 0
