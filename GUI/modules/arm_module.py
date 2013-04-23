@@ -163,8 +163,8 @@ class ArmControls(wx.Panel):
         srv2Txt = wx.StaticText(self, label='Servo 2')
         srv3Txt = wx.StaticText(self, label='Servo 3')
 
-        self.voltOutput = wx.TextCtrl(self, -1, size=(60, -1))
-        self.scoopState = wx.TextCtrl(self, -1, size=(60, -1))
+        self.voltOutput = wx.TextCtrl(self, -1, size=(70, -1))
+        self.scoopState = wx.TextCtrl(self, -1, size=(70, -1))
 
         gridSizer = wx.GridBagSizer(3, 3)
 
