@@ -71,11 +71,10 @@ class RoverStatus():
     initShoulderAngle = 110
     initElbowAngle = 20
     initWristAngle = 330
-    #initWristTilt = 0
-    shoulderMin = -20
+    shoulderMin = 0
     shoulderMax = 120
     elbowMin = 10
-    elbowMax = 210
+    elbowMax = 350
     wristMin = 10
     wristMax = 350
 
