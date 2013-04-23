@@ -1,6 +1,9 @@
 import math
+import time
 
 def updateArm(self):
+    pressed = 1
+
     target = [self.roverStatus.arm_seg[1]['pos'][0], self.roverStatus.arm_seg[1]['pos'][1]]
 
     target[1] += .001 * self.roverStatus.arm_joy_states['LJ/UpDown']
@@ -14,7 +17,38 @@ def updateArm(self):
     self.roverStatus.arm_shoulder = round(math.degrees(self.roverStatus.arm_seg[0]['angle']))
     self.roverStatus.arm_elbow = round(math.degrees(self.roverStatus.arm_seg[1]['angle']))
     self.roverStatus.wrist_angle = round(math.degrees(self.roverStatus.arm_seg[2]['angle']))
-    #self.roverStatus.wrist_tilt = 0
+    
+    # Placeholders for joystick inputs
+    a = self.roverStatus.arm_joy_states['A']
+    b = self.roverStatus.arm_joy_states['B']
+    left = self.roverStatus.arm_joy_states['Left']
+    right = self.roverStatus.arm_joy_states['Right']
+    scoop_toggle = self.roverStatus.scoop_toggle
+    voltage_toggle = self.roverStatus.voltage_toggle
+    wrist_tilt = self.roverStatus.wrist_tilt
+
+    # Calculate expected values
+    if a is pressed:
+        if scoop_toggle is True:
+            scoop_toggle = False
+        elif scoop_toggle is False:
+            scoop_toggle = True
+    elif b is pressed:
+        if voltage_toggle is False:
+            voltage_toggle = True
+    elif right is pressed:
+        if wrist_tilt < 90:
+            wrist_tilt += 5
+        time.sleep(self.wait)
+    elif left is pressed:
+        if wrist_tilt > -90:
+            wrist_tilt -= 5
+        time.sleep(self.wait)
+
+    # Set scoop, voltage and wrist tilt values
+    self.roverStatus.scoop_toggle = scoop_toggle
+    self.roverStatus.voltage_toggle = voltage_toggle
+    self.roverStatus.wrist_tilt = wrist_tilt
 
 
 def reach(roverStatus, target):
