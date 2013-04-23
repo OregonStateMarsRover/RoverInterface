@@ -1,3 +1,11 @@
+########## Arm Math - arm_math.py ##########
+
+# Original Author: Francis Vo
+# Edited By: John Zeller
+
+# Arm Math uses the arm_joy_states values to calculate
+# the expected states for the arm.
+
 import math
 import time
 
@@ -12,11 +20,6 @@ def updateArm(self):
     for x in xrange(1, 10):
         reach(self.roverStatus, target)
     self.roverStatus.arm_seg[2]['angle'] += .0005 * self.roverStatus.arm_joy_states['RJ/UpDown']
-
-    # Update roverStatus values used in queuer
-    self.roverStatus.arm_shoulder = round(math.degrees(self.roverStatus.arm_seg[0]['angle']))
-    self.roverStatus.arm_elbow = round(math.degrees(self.roverStatus.arm_seg[1]['angle']))
-    self.roverStatus.wrist_angle = round(math.degrees(self.roverStatus.arm_seg[2]['angle']))
     
     # Placeholders for joystick inputs
     a = self.roverStatus.arm_joy_states['A']
@@ -45,7 +48,13 @@ def updateArm(self):
             wrist_tilt -= 5
         time.sleep(self.wait)
 
-    # Set scoop, voltage and wrist tilt values
+    # Adjust values to fit limits
+    adjustToLimits(self.roverStatus)
+
+    # Update roverStatus values
+    self.roverStatus.arm_shoulder = round(math.degrees(self.roverStatus.arm_seg[0]['angle']))
+    self.roverStatus.arm_elbow = round(math.degrees(self.roverStatus.arm_seg[1]['angle']))
+    self.roverStatus.wrist_angle = round(math.degrees(self.roverStatus.arm_seg[2]['angle']))
     self.roverStatus.scoop_toggle = scoop_toggle
     self.roverStatus.voltage_toggle = voltage_toggle
     self.roverStatus.wrist_tilt = wrist_tilt
@@ -69,3 +78,32 @@ def reach(roverStatus, target):
     math.degrees(roverStatus.arm_seg[0]['angle'])
 
     roverStatus.arm_seg[2]['angle'] = angle3 - angle2 + math.pi
+
+def adjustToLimits(roverStatus):
+    # roverStatus Values to compare with
+    arm_shoulder = round(math.degrees(roverStatus.arm_seg[0]['angle']))
+    arm_elbow = round(math.degrees(roverStatus.arm_seg[1]['angle']))
+    wrist_angle = round(math.degrees(roverStatus.arm_seg[2]['angle']))
+    shoulderMin = roverStatus.shoulderMin
+    shoulderMax = roverStatus.shoulderMax
+    elbowMin = roverStatus.elbowMin
+    elbowMax = roverStatus.elbowMax
+    wristMin = roverStatus.wristMin
+    wristMax = roverStatus.wristMax
+
+    # Check if adjustments are needed, and then make them if necessary
+    # SHOULDER
+    if arm_shoulder >= shoulderMax:
+        roverStatus.arm_seg[0]['angle'] = math.radians(shoulderMax - 1)
+    elif arm_shoulder <= shoulderMin:
+        roverStatus.arm_seg[0]['angle'] = math.radians(shoulderMin + 1)
+    # ELBOW
+    if arm_elbow >= elbowMax:
+        roverStatus.arm_seg[1]['angle'] = math.radians(elbowMax - 1)
+    elif arm_elbow <= elbowMin:
+        roverStatus.arm_seg[1]['angle'] = math.radians(elbowMin + 1)
+    # WRIST
+    if wrist_angle >= wristMax:
+        roverStatus.arm_seg[2]['angle'] = math.radians(wristMax - 1)
+    elif wrist_angle <= wristMin:
+        roverStatus.arm_seg[2]['angle'] = math.radians(wristMin + 1)
