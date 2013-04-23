@@ -157,3 +157,29 @@ class TripodPacket(RoverPacket):
         if (len(new.content) != 2):
             raise Exception("Tripod packet contents had unexpected length of %d" % len(new))
         return new
+
+class MuxPacket(RoverPacket):
+    def __init__(self, addr, mux_cam):
+        content = [int(mux_cam)]
+        RoverPacket.__init__(self, addr, content)
+
+    @classmethod
+    def from_rx(cls, port):
+        new = cls(0, 0, 0)
+        new.rx(port)
+        if (len(new.content) != 1):
+            raise Exception("MUX packet contents had unexpected length of %d" % len(new))
+        return new
+
+class PackagePacket(RoverPacket):
+    def __init__(self, addr, package_select):
+        content = [int(package_select)]
+        RoverPacket.__init__(self, addr, content)
+
+    @classmethod
+    def from_rx(cls, port):
+        new = cls(0, 0, 0)
+        new.rx(port)
+        if (len(new.content) != 1):
+            raise Exception("Package packet contents had unexpected length of %d" % len(new))
+        return new

@@ -48,8 +48,18 @@ class Queuer(threading.Thread):
                     self.receptionist_queue.put(command)
 
             # Make MUX Commands
+            mux_commands = self.poll_mux_command()
+            mux_commands = self.assemble_mux_packets(mux_commands)
+            with self.roverStatus.queueMutex:
+                for command in mux_commands:
+                    self.receptionist_queue.put(command)
 
             # Make Package Commands
+            package_commands = self.poll_package_command()
+            package_commands = self.assemble_package_packets(package_commands)
+            with self.roverStatus.queueMutex:
+                for command in package_commands:
+                    self.receptionist_queue.put(command)
 
             
             time.sleep(self.waitTime)
@@ -84,6 +94,24 @@ class Queuer(threading.Thread):
         for command in tripod_commands:
                 triAddr, secAddr, angle = command
                 packet = TripodPacket(triAddr, secAddr, angle)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+        return packet_list
+
+    def assemble_mux_packets(self, mux_commands):
+        packet_list = []
+        for command in mux_commands:
+                muxAddr, camera_select = command
+                packet = MuxPacket(muxAddr, camera_select)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+        return packet_list
+
+    def assemble_package_packets(self, package_commands):
+        packet_list = []
+        for command in package_commands:
+                pckAddr, package_select = command
+                packet = PackagePacket(pckAddr, package_select)
                 packet = packet.msg()  # Serializes packet
                 packet_list.append(packet)
         return packet_list
@@ -207,6 +235,43 @@ class Queuer(threading.Thread):
             angle = self.intToByte(secVars[count])
             cmd = triAddr, secAddr, angle
             command_list.append(cmd)
+            count += 1
+
+        return command_list
+
+    def poll_mux_command(self):
+        # Returns 1 tuples command in the form
+        # (muxAddr, camera_select)
+        command_list = []
+
+        with self.roverStatus.roverStatusMutex:
+            mux_cam = self.roverStatus.mux_cam
+        muxAddr = 11
+
+        cmd = muxAddr, mux_cam
+        command_list.append(cmd)
+
+        return command_list
+
+    def poll_package_command(self):
+        # Returns 1 tuples command in the form
+        # (pckAddr, package_select)
+        command_list = []
+
+        with self.roverStatus.roverStatusMutex:
+            package_one = self.roverStatus.package_one
+            package_two = self.roverStatus.package_two
+            package_three = self.roverStatus.package_three
+            package_four = self.roverStatus.package_four
+            package_five = self.roverStatus.package_five
+        pckAddr = 12
+        pckList = [package_one, package_two, package_three, package_four, package_five]
+
+        count = 1
+        for pck in pckList:
+            if pck is True:
+                cmd = pckAddr, count
+                command_list.append(cmd)
             count += 1
 
         return command_list
