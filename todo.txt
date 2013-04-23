@@ -10,3 +10,5 @@
 9) Allow control of Soil Probe
 10) Change arm_seg['len']'s based on solid measurments of the arm segments
 11) Make scoop vectorable (Currently it is only open or closed)
+12) Set Arm control limits AKA stops
+13) Have gui.py launch the GPS module

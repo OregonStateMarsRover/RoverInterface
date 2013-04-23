@@ -25,7 +25,7 @@
 ###############################################################################
 
 ### States Dictionary Reference: ##############################################
-#	self.drive_joy_states = { 'A':0, 'B':0, 'X':0, 'Y':0,  		   				  #
+#	self.drive_joy_states = { 'A':0, 'B':0, 'X':0, 'Y':0,  		   			  #
 #						'Back':0, 'Start':0, 'Middle':0,		    		  #
 #						'Left':0, 'Right':0, 'Up':0, 'Down':0, 		 	      #
 #						'LB':0, 'RB':0, 'LT':0, 'RT':0,			   			  #
@@ -171,9 +171,9 @@ class DriveJoyParser(threading.Thread):
     def parse_released_button(self):
         # Updates states of buttons to 0(off)
         if self.templist[5] == '\x00' and self.templist[6] == '\x01':  # Letters,
-                                                                                                                          # Start/Stop,
-                                                                                                                          # L/RJ
-                                                                                                                          # Button
+                                                                      # Start/Stop,
+                                                                      # L/RJ
+                                                                      # Button
             self.drive_joy_states[self.buttons[self.templist[7]]] = 0
         elif self.templist[5] == '\x00' and self.templist[6] == '\x02':  # D-Pad
             if self.templist[7] == '\x07':  # D-Pad, Up/Down

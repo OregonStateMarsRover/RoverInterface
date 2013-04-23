@@ -70,6 +70,9 @@ class ProbeDisplay(wx.Panel):
         self.SalinityOutput.SetValue("%s" % self.roverStatus.salinity)
         self.FtempOutput.SetValue("%s" % self.roverStatus.f_temp)
         self.CtempOutput.SetValue("%s" % self.roverStatus.c_temp)
+        self.sliderwheel.SetValue(self.roverStatus.probe_distance)
+        self.slider.SetValue(self.roverStatus.probe_distance)
+
 
     def pressbutton(self, event):
         self.roverStatus.probe_toggle = True

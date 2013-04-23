@@ -27,6 +27,7 @@ from wheel_module import *
 from receptionist import *
 from wheel_math import *
 from tripod_math import *
+from probe_math import *
 
 # Define notification event for UpdaterThread
 EVT_UPDATE_ID = wx.NewId()
@@ -289,6 +290,7 @@ class Gui(wx.Frame):
                     tank(self)
                 updateArm(self)
                 updateTripod(self)
+                updateProbe(self)
 
     def Update(self, event):
         with self.roverStatus.roverStatusMutex:
