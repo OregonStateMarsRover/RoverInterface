@@ -13,6 +13,8 @@
 14) Clean up orphaned threads
 15) Make a list of types of packet data to be expected
 16) Write intToArmByte to change a 0-360 degree angle into a Byte data
+17) Add Camera select to GUI
+18) Adjust package states so that 5 bytes do not need to be sent all the time
 
 
 
