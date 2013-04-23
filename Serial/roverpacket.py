@@ -128,7 +128,7 @@ class ArmPacketLong(RoverPacket):
     def from_rx(cls, port):
         new = cls(0, 0, 0)
         new.rx(port)
-        if (len(new.content) != 1):
+        if (len(new.content) != 3):
             raise Exception("Arm packet long contents had unexpected length of %d" % len(new))
         return new
 
@@ -141,6 +141,19 @@ class ArmPacketShort(RoverPacket):
     def from_rx(cls, port):
         new = cls(0, 0, 0)
         new.rx(port)
-        if (len(new.content) != 1):
+        if (len(new.content) != 2):
             raise Exception("Arm packet short contents had unexpected length of %d" % len(new))
+        return new
+
+class TripodPacket(RoverPacket):
+    def __init__(self, addr, secaddr, angle):
+        content = [int(secaddr), int(angle)]
+        RoverPacket.__init__(self, addr, content)
+
+    @classmethod
+    def from_rx(cls, port):
+        new = cls(0, 0, 0)
+        new.rx(port)
+        if (len(new.content) != 2):
+            raise Exception("Tripod packet contents had unexpected length of %d" % len(new))
         return new

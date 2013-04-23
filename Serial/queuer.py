@@ -40,8 +40,17 @@ class Queuer(threading.Thread):
                 for command in arm_commands:
                     self.receptionist_queue.put(command)
             
-            # Make Button Commands
-            # self.receptionist_queue.put(self.poll_button_command())
+            # Make Tripod Commands
+            tripod_commands = self.poll_tripod_command()
+            tripod_commands = self.assemble_tripod_packets(tripod_commands)
+            with self.roverStatus.queueMutex:
+                for command in tripod_commands:
+                    self.receptionist_queue.put(command)
+
+            # Make MUX Commands
+
+            # Make Package Commands
+
             
             time.sleep(self.waitTime)
 
@@ -66,6 +75,15 @@ class Queuer(threading.Thread):
         for command in arm_commands2:
                 armAddr, secAddr, data = command
                 packet = ArmPacketShort(armAddr, secAddr, data)
+                packet = packet.msg()  # Serializes packet
+                packet_list.append(packet)
+        return packet_list
+
+    def assemble_tripod_packets(self, tripod_commands):
+        packet_list = []
+        for command in tripod_commands:
+                triAddr, secAddr, angle = command
+                packet = TripodPacket(triAddr, secAddr, angle)
                 packet = packet.msg()  # Serializes packet
                 packet_list.append(packet)
         return packet_list
@@ -172,18 +190,26 @@ class Queuer(threading.Thread):
 
         return command_list
 
-    def poll_button_command(self):
-        # Returns 1 tuple for a button command in the form (addr, data)
-        #
-        command = None
-        # Tripod Controls - (addr, vert_angle, horz_angle) - Angles -100 to 100
-        # (Positive: 0-127) (Reverse: 255-128)
+    def poll_tripod_command(self):
+        # Returns list of 3 tuples of tripod commands in the form
+        # (armAddr, secAddr, angle)
+        command_list = []
 
-        # Angles should be persistent, meaning that this should change the
-        # tripod angle state in roverStatus, and then that status should be
-        # used to update the tripod command, if it needs updating
+        with self.roverStatus.roverStatusMutex:
+            tri_hori = self.roverStatus.tri_hori
+            tri_vert = self.roverStatus.tri_vert
+            tri_zoom = self.roverStatus.tri_zoom
+        triAddr = 10
+        secVars = [tri_hori, tri_vert, tri_zoom]
 
-        return command
+        count = 0
+        for secAddr in range(1,4):
+            angle = self.intToByte(secVars[count])
+            cmd = triAddr, secAddr, angle
+            command_list.append(cmd)
+            count += 1
+
+        return command_list
 
     def intToByte(self, int_var):
         # Description: Takes in an integer representation (-127 to 127) of
