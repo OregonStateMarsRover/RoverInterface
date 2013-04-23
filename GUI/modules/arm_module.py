@@ -79,7 +79,7 @@ class Arm():
                 self.roverStatus.arm_seg[2]['pos']]
         lines = PolyLine(data)
 
-        return PlotGraphics([lines], "Arm Display", "Distance Out", "Distance Up")
+        return PlotGraphics([lines], "Arm Simulator", "Distance Out", "Distance Up")
 
 
 class ArmSim(wx.Panel):
@@ -134,8 +134,8 @@ class ArmControls(wx.Panel):
         btnWristDown = wx.Button(self, label=u"\u2193", size=(30, -1))
         btnWristL = wx.Button(self, label=u"\u21BA", size=(30, -1))
 
-        btnScoopO = wx.Button(self, label='Open', size=(60, -1))
-        btnScoopC = wx.Button(self, label='Close', size=(60, -1))
+        btnScoopO = wx.Button(self, label='Toggle', size=(60, -1))
+        #btnScoopC = wx.Button(self, label='Close', size=(60, -1))
 
         btnVoltUpdate = wx.Button(self, label='Update', size=(65, -1))
 
@@ -147,8 +147,8 @@ class ArmControls(wx.Panel):
         btnWristR.Bind(wx.EVT_BUTTON, lambda evt, temp='wrist right': self.OnButton(evt, temp))
         btnWristDown.Bind(wx.EVT_BUTTON, lambda evt, temp='wrist down': self.OnButton(evt, temp))
         btnWristL.Bind(wx.EVT_BUTTON, lambda evt, temp='wrist left': self.OnButton(evt, temp))
-        btnScoopO.Bind(wx.EVT_BUTTON, lambda evt, temp='scoop open': self.OnButton(evt, temp))
-        btnScoopC.Bind(wx.EVT_BUTTON, lambda evt, temp='scoop close': self.OnButton(evt, temp))
+        btnScoopO.Bind(wx.EVT_BUTTON, lambda evt, temp='scoop toggle': self.OnButton(evt, temp))
+        #btnScoopC.Bind(wx.EVT_BUTTON, lambda evt, temp='scoop close': self.OnButton(evt, temp))
         btnVoltUpdate.Bind(wx.EVT_BUTTON, lambda evt, temp='voltage update': self.OnButton(evt, temp))
 
         titleFont = wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.BOLD)
@@ -163,7 +163,8 @@ class ArmControls(wx.Panel):
         srv2Txt = wx.StaticText(self, label='Servo 2')
         srv3Txt = wx.StaticText(self, label='Servo 3')
 
-        voltOutput = wx.TextCtrl(self, -1, size=(60, -1))
+        self.voltOutput = wx.TextCtrl(self, -1, size=(60, -1))
+        self.scoopState = wx.TextCtrl(self, -1, size=(60, -1))
 
         gridSizer = wx.GridBagSizer(3, 3)
 
@@ -186,7 +187,8 @@ class ArmControls(wx.Panel):
         gridSizer.Add(srv2Txt, (3, 1), flag=wx.EXPAND | wx.ALIGN_CENTER_VERTICAL)
         gridSizer.Add(srv3Txt, (4, 1), flag=wx.EXPAND | wx.ALIGN_CENTER_VERTICAL)
 
-        gridSizer.Add(voltOutput, (8, 2), flag=wx.FIXED_MINSIZE)
+        gridSizer.Add(self.voltOutput, (8, 2), flag=wx.FIXED_MINSIZE)
+        gridSizer.Add(self.scoopState, (6, 2), flag=wx.FIXED_MINSIZE)
 
         gridSizer.Add(btnWristUp, (6, 5), flag=wx.EXPAND)
         gridSizer.Add(btnWristR, (7, 6), flag=wx.EXPAND | wx.RIGHT, border=15)
@@ -194,7 +196,7 @@ class ArmControls(wx.Panel):
         gridSizer.Add(btnWristL, (7, 4), flag=wx.EXPAND)
 
         gridSizer.Add(btnScoopO, (6, 1), flag=wx.FIXED_MINSIZE | wx.ALIGN_CENTER_HORIZONTAL)
-        gridSizer.Add(btnScoopC, (6, 2), flag=wx.FIXED_MINSIZE)
+        #gridSizer.Add(btnScoopC, (6, 2), flag=wx.FIXED_MINSIZE)
 
         gridSizer.Add(btnVoltUpdate, (8, 1), flag=wx.FIXED_MINSIZE | wx.ALIGN_CENTER_HORIZONTAL)
 
@@ -206,6 +208,11 @@ class ArmControls(wx.Panel):
         self.srv2.SetValue(math.degrees(self.roverStatus.arm_seg[1]['angle']))
         self.srv3.SetValue(math.degrees(self.roverStatus.arm_seg[2]['angle']))
         self.arm_sim.canvas.Draw(self.arm_sim.arm.drawArm(), xAxis=(-1, 4), yAxis=(-1, 4))
+        self.voltOutput.SetValue("%d" % self.roverStatus.voltage)
+        if self.roverStatus.scoop_toggle is True:
+            self.scoopState.SetValue("Opened")
+        elif self.roverStatus.scoop_toggle is False:
+            self.scoopState.SetValue("Closed")
 
     def OnButton(self, e, value):
         #print(value)
@@ -232,12 +239,14 @@ class ArmControls(wx.Panel):
             self.roverStatus.wrist_tilt -= 1
 
         # Scoop Controls
-        if value == 'scoop open':
+        if value == 'scoop toggle':
             if self.roverStatus.scoop_toggle is False:
                 self.roverStatus.scoop_toggle = True
-        elif value == 'scoop close':
-            if self.roverStatus.scoop_toggle is True:
+            elif self.roverStatus.scoop_toggle is True:
                 self.roverStatus.scoop_toggle = False
+        #elif value == 'scoop close':
+        #    if self.roverStatus.scoop_toggle is True:
+        #        self.roverStatus.scoop_toggle = False
         
         # Voltage Controls
         if value == 'voltage update':
@@ -249,6 +258,11 @@ class ArmControls(wx.Panel):
         self.srv1.SetValue(math.degrees(self.roverStatus.arm_seg[0]['angle']))
         self.srv2.SetValue(math.degrees(self.roverStatus.arm_seg[1]['angle']))
         self.srv3.SetValue(math.degrees(self.roverStatus.arm_seg[2]['angle']))
+        self.voltOutput.SetValue("%d" % self.roverStatus.voltage)
+        if self.roverStatus.scoop_toggle is True:
+            self.scoopState.SetValue("Open")
+        elif self.roverStatus.scoop_toggle is False:
+            self.scoopState.SetValue("Open")
 
         self.arm_sim.canvas.Draw(self.arm_sim.arm.drawArm(), xAxis=(-1, 4), yAxis=(-1, 4))
 
