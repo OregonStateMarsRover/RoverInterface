@@ -7,15 +7,16 @@
 * 5  - Right/Front Wheel    (speed, angle)
 * 6  - Right/Middle Wheel   (speed, angle)
 * 7  - Right/Rear Wheel     (speed, angle)
-* 8  - Arm                  (secondAddr, angle)
+* 8  - Arm                  (secondAddr, angle, angle_overflow)
      + 1 - Shoulder Motor
      + 2 - Elbow Motor
 * 9  - Wrist
-     + 1 - Angle Servo      (secondAddr, angle)
-     + 2 - Tilt Servo       (secondAddr, angle)
-     + 3 - Probe Actuate    (secondAddr, distance)
-     + 4 - Probe Get Data   (secondAddr, request)
-     + 5 - Get Voltage      (secondAddr, request)
+     + 1 - Angle Servo      (secondAddr, angle, angle_overflow)
+     + 2 - Tilt Servo       (secondAddr, angle, angle_overflow)
+     + 3 - Scoop Actuate    (secondAddr, command)
+     + 4 - Probe Actuate    (secondAddr, distance)
+     + 5 - Probe Get Data   (secondAddr, request)
+     + 6 - Get Voltage      (secondAddr, request)
 * 10 - Tripod 
      + 1 - Horizontal Servo (secondAddr, angle)
      + 2 - Vertical Servo   (secondAddr, angle)

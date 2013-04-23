@@ -3,13 +3,19 @@
 3) Clear up all remaining print statements
 4) Print only errors to the screen
 	1) Count the number of that type of error
-5) Allow control of Tripod
-6) Allow control of Arm
-7) Allow control of MUX
-8) Allow control of Packages
-9) Allow control of Soil Probe
+5) Allow control and assemble/send packets of Tripod
+6) Allow control and assemble/send packets of Arm
+7) Allow control and assemble/send packets of MUX
+8) Allow control and assemble/send packets of Packages
+9) Allow control and assemble/send packets of Soil Probe
 10) Change arm_seg['len']'s based on solid measurments of the arm segments
 11) Make scoop vectorable (Currently it is only open or closed)
-12) Set Arm control limits AKA stops
 13) Have gui.py launch the GPS module
 14) Clean up orphaned threads
+15) Make a list of types of packet data to be expected
+16) Write intToArmByte to change a 0-360 degree angle into a Byte data
+
+
+
+DONE:
+1) Set Arm control limits AKA stops in Interface
