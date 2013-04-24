@@ -69,9 +69,6 @@ class DriveJoyParser(threading.Thread):
     def run(self):
         # Start Parser
         while 1:
-            with self.roverStatus.roverStatusMutex:
-                if self.roverStatus.drivejoyThreadExit is True:
-                    raise Exception("DRIVE JOY: Another thread has died. Terminating Drive Joy.")
             # Read 1 byte and copy state to Byte States
             for x in range(8):
                 self.templist[x] = self.bus.joy_drive.read(1)
@@ -225,9 +222,6 @@ class ArmJoyParser(threading.Thread):
     def run(self):
         # Start Parser
         while 1:
-            with self.roverStatus.roverStatusMutex:
-                if self.roverStatus.armjoyThreadExit is True:
-                    raise Exception("ARM JOY: Another thread has died. Terminating Arm Joy.")
             # Read 1 byte and copy state to Byte States
             for x in range(8):
                 self.templist[x] = self.bus.joy_arm.read(1)
