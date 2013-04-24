@@ -252,6 +252,7 @@ class Queuer(threading.Thread):
         muxAddr = 11
 
         cmd = muxAddr, mux_cam
+        print "MUX Camera: ", mux_cam
         command_list.append(cmd)
 
         return command_list
