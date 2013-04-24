@@ -4,6 +4,9 @@
 
 # Tripod Math uses the arm_joy_states values to calculate
 # the expected states for the tripod.
+# NOTE: Tripod Math also has a stashed function to update
+#       the drive_mode. This can be moved, but it works
+#       having it here, since it is only one variable.
 
 import sys
 import math
@@ -68,3 +71,17 @@ def updateTripod(self):
     self.roverStatus.tri_hori = tri_hori
     self.roverStatus.tri_vert = tri_vert
     self.roverStatus.tri_zoom = tri_zoom
+
+    # UNRELATED TO TRIPOD BUT IMPORTANT
+    UpdateDriveMode(self)
+
+def UpdateDriveMode(self):
+    pressed = 1
+    x = self.roverStatus.drive_joy_states['X']
+    drive_mode = self.roverStatus.drive_mode
+
+    if x is pressed:
+        if drive_mode == "zeroRadius":
+            self.roverStatus.drive_mode = "tank"
+        else:
+            self.roverStatus.drive_mode = "zeroRadius"
