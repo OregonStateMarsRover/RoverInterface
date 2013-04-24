@@ -33,6 +33,7 @@ All:
 	RB)		Camera Zoom In (exclusive to main camera)
 	LB)		Camera Zoom Out (exclusive to main camera)
 	Middle)	Emergency Stop ALL driving immediately
+	X)		Toggle ZeroRadius/Tank
 
 
 ---- Arm Joystick ----

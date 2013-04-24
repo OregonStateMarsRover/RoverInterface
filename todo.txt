@@ -1,24 +1,20 @@
-2) Create a logging system that saves log files into log/
-4) Print only errors to the screen
-	1) Count the number of that type of error
-5) Change arm_seg['len']'s based on solid measurments of the arm segments
-6) Make scoop vectorable (Currently it is only open or closed)
-7) Have gui.py launch the GPS module
-8) Clean up orphaned threads
-9) Make a list of types of packet data to be expected
-10) Write intToArmByte to change a 0-360 degree angle into a Byte data
-11) Add Camera select to GUI
-12) Adjust package states so that 5 bytes do not need to be sent all the time
-13) 
-14) Fix data format for the following
+1) Change arm_seg['len']'s based on solid measurments of the arm segments
+2) Make scoop vectorable (Currently it is only open or closed)
+3) Have gui.py launch the GPS module
+4) Clean up orphaned threads
+5) Adjust package states so that 5 bytes do not need to be sent all the time
+6) Fix data format for the following
 	1) Vector Mode: Velocity and Angle
 	2) Zero Mode: Angles are again too shallow, just simply not correct
-XXXX3) Tripod: Zoom
-XXXX4) Wrist: Tilt
-15) Make a record for the data format
-16) Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2
-17) Add Zero-Radius Button to Drive
+7) Make a record for the data format
+8) Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2
+9) Add Zero-Radius Button to Drive
 
+
+MAYBE:
+1) Create a logging system that saves log files into log/
+2) Print only errors to the screen
+	1) Count the number of that type of error
 
 
 DONE:
@@ -31,3 +27,10 @@ DONE:
 7) See if there is an issue with roverpacket assembly
 8) Clear up all remaining print statements
 9) Remove angle_overflow for wrist tilt (just use bogie configuration)
+10) Fix data format for the following
+	1) 
+	2) 
+	3) Tripod: Zoom
+	4) Wrist: Tilt
+11) Add Camera select to GUI
+12) Write intToArmByte to change a 0-360 degree angle into a Byte data
