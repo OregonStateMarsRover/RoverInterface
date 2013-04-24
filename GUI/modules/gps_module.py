@@ -23,8 +23,8 @@ import gtk
 import gobject
 import osmgpsmap
 import pango
-import threading
-from threading import Lock
+import serial
+import time
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -33,6 +33,7 @@ gtk.gdk.threads_init()
 mydir = os.path.dirname(os.path.abspath(__file__))
 libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
 sys.path.insert(0, libdir)
+
 
 class GpsLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
     def __init__(self):

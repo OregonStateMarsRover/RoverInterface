@@ -23,6 +23,9 @@ class Queuer(threading.Thread):
 
     def run(self):
         while 1:
+            with self.roverStatus.roverStatusMutex:
+                if self.roverStatus.queuerThreadExit is True:
+                    raise Exception("QUEUER: Another thread has died. Terminating Queuer.")
             # WARNING: If crashing, check UpdateMath isn't called from other thread
             self.gui.UpdateMath()
 
