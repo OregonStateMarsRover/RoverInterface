@@ -121,6 +121,7 @@ class RoverStatus():
 
     ####### MUX CONTROL STATES #######
     mux_cam = 1 # 1-4 - Default is 1 "Main Camera"
+    mux_cam_choices = ["Main", "2 - Arm", "3 - Left", "4 - Right"]
 
     def TogglePackage(self, package):
         # package is ints 1-6
