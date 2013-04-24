@@ -24,6 +24,28 @@
 * 11 - MUX                  (camera_select)
 * 12 - Package              (package_select)
 
+# Mars Rover Packet Data Formats
+* 1      - BeagleBone
+            + 17 - RESERVED: Rover Alive Packet
+* 2,3,4  - Left/Front,Middle,Rear Wheels
+* 5,6,7  - Right/Front,Middle,Rear Wheels
+* 8  - Arm
+     + 1 - Shoulder Motor
+     + 2 - Elbow Motor
+* 9  - Wrist
+     + 1 - Angle Servo
+     + 2 - Tilt Servo
+     + 3 - Scoop Actuate
+     + 4 - Probe Actuate
+     + 5 - Probe Get Data
+     + 6 - Get Voltage
+* 10 - Tripod
+     + 1 - Horizontal Servo
+     + 2 - Vertical Servo
+     + 3 - Zoom
+* 11 - MUX
+* 12 - Package
+
 # Mars Rover Code Flow
 
 ## GUI Class
