@@ -13,7 +13,7 @@
 14) Fix data format for the following
 	1) Vector Mode: Velocity and Angle
 	2) Zero Mode: Angles are again too shallow, just simply not correct
-	3) Tripod: Zoom
+XXXX3) Tripod: Zoom
 XXXX4) Wrist: Tilt
 15) Make a record for the data format
 16) Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2

@@ -227,14 +227,18 @@ class Queuer(threading.Thread):
             tri_vert = self.roverStatus.tri_vert
             tri_zoom = self.roverStatus.tri_zoom
         triAddr = 10
-        secVars = [tri_hori, tri_vert, tri_zoom]
-
-        count = 0
-        for secAddr in range(1,4):
-            angle = self.intToByte(secVars[count])
-            cmd = triAddr, secAddr, angle
-            command_list.append(cmd)
-            count += 1
+        # Horizontal Servo
+        angle = self.intToByte(tri_hori)
+        cmd = triAddr, 1, angle
+        command_list.append(cmd)
+        # Vertical Servo
+        angle = self.intToByte(tri_vert)
+        cmd = triAddr, 2, angle
+        command_list.append(cmd)
+        # Zoom 
+        angle = tri_zoom
+        cmd = triAddr, 3, angle
+        command_list.append(cmd)
 
         return command_list
 
