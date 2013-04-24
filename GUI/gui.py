@@ -18,6 +18,7 @@ sys.path.append('../')
 sys.path.append('./GUI/modules/')
 sys.path.append('./')
 # Importing Modules and Math
+from thread_manager import *
 from arm_module import *
 from science_module import *
 from tripod_module import *
@@ -36,7 +37,6 @@ EVT_UPDATE_ID = wx.NewId()
 # Define Updater Event
 def EVT_UPDATE(win, func):
     win.Connect(-1, -1, EVT_UPDATE_ID, func)
-
 
 class AllTerrain(wx.Panel):
 
@@ -234,13 +234,16 @@ class Gui(wx.Frame):
         EVT_UPDATE(self, self.Update)
 
         # Start auto-updating thread
-        self.updater = UpdaterThread(self)
+        self.updater = UpdaterThread(self, self.roverStatus)
+        with self.roverStatus.roverStatusMutex:
+            self.roverStatus.thread_list.append(self.updater)
 
         # Start initializations
         self.InitUI()
         self.InitReceptionist()
         self.InitDriveJoy()
         self.InitArmJoy()
+        self.InitThreadManager()
         self.Centre()
         self.Maximize()
         self.Show()
@@ -263,17 +266,23 @@ class Gui(wx.Frame):
     def InitReceptionist(self):
         print "Starting Receptionist"
         self.receptionistthread = Receptionist(self, self.roverStatus)
+        with self.roverStatus.roverStatusMutex:
+            self.roverStatus.thread_list.append(self.receptionistthread)
         self.bus = self.receptionistthread.bus
         self.receptionistthread.start()
 
     def InitDriveJoy(self):
         print "Starting Drive JoyParser"
         self.drivejoythread = DriveJoyParser(self, self.bus, self.roverStatus)
+        with self.roverStatus.roverStatusMutex:
+            self.roverStatus.thread_list.append(self.drivejoythread)
         self.drivejoythread.start()
 
     def InitArmJoy(self):
         print "Starting Arm JoyParser"
         self.armjoythread = ArmJoyParser(self, self.bus, self.roverStatus)
+        with self.roverStatus.roverStatusMutex:
+            self.roverStatus.thread_list.append(self.armjoythread)
         self.armjoythread.start()
 
     def UpdateMath(self):
@@ -299,6 +308,10 @@ class Gui(wx.Frame):
             for component in self.notebook.GetCurrentPage().components:
                 component.Refresh()
 
+    def InitThreadManager(self):
+        print "Starting Thread Manager"
+        self.threadmanagerthread = ThreadManager(self.roverStatus)
+        self.threadmanagerthread.start()
 
 class UpdaterEvent(wx.PyEvent):
     def __init__(self):
@@ -306,15 +319,24 @@ class UpdaterEvent(wx.PyEvent):
         self.SetEventType(EVT_UPDATE_ID)
 
 class UpdaterThread(Thread):
-    def __init__(self, notify_window):
+    def __init__(self, gui, roverStatus):
         Thread.__init__(self)
-        self._notify_window = notify_window
+        self.roverStatus = roverStatus
+        self.gui = gui
         self.start()
 
     def run(self):
         while 1:
-            time.sleep(0.1)
-            wx.PostEvent(self._notify_window, UpdaterEvent())
+            with self.roverStatus.roverStatusMutex:
+                if self.roverStatus.mainThreadExit is True: # Raise an exception, which causes this thread to stop
+                    print "Exception: GUI: Another thread has died. Terminating GUI.\n"
+                    self.gui.Close()
+            with self.roverStatus.roverStatusMutex:
+                if self.roverStatus.updaterThreadExit is True:
+                    raise Exception("UPDATER: Another thread has died. Terminating Updater.")
+            wx.PostEvent(self.gui, UpdaterEvent())
+            with self.roverStatus.roverStatusMutex:
+                self.roverStatus.mainThreadAlive = True # Make sure that mainThreadAlive is set to True
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

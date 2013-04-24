@@ -27,6 +27,8 @@ class Receptionist(threading.Thread):
         self.roverStatus = roverStatus
         self.queue = Queue.Queue()
         self.queuerthread = Queuer(gui, self.queue, roverStatus)
+        with self.roverStatus.roverStatusMutex:
+            self.roverStatus.thread_list.append(self.queuerthread)
         self.queuerthread.start()
 
     # TODO: If the address is 2-7, then make a bogie packet
@@ -34,6 +36,9 @@ class Receptionist(threading.Thread):
     def run(self):
         start_time = time.time()
         while 1:
+            with self.roverStatus.roverStatusMutex:
+                if self.roverStatus.receptionistThreadExit is True:
+                    raise Exception("RECEPTIONIST: Another thread has died. Terminating Receptionist.")
             # Send still alive message every 1 second
             if (time.time() - start_time) > 1:
                 packet = BogiePacket(1, 17, 0)

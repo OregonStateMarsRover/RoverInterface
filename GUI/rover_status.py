@@ -6,12 +6,24 @@
 #############################
 
 import math
+import time
 
 class RoverStatus():
     def __init__(self, roverStatusMutex, joyMutex, queueMutex):
         self.roverStatusMutex = roverStatusMutex
         self.joyMutex = joyMutex
         self.queueMutex = queueMutex
+        self.mainThreadAlive = True
+        self.mainThreadExit = False
+        self.start_time = time.time()
+
+    ####### THREADING STATES ######
+    thread_list = []
+    updaterThreadExit = False
+    receptionistThreadExit = False
+    drivejoyThreadExit = False
+    armjoyThreadExit = False
+    queuerThreadExit = False
 
     ####### JOY STATES #######
     # Create a dictionary to be used to keep states from joy.py

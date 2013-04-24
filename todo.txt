@@ -1,13 +1,13 @@
 1) Change arm_seg['len']'s based on solid measurments of the arm segments
 2) Make scoop vectorable (Currently it is only open or closed)
-3) Have gui.py launch the GPS module
+3) Find some solution to give GPS Module access to GPS Coordinate data in roverStatus
 4) Clean up orphaned threads
 5) Adjust package states so that 5 bytes do not need to be sent all the time
 6) Fix data format for the following
 	1) Vector Mode: Velocity and Angle
+	Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2
 	2) Zero Mode: Angles are again too shallow, just simply not correct
 7) Make a record for the data format
-8) Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2
 
 
 MAYBE:
@@ -34,3 +34,4 @@ DONE:
 11) Add Camera select to GUI
 12) Write intToArmByte to change a 0-360 degree angle into a Byte data
 13) Add Zero-Radius Button to Drive
+14) Launch gps_module.py
