@@ -23,6 +23,8 @@ import gtk
 import gobject
 import osmgpsmap
 import pango
+import threading
+from threading import Lock
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -366,6 +368,12 @@ class UI(gtk.Window):
 l = osmgpsmap.get_default_cache_directory()
 print l
    
+class GPSModule(threading.Thread):
+    def __init__(self, gui, roverStatus):
+        threading.Thread.__init__(self)
+        self.gui = gui
+        self.roverStatus = roverStatus
+
 if __name__ == "__main__":
     u = UI()
     u.show_all()

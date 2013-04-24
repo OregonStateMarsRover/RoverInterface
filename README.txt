@@ -20,3 +20,5 @@
 	f) cd wxPython
 	g) Now run the command, 'sudo python setup.py install'
 	h) wxPython and wxWidgets are now successfully installed!
+3) Install Python OSMGPSMAP by typing
+	sudo apt-get install python-osmgpsmap
