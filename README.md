@@ -12,7 +12,7 @@
      + 2 - Elbow Motor
 * 9  - Wrist
      + 1 - Angle Servo      (secondAddr, angle, angle_overflow)
-     + 2 - Tilt Servo       (secondAddr, angle, angle_overflow)
+     + 2 - Tilt Servo       (secondAddr, angle)
      + 3 - Scoop Actuate    (secondAddr, command)
      + 4 - Probe Actuate    (secondAddr, distance)
      + 5 - Probe Get Data   (secondAddr, request)

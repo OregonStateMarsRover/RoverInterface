@@ -93,6 +93,7 @@ class RoverStatus():
 
     scoop_toggle = False
     voltage_toggle = False
+    voltage_fresh_data = False
     voltage = 0
 
     ####### TRIPOD CONTROL STATES #######
@@ -102,6 +103,7 @@ class RoverStatus():
 
     ####### SCIENCE PROBE CONTROL STATES #######
     probe_toggle = False
+    probe_fresh_data = False
     probe_distance = 0
 
     soil_moisture = 0

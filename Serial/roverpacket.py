@@ -64,7 +64,10 @@ class RoverPacket(object):
         """receive a rover protocol packet on "port." There should be bytes already waiting on the port when this function is called"""
         if (not port.inWaiting()):
             raise Exception("Error: no bytes waiting on port")
-        start = int(port.read().encode("hex"), 16)
+        while 1:
+            start = int(port.read().encode("hex"), 16)
+            if start == self.start_byte:
+                break
 
         if start != self.start_byte:
             raise Exception("start byte error %s != %s" % (start, self.start_byte))
