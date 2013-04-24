@@ -24,6 +24,7 @@ from drive_module import *
 from package_module import *
 from rover_status import *
 from wheel_module import *
+from gps_module import *
 from receptionist import *
 from wheel_math import *
 from tripod_math import *
@@ -240,6 +241,7 @@ class Gui(wx.Frame):
         self.InitReceptionist()
         self.InitDriveJoy()
         self.InitArmJoy()
+        # self.InitGPSModule()  # GPS doesn't like multithreads?
         self.Centre()
         self.Maximize()
         self.Show()
@@ -274,6 +276,11 @@ class Gui(wx.Frame):
         print "Starting Arm JoyParser"
         self.armjoythread = ArmJoyParser(self, self.bus, self.roverStatus)
         self.armjoythread.start()
+
+    def InitGPSModule(self):
+        print "Starting GPS Module"
+        self.gpsmodulethread = GPSModule(self, self.roverStatus)
+        self.gpsmodulethread.start()
 
     def UpdateMath(self):
         with self.roverStatus.roverStatusMutex:

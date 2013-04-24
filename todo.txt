@@ -8,7 +8,6 @@
 	2) Zero Mode: Angles are again too shallow, just simply not correct
 7) Make a record for the data format
 8) Currently, in Vector mode, velocity only works at angle 0, and after velocity does not... also at that time angles show up but only go from 254 < angle < 2
-9) Add Zero-Radius Button to Drive
 
 
 MAYBE:
@@ -34,3 +33,4 @@ DONE:
 	4) Wrist: Tilt
 11) Add Camera select to GUI
 12) Write intToArmByte to change a 0-360 degree angle into a Byte data
+13) Add Zero-Radius Button to Drive
