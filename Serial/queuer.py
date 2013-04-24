@@ -75,8 +75,8 @@ class Queuer(threading.Thread):
 
     def assemble_arm_packets(self, arm_commands):
         packet_list = []
-        arm_commands1 = arm_commands[0:4]
-        arm_commands2 = arm_commands[4:8]
+        arm_commands1 = arm_commands[0:3]
+        arm_commands2 = arm_commands[3:8]
         for command in arm_commands1:
                 armAddr, secAddr, angle1, angle2 = command
                 packet = ArmPacketLong(armAddr, secAddr, angle1, angle2)
@@ -188,9 +188,8 @@ class Queuer(threading.Thread):
         cmd = wristAddr, 1, angle1, angle2
         command_list.append(cmd)
         # Wrist Tilt
-        angle_tuple = self.intToArmByte(wrist_tilt)
-        angle1, angle2 = angle_tuple
-        cmd = wristAddr, 2, angle1, angle2
+        angle = self.intToByte(wrist_tilt)
+        cmd = wristAddr, 2, angle
         command_list.append(cmd)
         # Scoop Actuate
         if scoop_toggle is True:
