@@ -22,7 +22,11 @@ def grabBurstSpeed():
     return burstSpeed
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     bus = serial.Serial(port='/dev/ttyUSB1',
+=======
+    bus = serial.Serial(port='/dev/ttyUSB0',
+>>>>>>> f077da6114729811a438b3620ee4b29a6a2dc8e3
                         baudrate=115200)
     start_time = time.time()
     burstSpeed = float(grabBurstSpeed()) / 1000
@@ -33,8 +37,9 @@ if __name__ == '__main__':
     for x in reversed(range(1, 127)):
         speed_list.append(x)
     for x in range(3):
-	    speed_list.append(0)
+	speed_list.append(0)
     for speed in speed_list:
+<<<<<<< HEAD
         #for wheelAddr in reversed(range(2, 4)):
         for addr in range(2,8):
 		go(bus, addr, speed, 0)
@@ -45,4 +50,8 @@ if __name__ == '__main__':
             packet = packet.msg()
             bus.write(packet)
             start_time = time.time() # Reset timer
+=======
+        for wheelAddr in reversed(range(2, 8)):
+        	go(bus, wheelAddr, speed, 0)
+>>>>>>> f077da6114729811a438b3620ee4b29a6a2dc8e3
         time.sleep(burstSpeed)
