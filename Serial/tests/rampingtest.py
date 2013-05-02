@@ -22,7 +22,7 @@ def grabBurstSpeed():
     return burstSpeed
 
 if __name__ == '__main__':
-    bus = serial.Serial(port='/dev/ttyUSB5',
+    bus = serial.Serial(port='/dev/ttyUSB1',
                         baudrate=115200)
     start_time = time.time()
     burstSpeed = float(grabBurstSpeed()) / 1000
@@ -36,8 +36,8 @@ if __name__ == '__main__':
 	    speed_list.append(0)
     for speed in speed_list:
         #for wheelAddr in reversed(range(2, 4)):
-        go(bus, 2, speed, 0)
-        go(bus, 3, speed, 0)
+        for addr in range(2,8):
+		go(bus, addr, speed, 0)
         if (time.time() - start_time) > 1:
             # Send still alive message
             packet = BogiePacket(1, 17, 0)
@@ -45,4 +45,4 @@ if __name__ == '__main__':
             packet = packet.msg()
             bus.write(packet)
             start_time = time.time() # Reset timer
-        time.sleep(0.1)
+        time.sleep(burstSpeed)

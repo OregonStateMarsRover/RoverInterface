@@ -66,14 +66,14 @@ def tank(self):
     self.roverStatus.wheel[5]['angle'] = 0
 
     # right side velocity
-    self.roverStatus.wheel[0]['velo'] = v_right
-    self.roverStatus.wheel[1]['velo'] = v_right
-    self.roverStatus.wheel[2]['velo'] = v_right
+    self.roverStatus.wheel[0]['velo'] = v_left
+    self.roverStatus.wheel[1]['velo'] = v_left
+    self.roverStatus.wheel[2]['velo'] = v_left
 
     # left side velocity
-    self.roverStatus.wheel[3]['velo'] = v_left
-    self.roverStatus.wheel[4]['velo'] = v_left
-    self.roverStatus.wheel[5]['velo'] = v_left
+    self.roverStatus.wheel[3]['velo'] = v_right
+    self.roverStatus.wheel[4]['velo'] = v_right
+    self.roverStatus.wheel[5]['velo'] = v_right
 
     # Do not let Wheel turn so turn rate is 0
     self.roverStatus.wheel[0]['omega'] = 0
