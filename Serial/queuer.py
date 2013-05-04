@@ -19,7 +19,7 @@ class Queuer(threading.Thread):
         self.gui = gui
         self.receptionist_queue = receptionist_queue
         self.roverStatus = roverStatus
-        self.waitTime = 0.1  # Wait 20ms between packet cycles
+        self.waitTime = 0.02  # Wait 20ms between packet cycles
 
     def run(self):
         while 1:
