@@ -6,6 +6,9 @@
 # Joy, what address, speed and angle commands are necessary. It then adds
 # these commands in the form of a tuple (addr, speed, angle) to the receptionist_queue
 
+# NOTE: If you send too many messages, it will take the rover too long to parse packets
+#       and you will see a large amount of latency
+
 import time
 import threading
 from roverpacket import *
