@@ -34,32 +34,32 @@ class Queuer(threading.Thread):
                     self.receptionist_queue.put(command)
 
             # Make Joy Arm Commands
-            arm_commands = self.poll_arm_command()
-            arm_commands = self.assemble_arm_packets(arm_commands)
-            with self.roverStatus.queueMutex:
-                for command in arm_commands:
-                    self.receptionist_queue.put(command)
+#            arm_commands = self.poll_arm_command()
+#            arm_commands = self.assemble_arm_packets(arm_commands)
+#            with self.roverStatus.queueMutex:
+#                for command in arm_commands:
+#                    self.receptionist_queue.put(command)
             
             # Make Tripod Commands
-            tripod_commands = self.poll_tripod_command()
-            tripod_commands = self.assemble_tripod_packets(tripod_commands)
-            with self.roverStatus.queueMutex:
-                for command in tripod_commands:
-                    self.receptionist_queue.put(command)
+#            tripod_commands = self.poll_tripod_command()
+#            tripod_commands = self.assemble_tripod_packets(tripod_commands)
+#            with self.roverStatus.queueMutex:
+#                for command in tripod_commands:
+#                    self.receptionist_queue.put(command)
 
             # Make MUX Commands
-            mux_commands = self.poll_mux_command()
-            mux_commands = self.assemble_mux_packets(mux_commands)
-            with self.roverStatus.queueMutex:
-                for command in mux_commands:
-                    self.receptionist_queue.put(command)
+#            mux_commands = self.poll_mux_command()
+#            mux_commands = self.assemble_mux_packets(mux_commands)
+#            with self.roverStatus.queueMutex:
+#                for command in mux_commands:
+#                    self.receptionist_queue.put(command)
 
             # Make Package Commands
-            package_commands = self.poll_package_command()
-            package_commands = self.assemble_package_packets(package_commands)
-            with self.roverStatus.queueMutex:
-                for command in package_commands:
-                    self.receptionist_queue.put(command)
+#            package_commands = self.poll_package_command()
+#            package_commands = self.assemble_package_packets(package_commands)
+#            with self.roverStatus.queueMutex:
+#                for command in package_commands:
+#                    self.receptionist_queue.put(command)
 
             
             time.sleep(self.waitTime)
