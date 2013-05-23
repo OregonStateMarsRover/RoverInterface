@@ -22,13 +22,10 @@ import os.path
 import gtk
 import gobject
 import osmgpsmap
-<<<<<<< HEAD
 import math
-=======
 import pango
 import serial
 import time
->>>>>>> 866c4ab84db677aba3f2490839ffb4d61b1f9c39
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -38,25 +35,6 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
 sys.path.insert(0, libdir)
 
-<<<<<<< HEAD
-=======
-
-class GpsLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
-    def __init__(self):
-        gobject.GObject.__init__(self)
-
-    def draw(self, map, drawable):
-        pass
-
-    def render(self, map):
-        pass
-
-    def button_press(self, map, event):
-        return False
-
-gobject.type_register(GpsLayer)
-
->>>>>>> 866c4ab84db677aba3f2490839ffb4d61b1f9c39
 class UI(gtk.Window):
     def __init__(self):
 
