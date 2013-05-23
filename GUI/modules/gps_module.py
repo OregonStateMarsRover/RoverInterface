@@ -13,7 +13,7 @@
 # Dependencies: The following must be installed to sucessfully run the app          #
 #               -osmgpsmap (sudo apt-get install libosmgpsmap-dev python-osmgpsmap) #
 #                                                                                   #
-#               -pango                                                              #
+#                                                                                   #
 #                                                                                   #
 #####################################################################################
 
@@ -22,9 +22,13 @@ import os.path
 import gtk
 import gobject
 import osmgpsmap
+<<<<<<< HEAD
+import math
+=======
 import pango
 import serial
 import time
+>>>>>>> 866c4ab84db677aba3f2490839ffb4d61b1f9c39
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -34,6 +38,8 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 libdir = os.path.abspath(os.path.join(mydir, "..", "python", ".libs"))
 sys.path.insert(0, libdir)
 
+<<<<<<< HEAD
+=======
 
 class GpsLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
     def __init__(self):
@@ -50,6 +56,7 @@ class GpsLayer(gobject.GObject, osmgpsmap.GpsMapLayer):
 
 gobject.type_register(GpsLayer)
 
+>>>>>>> 866c4ab84db677aba3f2490839ffb4d61b1f9c39
 class UI(gtk.Window):
     def __init__(self):
 
@@ -65,7 +72,7 @@ class UI(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
 
         #osmgpsmap object
-        self.osm = osmgpsmap.GpsMap(repo_uri = "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/#Z/#Y/#X.jpg", show_trip_history = True, record_trip_history = True)
+        self.osm = osmgpsmap.GpsMap(map_source = 12)
     
         #OSD object
         self.osm.layer_add(osmgpsmap.GpsMapOsd(show_dpad=False, show_zoom=False, show_gps_in_dpad=False))
@@ -244,7 +251,7 @@ class UI(gtk.Window):
         if self.track_list:
             length = len(self.track_list)
             lat, lon = self.track_list[length-1]
-            self.osm.set_center_and_zoom(lat,lon, 16)
+            self.osm.set_center_and_zoom(lat,lon, 20)
     #################################################################################################################
     # redraws points of intrest and tracks stored in track_list and poi_list after a map reload                     #
     #################################################################################################################
@@ -289,21 +296,18 @@ class UI(gtk.Window):
     #################################################################################################################   
     def poi(self, osm, event):
         lat,lon = self.osm.get_event_location(event).get_degrees()
+        self.p = self.osm.get_event_location(event)
+
         if event.button == 2:
+            lat, lon = self.p.get_degrees()
             self.osm.gps_add(lat, lon, heading=osmgpsmap.INVALID);
-            #self.track.add_point(osmgpsmap.point_new_degrees(lat,lon))
-            #self.osm.track_add(self.track)
-            self.track_list.append([lat,lon])
+            self.track_list.append([lat, lon])
 
         elif event.button == 3:
-            
-            #this forces program to close... why?
-            #self.osm.layer_add(GpsLayer())
-            GpsLayer()
-
             pb = gtk.gdk.pixbuf_new_from_file_at_size ("poi.png", 30,20)
             self.osm.image_add(lat,lon,pb)
-            self.poi_list.append([lat,lon])
+            self.poi_list.append([lat, lon])
+    
 
     #################################################################################################################
     # manually add a poi marker to map using Lat and Lon from spin wheel menu                                       #
@@ -338,7 +342,7 @@ class UI(gtk.Window):
         self.osm.set_zoom(self.osm.props.zoom - 1)
 
     def home_clicked(self, button):
-        self.osm.set_center_and_zoom(38.4064050, -110.7922800, 16)
+        self.osm.set_center_and_zoom(38.4064050, -110.7922800, 20)
 
     def cache_clicked(self, button):
         bbox = self.osm.get_bbox()
