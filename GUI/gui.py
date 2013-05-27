@@ -279,16 +279,17 @@ class Gui(wx.Frame):
     def UpdateMath(self):
         with self.roverStatus.roverStatusMutex:
             with self.roverStatus.joyMutex:
-                if self.roverStatus.drive_mode == 'zeroRadius':
-                    zeroRadius(self)
-                elif self.roverStatus.drive_mode == 'vector':
-                    vector(self)
-                elif self.roverStatus.drive_mode == 'explicit':
-                    explicit(self)
-                elif self.roverStatus.drive_mode == 'independent':
-                    independent(self)
-                elif self.roverStatus.drive_mode == 'tank':
-                    tank(self)
+#                if self.roverStatus.drive_mode == 'zeroRadius':
+#                    zeroRadius(self)
+#                elif self.roverStatus.drive_mode == 'vector':
+#                    vector(self)
+#                elif self.roverStatus.drive_mode == 'explicit':
+#                    explicit(self)
+#                elif self.roverStatus.drive_mode == 'independent':
+#                    independent(self)
+#                elif self.roverStatus.drive_mode == 'tank':
+#                    tank(self)
+                tank(self)
                 updateArm(self)
                 updateTripod(self)
                 updateProbe(self)
