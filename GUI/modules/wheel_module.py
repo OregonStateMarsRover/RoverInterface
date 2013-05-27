@@ -36,16 +36,17 @@ class DriveSim(wx.Panel):
         self.rr_angleSpin.SetRange(-90, 90)
 
     def OnPaint(self, e):
-        if self.roverStatus.drive_mode == 'zeroRadius':
-            zeroRadius(self)
-        elif self.roverStatus.drive_mode == 'vector':
-            vector(self)
-        elif self.roverStatus.drive_mode == 'explicit':
-            explicit(self)
-        elif self.roverStatus.drive_mode == 'independent':
-            independent(self)
-        elif self.roverStatus.drive_mode == 'tank':
-            tank(self)
+#        if self.roverStatus.drive_mode == 'zeroRadius':
+#            zeroRadius(self)
+#        elif self.roverStatus.drive_mode == 'vector':
+#            vector(self)
+#        elif self.roverStatus.drive_mode == 'explicit':
+#            explicit(self)
+#        elif self.roverStatus.drive_mode == 'independent':
+#            independent(self)
+#        elif self.roverStatus.drive_mode == 'tank':
+#            tank(self)
+        tank(self)
 
         self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
         self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
