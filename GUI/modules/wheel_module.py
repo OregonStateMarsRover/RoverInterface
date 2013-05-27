@@ -47,12 +47,12 @@ class DriveSim(wx.Panel):
         elif self.roverStatus.drive_mode == 'tank':
             tank(self)
 
-        self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
-        self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
-        self.ml_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[4]['angle']))
-        self.mr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[1]['angle']))
-        self.rl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[5]['angle']))
-        self.rr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[2]['angle']))
+        self.fl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[0]['angle']))
+        self.fr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[3]['angle']))
+        self.ml_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[1]['angle']))
+        self.mr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[4]['angle']))
+        self.rl_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[2]['angle']))
+        self.rr_angleSpin.SetValue(math.degrees(self.roverStatus.wheel[5]['angle']))
         #print(self.roverStatus.fl_angle)
         self.draw_wheel(self.roverStatus.wheel[3], (200, 80))
         self.draw_wheel(self.roverStatus.wheel[0], (300, 80))
