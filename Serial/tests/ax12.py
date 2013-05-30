@@ -41,7 +41,7 @@ if __name__ == '__main__':
 		Checksum += parameters[x]
 	Checksum = ~(Checksum)
 	PreChecksum = Checksum
-	Checksum = int("0" + hex(Checksum)[-2:], 16)
+	Checksum = Checksum & 0xFF
 	packet.append(Checksum)
 
 	print "Packet: " + repr(packet)
@@ -51,12 +51,13 @@ if __name__ == '__main__':
 	print "Length (as Int):", Length
 	for x in range(Length - 2):
 		print "Parameter", x + 1, ":", hex(parameters[x])
-	print "Checksum (before cutting):", hex(PreChecksum)
-	print "Checksum (after cutting):", hex(Checksum)
+#	print "Checksum (before cutting):", hex(PreChecksum)
+#	print "Checksum (after cutting):", hex(Checksum)
+	print "CHecksum:", hex(Checksum)
 
         try:
 		bus = serial.Serial(port="/dev/ttyUSB0", 
-	                                baudrate="1000000")
+	                                baudrate="250000")
 	        bus.write(packet)
 	except AttributeError as e:
 		print e
